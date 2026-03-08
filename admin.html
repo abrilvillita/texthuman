@@ -20,25 +20,17 @@ input:focus{border-color:#7c5cfc}
 .btn-r{background:#ef4444;color:#fff}
 .btn-b{background:#3b82f6;color:#fff}
 .btn-y{background:#f59e0b;color:#fff}
-
-/* MAIN */
 #main{display:none}
 nav{background:#1a1a24;border-bottom:1px solid #2a2a3a;padding:14px 24px;display:flex;align-items:center;gap:16px}
 nav h1{font-size:16px;font-weight:800;background:linear-gradient(135deg,#7c5cfc,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex:1}
 nav button{padding:8px 16px;background:#2a2a3a;border:none;border-radius:8px;color:#ccc;font-size:13px;cursor:pointer}
 nav button.act{background:#7c5cfc;color:#fff}
 .content{padding:24px;max-width:1100px;margin:0 auto}
-
-/* TABS */
 .tab{display:none}.tab.act{display:block}
-
-/* STATS */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px}
 .stat{background:#1a1a24;border:1px solid #2a2a3a;border-radius:12px;padding:20px;text-align:center}
 .stat .num{font-size:32px;font-weight:800;background:linear-gradient(135deg,#7c5cfc,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .stat .lbl{font-size:12px;color:#888;margin-top:4px}
-
-/* TABLES */
 .card{background:#1a1a24;border:1px solid #2a2a3a;border-radius:12px;overflow:hidden;margin-bottom:20px}
 .card-head{padding:14px 18px;border-bottom:1px solid #2a2a3a;display:flex;align-items:center;gap:10px}
 .card-head h2{font-size:14px;font-weight:700;flex:1}
@@ -48,15 +40,9 @@ td{padding:10px 14px;font-size:13px;border-bottom:1px solid #1a1a24}
 tr:last-child td{border:none}
 tr:hover td{background:#1e1e2e}
 .badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700}
-.bp{background:#7c5cfc22;color:#a78bfa}
-.bf{background:#22222e;color:#888}
-.bg{background:#22c55e22;color:#22c55e}
-.br{background:#ef444422;color:#ef4444}
-.by{background:#f59e0b22;color:#f59e0b}
-
-/* FORM */
+.bp{background:#7c5cfc22;color:#a78bfa}.bf{background:#22222e;color:#888}
+.bg{background:#22c55e22;color:#22c55e}.br{background:#ef444422;color:#ef4444}.by{background:#f59e0b22;color:#f59e0b}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-.form-row.single{grid-template-columns:1fr}
 label{font-size:12px;color:#888;display:block;margin-bottom:4px}
 select{width:100%;padding:10px 12px;background:#12121a;border:1px solid #2a2a3a;border-radius:8px;color:#e8e8f0;font-size:13px;outline:none}
 .form-card{background:#1a1a24;border:1px solid #2a2a3a;border-radius:12px;padding:20px;margin-bottom:20px}
@@ -64,26 +50,22 @@ select{width:100%;padding:10px 12px;background:#12121a;border:1px solid #2a2a3a;
 .msg{padding:10px 14px;border-radius:8px;font-size:13px;margin-top:10px;display:none}
 .msg.ok{background:#22c55e22;color:#22c55e;display:block}
 .msg.err{background:#ef444422;color:#ef4444;display:block}
-
-/* Loading */
 .loader{text-align:center;padding:40px;color:#888}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div class="login-wrap" id="login-wrap">
   <div class="login-box">
     <h1>🔐 Panel Admin</h1>
     <p>TextHuman — Solo para el dueño</p>
-    <input type="text" id="api-url" placeholder="URL de tu Worker (https://...workers.dev)">
-    <input type="password" id="secret-inp" placeholder="Contraseña admin (ADMIN_SECRET)">
-    <button class="btn" onclick="doLogin()">Entrar</button>
+    <input type="text" id="api-url" placeholder="URL del Worker" value="https://texthuman-api.mirandavilla341.workers.dev">
+    <input type="password" id="secret-inp" placeholder="Contraseña admin" value="uU756DGyqM$">
+    <button class="btn" onclick="doLogin()">Entrar →</button>
     <div id="login-err" style="color:#ef4444;font-size:13px;margin-top:10px;display:none"></div>
   </div>
 </div>
 
-<!-- MAIN -->
 <div id="main">
   <nav>
     <h1>⚡ TextHuman Admin</h1>
@@ -93,14 +75,10 @@ select{width:100%;padding:10px 12px;background:#12121a;border:1px solid #2a2a3a;
     <button onclick="goTab('payments')" id="t-payments">💰 Pagos</button>
     <button onclick="doLogout()" style="color:#ef4444">Salir</button>
   </nav>
-
   <div class="content">
 
-    <!-- STATS -->
     <div class="tab act" id="tab-stats">
-      <div class="stats-grid" id="stats-grid">
-        <div class="loader">Cargando estadísticas...</div>
-      </div>
+      <div class="stats-grid" id="stats-grid"><div class="loader">Cargando...</div></div>
       <div class="card">
         <div class="card-head"><h2>💰 Pagos recientes</h2></div>
         <table>
@@ -110,7 +88,6 @@ select{width:100%;padding:10px 12px;background:#12121a;border:1px solid #2a2a3a;
       </div>
     </div>
 
-    <!-- USERS -->
     <div class="tab" id="tab-users">
       <div class="form-card">
         <h2>⚡ Activar Premium manualmente</h2>
@@ -124,18 +101,17 @@ select{width:100%;padding:10px 12px;background:#12121a;border:1px solid #2a2a3a;
       <div class="card">
         <div class="card-head"><h2>👥 Usuarios registrados</h2><button class="btn-sm btn-b" onclick="loadUsers()">🔄 Actualizar</button></div>
         <table>
-          <thead><tr><th>Nombre</th><th>Correo</th><th>Plan</th><th>Usos IA</th><th>Último acceso</th><th>Registrado</th></tr></thead>
-          <tbody id="users-table"><tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr></tbody>
+          <thead><tr><th>Nombre</th><th>Correo</th><th>Plan</th><th>Usos IA</th><th>Último acceso</th><th>Registrado</th><th>Acción</th></tr></thead>
+          <tbody id="users-table"><tr><td colspan="7" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr></tbody>
         </table>
       </div>
     </div>
 
-    <!-- DISCOUNTS -->
     <div class="tab" id="tab-discounts">
       <div class="form-card">
         <h2>➕ Crear código de descuento</h2>
         <div class="form-row">
-          <div><label>Código (mayúsculas, sin espacios)</label><input type="text" id="dc-code" placeholder="MIDESCUENTO30" oninput="this.value=this.value.toUpperCase().replace(/\s/g,'')"></div>
+          <div><label>Código</label><input type="text" id="dc-code" placeholder="MIDESCUENTO30" oninput="this.value=this.value.toUpperCase().replace(/\s/g,'')"></div>
           <div><label>Tipo</label>
             <select id="dc-type" onchange="toggleDcType()">
               <option value="free">Gratis (días de Premium)</option>
@@ -145,10 +121,10 @@ select{width:100%;padding:10px 12px;background:#12121a;border:1px solid #2a2a3a;
         </div>
         <div class="form-row" id="dc-days-row">
           <div><label>Días de Premium gratis</label><input type="number" id="dc-days" value="30" min="1"></div>
-          <div><label>Descripción (visible al usuario)</label><input type="text" id="dc-desc" placeholder="🎉 30 días de Premium activados"></div>
+          <div><label>Descripción visible al usuario</label><input type="text" id="dc-desc" placeholder="🎉 30 días de Premium activados"></div>
         </div>
         <div class="form-row">
-          <div><label>Máximo de usos (vacío = ilimitado)</label><input type="number" id="dc-maxuses" placeholder="Ej: 50"></div>
+          <div><label>Máximo de usos (vacío = ilimitado)</label><input type="number" id="dc-maxuses" placeholder="50"></div>
           <div><label>Fecha de expiración (opcional)</label><input type="date" id="dc-expires"></div>
         </div>
         <button class="btn-sm btn-g" onclick="createDiscount()">➕ Crear código</button>
@@ -163,7 +139,6 @@ select{width:100%;padding:10px 12px;background:#12121a;border:1px solid #2a2a3a;
       </div>
     </div>
 
-    <!-- PAYMENTS -->
     <div class="tab" id="tab-payments">
       <div class="card">
         <div class="card-head"><h2>💰 Todos los pagos</h2><button class="btn-sm btn-b" onclick="loadPayments()">🔄 Actualizar</button></div>
@@ -178,22 +153,30 @@ select{width:100%;padding:10px 12px;background:#12121a;border:1px solid #2a2a3a;
 </div>
 
 <script>
+// ── CREDENCIALES PRE-LLENADAS ──
+const DEFAULT_URL = 'https://texthuman-api.mirandavilla341.workers.dev';
+const DEFAULT_SECRET = 'uU756DGyqM$';
+
 let WORKER_URL = '';
 let ADMIN_SECRET = '';
 
 function doLogin(){
   const url = document.getElementById('api-url').value.trim().replace(/\/$/,'');
   const sec = document.getElementById('secret-inp').value.trim();
-  if(!url || !sec){showLoginErr('Completa los dos campos');return;}
+  if(!url||!sec){showLoginErr('Completa los dos campos');return;}
   WORKER_URL = url;
   ADMIN_SECRET = sec;
-  // Test connection
+  const btn = document.querySelector('.login-box .btn');
+  btn.textContent = 'Conectando...'; btn.disabled = true;
   callAdmin('stats').then(r=>{
     localStorage.setItem('th_admin',JSON.stringify({url,sec}));
     document.getElementById('login-wrap').style.display='none';
     document.getElementById('main').style.display='block';
     renderStats(r);
-  }).catch(e=>showLoginErr(e.message));
+  }).catch(e=>{
+    showLoginErr('❌ '+e.message);
+    btn.textContent='Entrar →'; btn.disabled=false;
+  });
 }
 
 function doLogout(){
@@ -203,27 +186,34 @@ function doLogout(){
 
 function showLoginErr(msg){
   const el=document.getElementById('login-err');
-  el.textContent=msg;el.style.display='block';
+  el.textContent=msg; el.style.display='block';
 }
 
-// Auto-login from storage
 window.onload=()=>{
+  // Intentar auto-login desde storage, sino usar defaults
   try{
     const saved=JSON.parse(localStorage.getItem('th_admin')||'{}');
     if(saved.url&&saved.sec){
       document.getElementById('api-url').value=saved.url;
       document.getElementById('secret-inp').value=saved.sec;
+      // Auto-login si ya tiene credenciales guardadas
+      WORKER_URL=saved.url; ADMIN_SECRET=saved.sec;
+      callAdmin('stats').then(r=>{
+        document.getElementById('login-wrap').style.display='none';
+        document.getElementById('main').style.display='block';
+        renderStats(r);
+      }).catch(()=>{});
     }
   }catch(e){}
 };
 
-async function callAdmin(action, data={}){
-  const r = await fetch(WORKER_URL+'/admin',{
+async function callAdmin(action,data={}){
+  const r=await fetch(WORKER_URL+'/admin',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({secret:ADMIN_SECRET, action, data})
+    body:JSON.stringify({secret:ADMIN_SECRET,action,data})
   });
-  const d = await r.json().catch(()=>({}));
+  const d=await r.json().catch(()=>({}));
   if(!r.ok) throw new Error(d.error||'Error '+r.status);
   return d;
 }
@@ -238,41 +228,55 @@ function goTab(name){
   if(name==='payments') loadPayments();
 }
 
-// ── STATS ───────────────────────────────────────
 function renderStats(r){
   document.getElementById('stats-grid').innerHTML=`
-    <div class="stat"><div class="num">${r.total}</div><div class="lbl">Usuarios totales</div></div>
-    <div class="stat"><div class="num">${r.premium}</div><div class="lbl">Premium activos</div></div>
-    <div class="stat"><div class="num">${r.free}</div><div class="lbl">Plan gratuito</div></div>
-    <div class="stat"><div class="num">${r.today}</div><div class="lbl">Activos hoy</div></div>
-    <div class="stat"><div class="num">${r.thisWeek}</div><div class="lbl">Esta semana</div></div>
-    <div class="stat"><div class="num">${r.newToday}</div><div class="lbl">Nuevos hoy</div></div>
-    <div class="stat"><div class="num">${r.totalHum}</div><div class="lbl">Humanizaciones</div></div>
-    <div class="stat"><div class="num">$${r.revenue}</div><div class="lbl">Ingresos totales USD</div></div>
+    <div class="stat"><div class="num">${r.total||0}</div><div class="lbl">Usuarios totales</div></div>
+    <div class="stat"><div class="num">${r.premium||0}</div><div class="lbl">Premium activos</div></div>
+    <div class="stat"><div class="num">${r.free||0}</div><div class="lbl">Plan gratuito</div></div>
+    <div class="stat"><div class="num">${r.today||0}</div><div class="lbl">Activos hoy</div></div>
+    <div class="stat"><div class="num">${r.thisWeek||0}</div><div class="lbl">Esta semana</div></div>
+    <div class="stat"><div class="num">${r.newToday||0}</div><div class="lbl">Nuevos hoy</div></div>
+    <div class="stat"><div class="num">${r.totalHum||0}</div><div class="lbl">Humanizaciones</div></div>
+    <div class="stat"><div class="num">$${r.revenue||0}</div><div class="lbl">Ingresos USD</div></div>
   `;
-  renderPayTable(r.recentPayments||[], 'pay-table');
+  renderPayTable(r.recentPayments||[],'pay-table');
 }
 
-// ── USERS ───────────────────────────────────────
 async function loadUsers(){
   const tb=document.getElementById('users-table');
-  tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr>';
-  const r = await callAdmin('list_users').catch(e=>({users:[]}));
-  const now = new Date();
-  tb.innerHTML = (r.users||[]).map(u=>{
-    const isPrem = u.plan==='premium' && u.premium_until && new Date(u.premium_until)>now;
-    const days = isPrem ? Math.ceil((new Date(u.premium_until)-now)/(1000*3600*24)) : 0;
-    const lastLogin = u.last_login ? fmtDate(u.last_login) : '—';
-    const created = u.created_at ? fmtDate(u.created_at) : '—';
+  tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr>';
+  const r=await callAdmin('list_users').catch(()=>({users:[]}));
+  const now=new Date();
+  tb.innerHTML=(r.users||[]).map(u=>{
+    const isPrem=u.plan==='premium'&&u.premium_until&&new Date(u.premium_until)>now;
+    const days=isPrem?Math.ceil((new Date(u.premium_until)-now)/(1000*3600*24)):0;
     return `<tr>
       <td>${u.name||'—'}</td>
       <td style="color:#888">${u.email}</td>
-      <td><span class="badge ${isPrem?'bp':'bf'}">${isPrem?'Premium · '+days+'d':'Gratis'}</span></td>
+      <td><span class="badge ${isPrem?'bp':'bf'}">${isPrem?'Premium·'+days+'d':'Gratis'}</span></td>
       <td>${u.total_humanizations||0}</td>
-      <td>${lastLogin}</td>
-      <td>${created}</td>
+      <td style="font-size:12px;color:#888">${u.last_login?fmtDate(u.last_login):'—'}</td>
+      <td style="font-size:12px;color:#888">${u.created_at?fmtDate(u.created_at):'—'}</td>
+      <td>
+        <button class="btn-sm btn-g" onclick="quickActivate('${u.email}')" style="margin-right:4px">⚡ +30d</button>
+        <button class="btn-sm btn-r" onclick="revokeUser('${u.email}')">🚫 Revocar</button>
+      </td>
     </tr>`;
-  }).join('') || '<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Sin usuarios aún</td></tr>';
+  }).join('')||'<tr><td colspan="7" style="text-align:center;color:#888;padding:20px">Sin usuarios</td></tr>';
+}
+
+async function quickActivate(email){
+  if(!confirm('¿Activar 30 días Premium a '+email+'?'))return;
+  const r=await callAdmin('activate_premium',{email,days:30}).catch(e=>({error:e.message}));
+  if(r.error) alert('Error: '+r.error);
+  else{ toast('✅ Premium activado a '+email); loadUsers(); }
+}
+
+async function revokeUser(email){
+  if(!confirm('¿Revocar Premium de '+email+'?'))return;
+  const r=await callAdmin('activate_premium',{email,days:0}).catch(e=>({error:e.message}));
+  toast(r.error?'Error: '+r.error:'✅ Premium revocado');
+  loadUsers();
 }
 
 async function activateManual(){
@@ -281,17 +285,15 @@ async function activateManual(){
   if(!email){showMsg('act-msg','Ingresa un correo','err');return;}
   const r=await callAdmin('activate_premium',{email,days}).catch(e=>({error:e.message}));
   if(r.error) showMsg('act-msg',r.error,'err');
-  else{ showMsg('act-msg','✅ Premium activado hasta '+fmtDate(r.until),'ok'); loadUsers(); }
+  else{showMsg('act-msg','✅ Premium activado hasta '+fmtDate(r.until),'ok');loadUsers();}
 }
 
-// ── DISCOUNTS ───────────────────────────────────
 async function loadDiscounts(){
   const tb=document.getElementById('disc-table');
   tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr>';
   const r=await callAdmin('list_discounts').catch(()=>({codes:[]}));
   tb.innerHTML=(r.codes||[]).map(c=>{
     const exp=c.expires_at?fmtDate(c.expires_at):'Sin límite';
-    const active=c.active;
     return `<tr>
       <td style="font-weight:700;letter-spacing:1px">${c.code}</td>
       <td><span class="badge ${c.type==='free'?'bp':'by'}">${c.type==='free'?'Gratis':'%'}</span></td>
@@ -300,10 +302,10 @@ async function loadDiscounts(){
       <td>${c.uses_count||0}</td>
       <td>${c.max_uses||'∞'}</td>
       <td style="font-size:12px;color:#888">${exp}</td>
-      <td><span class="badge ${active?'bg':'br'}">${active?'Activo':'Inactivo'}</span></td>
-      <td><button class="btn-sm ${active?'btn-r':'btn-g'}" onclick="toggleDiscount('${c.code}',${!active})">${active?'Desactivar':'Activar'}</button></td>
+      <td><span class="badge ${c.active?'bg':'br'}">${c.active?'Activo':'Inactivo'}</span></td>
+      <td><button class="btn-sm ${c.active?'btn-r':'btn-g'}" onclick="toggleDiscount('${c.code}',${!c.active})">${c.active?'Desactivar':'Activar'}</button></td>
     </tr>`;
-  }).join('')||'<tr><td colspan="9" style="text-align:center;color:#888;padding:20px">Sin códigos aún</td></tr>';
+  }).join('')||'<tr><td colspan="9" style="text-align:center;color:#888;padding:20px">Sin códigos</td></tr>';
 }
 
 async function createDiscount(){
@@ -316,7 +318,7 @@ async function createDiscount(){
   if(!code||!description){showMsg('dc-msg','Código y descripción son obligatorios','err');return;}
   const r=await callAdmin('create_discount',{code,type,days,description,max_uses,expires_at}).catch(e=>({error:e.message}));
   if(r.error) showMsg('dc-msg',r.error,'err');
-  else{ showMsg('dc-msg','✅ Código "'+code+'" creado correctamente','ok'); loadDiscounts(); }
+  else{showMsg('dc-msg','✅ Código "'+code+'" creado','ok');loadDiscounts();}
 }
 
 async function toggleDiscount(code,active){
@@ -325,21 +327,19 @@ async function toggleDiscount(code,active){
 }
 
 function toggleDcType(){
-  const t=document.getElementById('dc-type').value;
-  document.getElementById('dc-days-row').style.display=t==='free'?'grid':'none';
+  document.getElementById('dc-days-row').style.display=
+    document.getElementById('dc-type').value==='free'?'grid':'none';
 }
 
-// ── PAYMENTS ────────────────────────────────────
 async function loadPayments(){
   const tb=document.getElementById('pay-table-full');
   tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr>';
   const r=await callAdmin('stats').catch(()=>({recentPayments:[]}));
-  renderPayTable(r.recentPayments||[], 'pay-table-full');
-  // re-render stats too
+  renderPayTable(r.recentPayments||[],'pay-table-full');
   if(r.total!==undefined) renderStats(r);
 }
 
-function renderPayTable(payments, tableId){
+function renderPayTable(payments,tableId){
   const tb=document.getElementById(tableId);
   tb.innerHTML=payments.map(p=>{
     const type=p.type==='premium'?'Premium ($7.99)':'Aceleración ($1.99)';
@@ -351,35 +351,33 @@ function renderPayTable(payments, tableId){
       <td style="color:#22c55e;font-weight:700">$${p.amount}</td>
       <td><span class="badge ${isPending?'by':'bg'}">${statusMap[p.status]||p.status}</span></td>
       <td style="font-size:12px;color:#888">${p.created_at?fmtDate(p.created_at):'—'}</td>
-      <td>${isPending?`<button class="btn-sm btn-g" onclick="verifyPay('${p.email}','${p.type}')">✅ Verificar</button>`:'—'}</td>
+      <td>${isPending?`<button class="btn-sm btn-g" onclick="verifyPay('${p.email}','${p.type}')">✅ Verificar y activar</button>`:'—'}</td>
     </tr>`;
-  }).join('')||'<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Sin pagos aún</td></tr>';
+  }).join('')||'<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Sin pagos</td></tr>';
 }
 
 async function verifyPay(email,type){
+  if(!confirm('¿Verificar pago y activar Premium a '+email+'?'))return;
   await callAdmin('verify_payment',{email,type}).catch(()=>{});
-  toast('Pago marcado como verificado ✓');
+  toast('✅ Pago verificado y Premium activado a '+email);
   loadPayments();
 }
 
-// ── HELPERS ─────────────────────────────────────
 function fmtDate(iso){
-  try{
-    const d=new Date(iso);
-    return d.toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
-  }catch{return iso;}
+  try{return new Date(iso).toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+  catch{return iso;}
 }
 function showMsg(id,msg,type){
   const el=document.getElementById(id);
-  el.textContent=msg;el.className='msg '+type;
+  el.textContent=msg; el.className='msg '+type;
   setTimeout(()=>el.className='msg',4000);
 }
-let tT2;
+let tT;
 function toast(msg){
   let el=document.getElementById('adm-toast');
   if(!el){el=document.createElement('div');el.id='adm-toast';el.style.cssText='position:fixed;bottom:20px;right:20px;background:#22c55e;color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999';document.body.appendChild(el);}
-  el.textContent=msg;el.style.display='block';
-  clearTimeout(tT2);tT2=setTimeout(()=>el.style.display='none',3000);
+  el.textContent=msg; el.style.display='block';
+  clearTimeout(tT); tT=setTimeout(()=>el.style.display='none',3500);
 }
 </script>
 </body>
