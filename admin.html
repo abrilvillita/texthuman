@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TextHuman — Panel Admin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f13;color:#e8e8f0;min-height:100vh}
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.login-box{background:#1a1a24;border:1px solid #2a2a3a;border-radius:16px;padding:40px;width:340px;text-align:center}
+.login-box h1{font-size:22px;margin-bottom:6px}
+.login-box p{color:#888;font-size:13px;margin-bottom:24px}
+input{width:100%;padding:11px 14px;background:#12121a;border:1px solid #2a2a3a;border-radius:9px;color:#e8e8f0;font-size:14px;margin-bottom:12px;outline:none}
+input:focus{border-color:#7c5cfc}
+.btn{width:100%;padding:12px;background:linear-gradient(135deg,#7c5cfc,#a78bfa);border:none;border-radius:9px;color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+.btn:hover{opacity:.9}
+.btn-sm{padding:7px 14px;font-size:12px;font-weight:600;border:none;border-radius:7px;cursor:pointer;width:auto}
+.btn-g{background:#22c55e;color:#fff}
+.btn-r{background:#ef4444;color:#fff}
+.btn-b{background:#3b82f6;color:#fff}
+.btn-y{background:#f59e0b;color:#fff}
+
+/* MAIN */
+#main{display:none}
+nav{background:#1a1a24;border-bottom:1px solid #2a2a3a;padding:14px 24px;display:flex;align-items:center;gap:16px}
+nav h1{font-size:16px;font-weight:800;background:linear-gradient(135deg,#7c5cfc,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex:1}
+nav button{padding:8px 16px;background:#2a2a3a;border:none;border-radius:8px;color:#ccc;font-size:13px;cursor:pointer}
+nav button.act{background:#7c5cfc;color:#fff}
+.content{padding:24px;max-width:1100px;margin:0 auto}
+
+/* TABS */
+.tab{display:none}.tab.act{display:block}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px}
+.stat{background:#1a1a24;border:1px solid #2a2a3a;border-radius:12px;padding:20px;text-align:center}
+.stat .num{font-size:32px;font-weight:800;background:linear-gradient(135deg,#7c5cfc,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat .lbl{font-size:12px;color:#888;margin-top:4px}
+
+/* TABLES */
+.card{background:#1a1a24;border:1px solid #2a2a3a;border-radius:12px;overflow:hidden;margin-bottom:20px}
+.card-head{padding:14px 18px;border-bottom:1px solid #2a2a3a;display:flex;align-items:center;gap:10px}
+.card-head h2{font-size:14px;font-weight:700;flex:1}
+table{width:100%;border-collapse:collapse}
+th{padding:10px 14px;text-align:left;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #1e1e2e}
+td{padding:10px 14px;font-size:13px;border-bottom:1px solid #1a1a24}
+tr:last-child td{border:none}
+tr:hover td{background:#1e1e2e}
+.badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.bp{background:#7c5cfc22;color:#a78bfa}
+.bf{background:#22222e;color:#888}
+.bg{background:#22c55e22;color:#22c55e}
+.br{background:#ef444422;color:#ef4444}
+.by{background:#f59e0b22;color:#f59e0b}
+
+/* FORM */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row.single{grid-template-columns:1fr}
+label{font-size:12px;color:#888;display:block;margin-bottom:4px}
+select{width:100%;padding:10px 12px;background:#12121a;border:1px solid #2a2a3a;border-radius:8px;color:#e8e8f0;font-size:13px;outline:none}
+.form-card{background:#1a1a24;border:1px solid #2a2a3a;border-radius:12px;padding:20px;margin-bottom:20px}
+.form-card h2{font-size:14px;font-weight:700;margin-bottom:16px}
+.msg{padding:10px 14px;border-radius:8px;font-size:13px;margin-top:10px;display:none}
+.msg.ok{background:#22c55e22;color:#22c55e;display:block}
+.msg.err{background:#ef444422;color:#ef4444;display:block}
+
+/* Loading */
+.loader{text-align:center;padding:40px;color:#888}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-box">
+    <h1>🔐 Panel Admin</h1>
+    <p>TextHuman — Solo para el dueño</p>
+    <input type="text" id="api-url" placeholder="URL de tu Worker (https://...workers.dev)">
+    <input type="password" id="secret-inp" placeholder="Contraseña admin (ADMIN_SECRET)">
+    <button class="btn" onclick="doLogin()">Entrar</button>
+    <div id="login-err" style="color:#ef4444;font-size:13px;margin-top:10px;display:none"></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <nav>
+    <h1>⚡ TextHuman Admin</h1>
+    <button onclick="goTab('stats')" id="t-stats" class="act">📊 Stats</button>
+    <button onclick="goTab('users')" id="t-users">👥 Usuarios</button>
+    <button onclick="goTab('discounts')" id="t-discounts">🎟️ Descuentos</button>
+    <button onclick="goTab('payments')" id="t-payments">💰 Pagos</button>
+    <button onclick="doLogout()" style="color:#ef4444">Salir</button>
+  </nav>
+
+  <div class="content">
+
+    <!-- STATS -->
+    <div class="tab act" id="tab-stats">
+      <div class="stats-grid" id="stats-grid">
+        <div class="loader">Cargando estadísticas...</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>💰 Pagos recientes</h2></div>
+        <table>
+          <thead><tr><th>Correo</th><th>Tipo</th><th>Monto</th><th>Estado</th><th>Fecha</th><th>Acción</th></tr></thead>
+          <tbody id="pay-table"><tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="tab" id="tab-users">
+      <div class="form-card">
+        <h2>⚡ Activar Premium manualmente</h2>
+        <div class="form-row">
+          <div><label>Correo del usuario</label><input type="email" id="act-email" placeholder="usuario@gmail.com"></div>
+          <div><label>Días de Premium</label><input type="number" id="act-days" value="30" min="1"></div>
+        </div>
+        <button class="btn-sm btn-g" onclick="activateManual()">✅ Activar Premium</button>
+        <div id="act-msg" class="msg"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>👥 Usuarios registrados</h2><button class="btn-sm btn-b" onclick="loadUsers()">🔄 Actualizar</button></div>
+        <table>
+          <thead><tr><th>Nombre</th><th>Correo</th><th>Plan</th><th>Usos IA</th><th>Último acceso</th><th>Registrado</th></tr></thead>
+          <tbody id="users-table"><tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DISCOUNTS -->
+    <div class="tab" id="tab-discounts">
+      <div class="form-card">
+        <h2>➕ Crear código de descuento</h2>
+        <div class="form-row">
+          <div><label>Código (mayúsculas, sin espacios)</label><input type="text" id="dc-code" placeholder="MIDESCUENTO30" oninput="this.value=this.value.toUpperCase().replace(/\s/g,'')"></div>
+          <div><label>Tipo</label>
+            <select id="dc-type" onchange="toggleDcType()">
+              <option value="free">Gratis (días de Premium)</option>
+              <option value="percent">Porcentaje de descuento</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row" id="dc-days-row">
+          <div><label>Días de Premium gratis</label><input type="number" id="dc-days" value="30" min="1"></div>
+          <div><label>Descripción (visible al usuario)</label><input type="text" id="dc-desc" placeholder="🎉 30 días de Premium activados"></div>
+        </div>
+        <div class="form-row">
+          <div><label>Máximo de usos (vacío = ilimitado)</label><input type="number" id="dc-maxuses" placeholder="Ej: 50"></div>
+          <div><label>Fecha de expiración (opcional)</label><input type="date" id="dc-expires"></div>
+        </div>
+        <button class="btn-sm btn-g" onclick="createDiscount()">➕ Crear código</button>
+        <div id="dc-msg" class="msg"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>🎟️ Códigos activos</h2><button class="btn-sm btn-b" onclick="loadDiscounts()">🔄 Actualizar</button></div>
+        <table>
+          <thead><tr><th>Código</th><th>Tipo</th><th>Días</th><th>Descripción</th><th>Usos</th><th>Máx</th><th>Expira</th><th>Estado</th><th>Acción</th></tr></thead>
+          <tbody id="disc-table"><tr><td colspan="9" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div class="tab" id="tab-payments">
+      <div class="card">
+        <div class="card-head"><h2>💰 Todos los pagos</h2><button class="btn-sm btn-b" onclick="loadPayments()">🔄 Actualizar</button></div>
+        <table>
+          <thead><tr><th>Correo</th><th>Tipo</th><th>Monto</th><th>Estado</th><th>Fecha</th><th>Acción</th></tr></thead>
+          <tbody id="pay-table-full"><tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let WORKER_URL = '';
+let ADMIN_SECRET = '';
+
+function doLogin(){
+  const url = document.getElementById('api-url').value.trim().replace(/\/$/,'');
+  const sec = document.getElementById('secret-inp').value.trim();
+  if(!url || !sec){showLoginErr('Completa los dos campos');return;}
+  WORKER_URL = url;
+  ADMIN_SECRET = sec;
+  // Test connection
+  callAdmin('stats').then(r=>{
+    localStorage.setItem('th_admin',JSON.stringify({url,sec}));
+    document.getElementById('login-wrap').style.display='none';
+    document.getElementById('main').style.display='block';
+    renderStats(r);
+  }).catch(e=>showLoginErr(e.message));
+}
+
+function doLogout(){
+  localStorage.removeItem('th_admin');
+  location.reload();
+}
+
+function showLoginErr(msg){
+  const el=document.getElementById('login-err');
+  el.textContent=msg;el.style.display='block';
+}
+
+// Auto-login from storage
+window.onload=()=>{
+  try{
+    const saved=JSON.parse(localStorage.getItem('th_admin')||'{}');
+    if(saved.url&&saved.sec){
+      document.getElementById('api-url').value=saved.url;
+      document.getElementById('secret-inp').value=saved.sec;
+    }
+  }catch(e){}
+};
+
+async function callAdmin(action, data={}){
+  const r = await fetch(WORKER_URL+'/admin',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({secret:ADMIN_SECRET, action, data})
+  });
+  const d = await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(d.error||'Error '+r.status);
+  return d;
+}
+
+function goTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('act'));
+  document.getElementById('tab-'+name).classList.add('act');
+  document.getElementById('t-'+name).classList.add('act');
+  if(name==='users') loadUsers();
+  if(name==='discounts') loadDiscounts();
+  if(name==='payments') loadPayments();
+}
+
+// ── STATS ───────────────────────────────────────
+function renderStats(r){
+  document.getElementById('stats-grid').innerHTML=`
+    <div class="stat"><div class="num">${r.total}</div><div class="lbl">Usuarios totales</div></div>
+    <div class="stat"><div class="num">${r.premium}</div><div class="lbl">Premium activos</div></div>
+    <div class="stat"><div class="num">${r.free}</div><div class="lbl">Plan gratuito</div></div>
+    <div class="stat"><div class="num">${r.today}</div><div class="lbl">Activos hoy</div></div>
+    <div class="stat"><div class="num">${r.thisWeek}</div><div class="lbl">Esta semana</div></div>
+    <div class="stat"><div class="num">${r.newToday}</div><div class="lbl">Nuevos hoy</div></div>
+    <div class="stat"><div class="num">${r.totalHum}</div><div class="lbl">Humanizaciones</div></div>
+    <div class="stat"><div class="num">$${r.revenue}</div><div class="lbl">Ingresos totales USD</div></div>
+  `;
+  renderPayTable(r.recentPayments||[], 'pay-table');
+}
+
+// ── USERS ───────────────────────────────────────
+async function loadUsers(){
+  const tb=document.getElementById('users-table');
+  tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr>';
+  const r = await callAdmin('list_users').catch(e=>({users:[]}));
+  const now = new Date();
+  tb.innerHTML = (r.users||[]).map(u=>{
+    const isPrem = u.plan==='premium' && u.premium_until && new Date(u.premium_until)>now;
+    const days = isPrem ? Math.ceil((new Date(u.premium_until)-now)/(1000*3600*24)) : 0;
+    const lastLogin = u.last_login ? fmtDate(u.last_login) : '—';
+    const created = u.created_at ? fmtDate(u.created_at) : '—';
+    return `<tr>
+      <td>${u.name||'—'}</td>
+      <td style="color:#888">${u.email}</td>
+      <td><span class="badge ${isPrem?'bp':'bf'}">${isPrem?'Premium · '+days+'d':'Gratis'}</span></td>
+      <td>${u.total_humanizations||0}</td>
+      <td>${lastLogin}</td>
+      <td>${created}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Sin usuarios aún</td></tr>';
+}
+
+async function activateManual(){
+  const email=document.getElementById('act-email').value.trim();
+  const days=parseInt(document.getElementById('act-days').value)||30;
+  if(!email){showMsg('act-msg','Ingresa un correo','err');return;}
+  const r=await callAdmin('activate_premium',{email,days}).catch(e=>({error:e.message}));
+  if(r.error) showMsg('act-msg',r.error,'err');
+  else{ showMsg('act-msg','✅ Premium activado hasta '+fmtDate(r.until),'ok'); loadUsers(); }
+}
+
+// ── DISCOUNTS ───────────────────────────────────
+async function loadDiscounts(){
+  const tb=document.getElementById('disc-table');
+  tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr>';
+  const r=await callAdmin('list_discounts').catch(()=>({codes:[]}));
+  tb.innerHTML=(r.codes||[]).map(c=>{
+    const exp=c.expires_at?fmtDate(c.expires_at):'Sin límite';
+    const active=c.active;
+    return `<tr>
+      <td style="font-weight:700;letter-spacing:1px">${c.code}</td>
+      <td><span class="badge ${c.type==='free'?'bp':'by'}">${c.type==='free'?'Gratis':'%'}</span></td>
+      <td>${c.days||'—'}</td>
+      <td style="color:#888;font-size:12px">${c.description||'—'}</td>
+      <td>${c.uses_count||0}</td>
+      <td>${c.max_uses||'∞'}</td>
+      <td style="font-size:12px;color:#888">${exp}</td>
+      <td><span class="badge ${active?'bg':'br'}">${active?'Activo':'Inactivo'}</span></td>
+      <td><button class="btn-sm ${active?'btn-r':'btn-g'}" onclick="toggleDiscount('${c.code}',${!active})">${active?'Desactivar':'Activar'}</button></td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="9" style="text-align:center;color:#888;padding:20px">Sin códigos aún</td></tr>';
+}
+
+async function createDiscount(){
+  const code=document.getElementById('dc-code').value.trim();
+  const type=document.getElementById('dc-type').value;
+  const days=parseInt(document.getElementById('dc-days').value)||30;
+  const description=document.getElementById('dc-desc').value.trim();
+  const max_uses=parseInt(document.getElementById('dc-maxuses').value)||null;
+  const expires_at=document.getElementById('dc-expires').value||null;
+  if(!code||!description){showMsg('dc-msg','Código y descripción son obligatorios','err');return;}
+  const r=await callAdmin('create_discount',{code,type,days,description,max_uses,expires_at}).catch(e=>({error:e.message}));
+  if(r.error) showMsg('dc-msg',r.error,'err');
+  else{ showMsg('dc-msg','✅ Código "'+code+'" creado correctamente','ok'); loadDiscounts(); }
+}
+
+async function toggleDiscount(code,active){
+  await callAdmin('toggle_discount',{code,active}).catch(()=>{});
+  loadDiscounts();
+}
+
+function toggleDcType(){
+  const t=document.getElementById('dc-type').value;
+  document.getElementById('dc-days-row').style.display=t==='free'?'grid':'none';
+}
+
+// ── PAYMENTS ────────────────────────────────────
+async function loadPayments(){
+  const tb=document.getElementById('pay-table-full');
+  tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr>';
+  const r=await callAdmin('stats').catch(()=>({recentPayments:[]}));
+  renderPayTable(r.recentPayments||[], 'pay-table-full');
+  // re-render stats too
+  if(r.total!==undefined) renderStats(r);
+}
+
+function renderPayTable(payments, tableId){
+  const tb=document.getElementById(tableId);
+  tb.innerHTML=payments.map(p=>{
+    const type=p.type==='premium'?'Premium ($7.99)':'Aceleración ($1.99)';
+    const statusMap={pending_verification:'⏳ Pendiente',verified:'✅ Verificado',refunded:'↩️ Reembolsado'};
+    const isPending=p.status==='pending_verification';
+    return `<tr>
+      <td style="color:#888">${p.email||'—'}</td>
+      <td>${type}</td>
+      <td style="color:#22c55e;font-weight:700">$${p.amount}</td>
+      <td><span class="badge ${isPending?'by':'bg'}">${statusMap[p.status]||p.status}</span></td>
+      <td style="font-size:12px;color:#888">${p.created_at?fmtDate(p.created_at):'—'}</td>
+      <td>${isPending?`<button class="btn-sm btn-g" onclick="verifyPay('${p.email}','${p.type}')">✅ Verificar</button>`:'—'}</td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Sin pagos aún</td></tr>';
+}
+
+async function verifyPay(email,type){
+  await callAdmin('verify_payment',{email,type}).catch(()=>{});
+  toast('Pago marcado como verificado ✓');
+  loadPayments();
+}
+
+// ── HELPERS ─────────────────────────────────────
+function fmtDate(iso){
+  try{
+    const d=new Date(iso);
+    return d.toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  }catch{return iso;}
+}
+function showMsg(id,msg,type){
+  const el=document.getElementById(id);
+  el.textContent=msg;el.className='msg '+type;
+  setTimeout(()=>el.className='msg',4000);
+}
+let tT2;
+function toast(msg){
+  let el=document.getElementById('adm-toast');
+  if(!el){el=document.createElement('div');el.id='adm-toast';el.style.cssText='position:fixed;bottom:20px;right:20px;background:#22c55e;color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999';document.body.appendChild(el);}
+  el.textContent=msg;el.style.display='block';
+  clearTimeout(tT2);tT2=setTimeout(()=>el.style.display='none',3000);
+}
+</script>
+</body>
+</html>
