@@ -2,1310 +2,384 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TextHuman — Humanizador de Textos con IA para Latinoamérica y España</title>
-<meta name="description" content="Convierte texto generado por IA en redacciones naturales y auténticas. Con jerga real de México, Argentina, Colombia, España y 20+ países. Humanizador de texto gratis.">
-<meta name="keywords" content="humanizador de texto, humanizar texto IA, pasar texto de IA a humano, evitar detector de IA, texto natural, humanizar ensayo, humanizar trabajo escolar, México, Argentina, Colombia, España">
-<meta name="robots" content="index, follow">
-<meta property="og:title" content="TextHuman — Humanizador de Textos con IA">
-<meta property="og:description" content="Convierte texto de IA en redacciones naturales. Con el toque de tu país.">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="TextHuman — Humanizador de Textos">
-<meta name="twitter:description" content="Humaniza textos de IA con jerga real de tu país. Gratis.">
-<link rel="canonical" href="https://texthuman.netlify.app">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TextHuman — Panel Admin</title>
 <style>
-:root{
-  --bg:#0a0a0f;--bg2:#111118;--card:#1e1e28;--card2:#252530;
-  --border:#2e2e3e;--border2:#3a3a4e;
-  --accent:#7c5cfc;--accent2:#a78bfa;--accent3:#c4b5fd;
-  --green:#22d3a5;--red:#ff4d6d;--yellow:#fbbf24;
-  --text:#f0f0f8;--text2:#a0a0b8;--text3:#606078;
-  --r:16px;
-}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-.bg-mesh{position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 80% 60% at 10% 0%,rgba(124,92,252,.12),transparent 60%),
-             radial-gradient(ellipse 60% 50% at 90% 100%,rgba(34,211,165,.07),transparent 50%)}
-.bg-grid{position:fixed;inset:0;pointer-events:none;z-index:0;
-  background-image:linear-gradient(rgba(124,92,252,.04) 1px,transparent 1px),
-                   linear-gradient(90deg,rgba(124,92,252,.04) 1px,transparent 1px);
-  background-size:40px 40px}
-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;
-  display:flex;align-items:center;justify-content:space-between;padding:0 28px;
-  background:rgba(10,10,15,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.logo{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;cursor:pointer;
-  background:linear-gradient(135deg,var(--accent2),var(--green));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.nav-r{display:flex;align-items:center;gap:10px}
-.lang-sel{background:var(--card);border:1px solid var(--border);color:var(--text2);
-  padding:6px 12px;border-radius:8px;font-size:13px;cursor:pointer;
-  font-family:'DM Sans',sans-serif;outline:none}
-.btn{display:inline-flex;align-items:center;gap:7px;border:none;cursor:pointer;
-  font-family:'DM Sans',sans-serif;font-weight:600;transition:.2s;border-radius:10px}
-.btn-p{background:linear-gradient(135deg,var(--accent),#a855f7);color:#fff;padding:10px 22px;font-size:14px;
-  box-shadow:0 0 24px rgba(124,92,252,.35);letter-spacing:.2px}
-.btn-p:hover{transform:translateY(-2px);box-shadow:0 4px 28px rgba(124,92,252,.5)}
-.btn-g{background:transparent;color:var(--text2);border:1px solid var(--border2);padding:10px 22px;font-size:14px}
-.btn-g:hover{border-color:var(--accent);color:var(--text)}
-.plan-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
-.bf{background:rgba(96,96,120,.3);color:var(--text3);border:1px solid var(--border)}
-.bpr{background:rgba(124,92,252,.2);color:var(--accent3);border:1px solid rgba(124,92,252,.4)}
-.av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--green));
-  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;cursor:pointer;border:2px solid var(--border2)}
-.dw{position:relative}
-.dm{position:absolute;top:calc(100% + 8px);right:0;
-  background:var(--card2);border:1px solid var(--border2);border-radius:14px;min-width:195px;
-  box-shadow:0 16px 48px rgba(0,0,0,.5);overflow:hidden;
-  opacity:0;pointer-events:none;transform:translateY(-6px);transition:.2s;z-index:200}
-.dm.open{opacity:1;pointer-events:all;transform:translateY(0)}
-.di{display:flex;align-items:center;gap:10px;padding:12px 16px;font-size:14px;color:var(--text2);cursor:pointer;transition:.15s}
-.di:hover{background:var(--card);color:var(--text)}
-.di.red:hover{color:var(--red)}
-.dd{height:1px;background:var(--border)}
-.page{display:none;position:relative;z-index:1}
-.page.active{display:block}
-/* LANDING */
-#p-landing{min-height:100vh;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;padding:100px 20px 60px;text-align:center}
-.tag{display:inline-flex;align-items:center;gap:7px;
-  background:rgba(124,92,252,.12);border:1px solid rgba(124,92,252,.3);
-  color:var(--accent3);padding:6px 16px;border-radius:20px;font-size:13px;font-weight:500;
-  margin-bottom:28px;animation:fu .6s ease both}
-.h1{font-family:'Syne',sans-serif;font-size:clamp(42px,8vw,82px);font-weight:800;
-  line-height:1;letter-spacing:-2px;animation:fu .6s .1s ease both}
-.h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent2),var(--green));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.sub{font-size:clamp(14px,2.5vw,18px);color:var(--text2);max-width:520px;
-  line-height:1.6;margin:20px auto 34px;font-weight:300;animation:fu .6s .2s ease both}
-.ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:fu .6s .3s ease both}
-.btn-lg{padding:14px 32px;font-size:16px;font-weight:700;border-radius:14px}
-.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-  gap:16px;max-width:860px;width:100%;margin-top:64px;animation:fu .6s .4s ease both}
-.feat{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;text-align:left;transition:.25s}
-.feat:hover{border-color:var(--accent);transform:translateY(-3px)}
-.fi{font-size:26px;margin-bottom:10px}
-.ft{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:5px}
-.fd{font-size:13px;color:var(--text2);line-height:1.5}
-.demo-box{margin-top:48px;width:100%;max-width:840px;
-  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
-  padding:20px;text-align:left;animation:fu .6s .5s ease both}
-.dlbl{font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
-.dtxt{font-size:13px;color:var(--text2);line-height:1.7;border-left:3px solid var(--accent);padding-left:13px;font-style:italic}
-.blr{filter:blur(5px);user-select:none}
-.dcta{margin-top:13px;display:flex;align-items:center;gap:10px;
-  padding:11px 14px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.2);
-  border-radius:10px;cursor:pointer;transition:.2s}
-.dcta:hover{background:rgba(124,92,252,.15)}
-.dcta span{font-size:13px;color:var(--accent3);font-weight:500}
-/* MODAL */
-.ov{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.72);
-  backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;
-  padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
-.ov.open{opacity:1;pointer-events:all}
-.modal{background:var(--card);border:1px solid var(--border2);border-radius:20px;
-  padding:34px;max-width:440px;width:100%;position:relative;
-  transform:scale(.95) translateY(14px);transition:transform .3s;max-height:90vh;overflow-y:auto}
-.ov.open .modal{transform:scale(1) translateY(0)}
-.mx{position:absolute;top:13px;right:13px;background:var(--card2);border:none;
-  color:var(--text2);width:30px;height:30px;border-radius:50%;cursor:pointer;
-  font-size:15px;display:flex;align-items:center;justify-content:center;transition:.2s;z-index:10}
-.mx:hover{color:var(--text)}
-.mt{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:5px}
-.ms{color:var(--text2);font-size:13px;margin-bottom:24px;line-height:1.5}
-.btn-gg{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
-  background:#fff;color:#1a1a2e;border:none;padding:13px;border-radius:10px;
-  font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;margin-bottom:12px}
-.btn-gg:hover{background:#f0f0f8;transform:translateY(-1px)}
-.div{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--text3);font-size:12px}
-.div::before,.div::after{content:'';flex:1;height:1px;background:var(--border)}
-.field{background:var(--bg2);border:1px solid var(--border2);color:var(--text);
-  padding:11px 14px;border-radius:9px;font-size:13px;width:100%;
-  font-family:'DM Sans',sans-serif;transition:.2s;outline:none;margin-bottom:9px;display:block}
-.field:focus{border-color:var(--accent)}
-.field::placeholder{color:var(--text3)}
-.msw{text-align:center;margin-top:14px;font-size:13px;color:var(--text2)}
-.msw a{color:var(--accent3);cursor:pointer}
-/* APP */
-#p-app{padding:80px 20px 60px;max-width:1160px;margin:0 auto}
-.ah{margin-bottom:24px}
-.at{font-family:'Syne',sans-serif;font-size:26px;font-weight:700}
-.at span{color:var(--accent2)}
-.asb{color:var(--text2);font-size:13px;margin-top:3px}
-.uw{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
-  padding:17px 20px;margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-.ui{display:flex;flex-direction:column;gap:4px;flex:1;min-width:130px}
-.ul{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px}
-.uv{font-size:16px;font-weight:600;font-family:'Syne',sans-serif}
-.ut{height:5px;background:var(--bg2);border-radius:99px;overflow:hidden}
-.uf{height:100%;border-radius:99px;transition:width .5s}
-.fg{background:var(--green)}.fy{background:var(--yellow)}.fr{background:var(--red)}
-.bup{background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff;border:none;
-  padding:10px 22px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;
-  font-family:'DM Sans',sans-serif;white-space:nowrap;transition:.2s;
-  box-shadow:0 0 20px rgba(245,158,11,.3);letter-spacing:.2px}
-.bup:hover{transform:translateY(-2px);box-shadow:0 4px 24px rgba(245,158,11,.45)}
-.bbar{background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.25);
-  border-radius:var(--r);padding:17px 20px;margin-bottom:18px;
-  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.bl{display:flex;align-items:center;gap:11px}
-.bt{font-size:14px;font-weight:600;color:var(--red)}
-.bs{font-size:12px;color:var(--text2);margin-top:2px}
-.bacc{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.4);
-  color:var(--yellow);padding:10px 18px;border-radius:9px;font-size:13px;font-weight:700;
-  cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s}
-.bacc:hover{background:rgba(251,191,36,.22)}
-.cfg{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:18px}
-.ct{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text3);
-  text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
-.sl{font-size:13px;color:var(--text2);margin-bottom:10px;font-weight:500}
-.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px}
-@media(max-width:680px){.pg{grid-template-columns:1fr}}
-.pc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;
-  padding:14px;cursor:pointer;transition:.2s;position:relative}
-.pc:hover{border-color:var(--border2)}
-.pc.sel{border-color:var(--accent);background:rgba(124,92,252,.08)}
-.pct{font-size:13px;font-weight:600;margin-bottom:3px}
-.pcr{font-size:11px;color:var(--accent3);margin-bottom:7px}
-.pci{font-size:11px;color:var(--text3);line-height:1.8}
-.pck{position:absolute;top:9px;right:9px;width:17px;height:17px;border-radius:50%;
-  background:var(--accent);color:#fff;font-size:10px;display:none;align-items:center;justify-content:center}
-.pc.sel .pck{display:flex}
-.lt{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
-.ltb{padding:9px 18px;border-radius:9px;font-size:13px;cursor:pointer;
-  border:1px solid var(--border);background:var(--bg2);color:var(--text2);
-  transition:.2s;font-family:'DM Sans',sans-serif;font-weight:500}
-.ltb:hover{border-color:var(--border2);color:var(--text)}
-.ltb.active{background:linear-gradient(135deg,var(--accent),#a855f7);border-color:transparent;color:#fff;font-weight:600;box-shadow:0 0 16px rgba(124,92,252,.35)}
-.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(115px,1fr));
-  gap:6px;max-height:200px;overflow-y:auto;padding-right:3px}
-.cg::-webkit-scrollbar{width:3px}
-.cg::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
-.cb{display:flex;align-items:center;gap:6px;background:var(--bg2);
-  border:1px solid var(--border);border-radius:8px;padding:8px 10px;cursor:pointer;
-  transition:.2s;font-size:12px;color:var(--text2);font-family:'DM Sans',sans-serif;text-align:left}
-.cb:hover{border-color:var(--border2);color:var(--text)}
-.cb.sel{border-color:var(--accent);color:var(--text);background:rgba(124,92,252,.1)}
-.nw{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);
-  border-radius:8px;padding:9px 13px;font-size:12px;color:var(--yellow);
-  margin-top:9px;display:none}
-.nw.show{display:block}
-.ag{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:840px){.ag{grid-template-columns:1fr}}
-.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
-.ph{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.phl{display:flex;align-items:center;gap:7px}
-.dot{width:7px;height:7px;border-radius:50%}
-.di2{background:var(--accent);box-shadow:0 0 7px rgba(124,92,252,.6)}
-.do{background:var(--green);box-shadow:0 0 7px rgba(34,211,165,.6)}
-.pt{font-size:13px;font-weight:600}
-.pc2{font-size:12px;color:var(--text3)}
-textarea.ta{width:100%;min-height:255px;background:transparent;border:none;outline:none;
-  padding:17px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);
-  resize:vertical;line-height:1.7}
-textarea.ta::placeholder{color:var(--text3)}
-.oa{min-height:255px;padding:17px;font-size:14px;line-height:1.7;color:var(--text2);position:relative}
-.oph{color:var(--text3);font-style:italic;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;height:215px;gap:9px;text-align:center}
-.opi{font-size:36px;opacity:.3}
-.ab{padding:13px 17px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap}
-.bhum{background:linear-gradient(135deg,var(--accent),#a855f7);color:#fff;border:none;
-  padding:13px 28px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;
-  font-family:'DM Sans',sans-serif;transition:.25s;display:flex;align-items:center;gap:8px;
-  box-shadow:0 0 22px rgba(124,92,252,.4);letter-spacing:.2px}
-.bhum:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 4px 28px rgba(124,92,252,.55)}
-.bhum:disabled{opacity:.45;cursor:not-allowed}
-.bcpy{background:var(--card2);border:1px solid var(--border2);color:var(--text2);
-  padding:9px 17px;border-radius:9px;font-size:13px;cursor:pointer;
-  font-family:'DM Sans',sans-serif;transition:.2s;display:flex;align-items:center;gap:6px;font-weight:500}
-.bcpy:hover{color:var(--text);border-color:var(--accent)}
-.nt{font-size:12px;color:var(--text3)}
-.upl{border:2px dashed var(--border);border-radius:var(--r);padding:28px;
-  text-align:center;cursor:pointer;transition:.2s;margin-top:13px}
-.upl:hover,.upl.drag{border-color:var(--accent);background:rgba(124,92,252,.04)}
-.ui2{font-size:30px;margin-bottom:7px}
-.ut2{font-size:13px;color:var(--text2);margin-bottom:4px;font-weight:500}
-.uf2{font-size:11px;color:var(--text3)}
-.dots{display:flex;gap:5px;align-items:center;padding:34px 17px;justify-content:center}
-.d{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:bounce 1.2s infinite}
-.d:nth-child(2){animation-delay:.2s}.d:nth-child(3){animation-delay:.4s}
-@keyframes bounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
-/* PROFILE */
-#p-profile{padding:85px 20px 60px;max-width:660px;margin:0 auto}
-.prh{display:flex;align-items:center;gap:17px;margin-bottom:28px}
-.pra{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--green));
-  display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;border:2px solid var(--border2);flex-shrink:0}
-.prn{font-family:'Syne',sans-serif;font-size:22px;font-weight:800}
-.pre{color:var(--text2);font-size:13px;margin-top:3px}
-.sct{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:9px;font-weight:600}
-.prc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:20px}
-.prr{display:flex;align-items:center;justify-content:space-between;
-  padding:14px 18px;border-bottom:1px solid var(--border);gap:9px}
-.prr:last-child{border-bottom:none}
-.prl{font-size:13px;color:var(--text2)}
-.prv{font-size:13px;font-weight:500;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-.bsm{background:var(--card2);border:1px solid var(--border);color:var(--text2);
-  padding:5px 12px;border-radius:7px;font-size:12px;cursor:pointer;
-  font-family:'DM Sans',sans-serif;transition:.2s;font-weight:500}
-.bsm:hover{border-color:var(--accent);color:var(--text)}
-/* PLANS */
-#p-plans{padding:85px 20px 60px;max-width:860px;margin:0 auto;text-align:center}
-.plt{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;letter-spacing:-1px;margin-bottom:9px}
-.pls{color:var(--text2);font-size:15px;margin-bottom:40px}
-.plg{display:grid;grid-template-columns:1fr 1fr;gap:18px;text-align:left}
-@media(max-width:560px){.plg{grid-template-columns:1fr}}
-.plc{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;transition:.25s}
-.plc.feat{border-color:var(--accent);background:linear-gradient(135deg,rgba(124,92,252,.09),rgba(124,92,252,.02));
-  position:relative;overflow:hidden}
-.plc.feat::before{content:'★ MÁS POPULAR';position:absolute;top:17px;right:-33px;
-  background:var(--accent);color:#fff;font-size:10px;font-weight:700;
-  padding:4px 44px;transform:rotate(45deg);letter-spacing:1px}
-.pln{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;margin-bottom:5px}
-.plp{font-size:36px;font-weight:700;font-family:'Syne',sans-serif;margin:12px 0 4px;color:var(--accent2)}
-.plp sup{font-size:17px;vertical-align:super}
-.plp sub{font-size:13px;color:var(--text3);font-family:'DM Sans',sans-serif;font-weight:400}
-.pld{font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.5}
-.plf{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
-.plf li{font-size:13px;color:var(--text2);display:flex;gap:7px;align-items:flex-start}
-.plf li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}
-.plf li.no::before{content:'✕';color:var(--text3)}
-.plf li.no{color:var(--text3)}
-.bpl{width:100%;padding:13px;border-radius:11px;font-size:14px;font-weight:700;
-  cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;letter-spacing:.2px}
-.bpl.curr{background:var(--bg2);border:1px solid var(--border);color:var(--text3);cursor:default}
-.bpl.buy{background:linear-gradient(135deg,var(--accent),#a855f7);border:none;color:#fff;
-  box-shadow:0 0 22px rgba(124,92,252,.35)}
-.bpl.buy:hover{transform:translateY(-2px);box-shadow:0 4px 28px rgba(124,92,252,.5)}
-/* PAYMENT BOX */
-.pbox{background:var(--card);border:1px solid var(--border);border-radius:18px;
-  padding:28px;max-width:460px;margin:32px auto 0;display:none}
-.pbox.open{display:block}
-.pbt{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;margin-bottom:4px}
-.pbs{color:var(--text2);font-size:13px;margin-bottom:18px}
-.bpp{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;
-  background:#003087;color:#fff;border:none;padding:13px;border-radius:10px;
-  font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s}
-.bpp:hover{background:#00256b;transform:translateY(-1px)}
-.psec{text-align:center;font-size:11px;color:var(--text3);margin-top:13px;line-height:1.7}
-/* EDIT NAME MODAL */
-#edit-name-ov .modal{max-width:380px}
-/* TOAST */
-.toast{position:fixed;bottom:26px;right:26px;z-index:999;
-  background:var(--card2);border:1px solid var(--border2);border-radius:10px;
-  padding:11px 17px;display:flex;align-items:center;gap:8px;font-size:13px;
-  transform:translateY(70px);opacity:0;transition:.3s;pointer-events:none;max-width:320px;
-  box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.toast.show{transform:translateY(0);opacity:1}
-.toast.s{border-color:rgba(34,211,165,.35)}.toast.w{border-color:rgba(251,191,36,.35)}.toast.e{border-color:rgba(255,77,109,.35)}
-@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
-@media(max-width:600px){nav{padding:0 14px}#p-app{padding:74px 14px 50px}.plt{font-size:28px}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f13;color:#e8e8f0;min-height:100vh}
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.login-box{background:#1a1a24;border:1px solid #2a2a3a;border-radius:16px;padding:40px;width:340px;text-align:center}
+.login-box h1{font-size:22px;margin-bottom:6px}
+.login-box p{color:#888;font-size:13px;margin-bottom:24px}
+input{width:100%;padding:11px 14px;background:#12121a;border:1px solid #2a2a3a;border-radius:9px;color:#e8e8f0;font-size:14px;margin-bottom:12px;outline:none}
+input:focus{border-color:#7c5cfc}
+.btn{width:100%;padding:12px;background:linear-gradient(135deg,#7c5cfc,#a78bfa);border:none;border-radius:9px;color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+.btn:hover{opacity:.9}
+.btn-sm{padding:7px 14px;font-size:12px;font-weight:600;border:none;border-radius:7px;cursor:pointer;width:auto}
+.btn-g{background:#22c55e;color:#fff}
+.btn-r{background:#ef4444;color:#fff}
+.btn-b{background:#3b82f6;color:#fff}
+.btn-y{background:#f59e0b;color:#fff}
+
+/* MAIN */
+#main{display:none}
+nav{background:#1a1a24;border-bottom:1px solid #2a2a3a;padding:14px 24px;display:flex;align-items:center;gap:16px}
+nav h1{font-size:16px;font-weight:800;background:linear-gradient(135deg,#7c5cfc,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex:1}
+nav button{padding:8px 16px;background:#2a2a3a;border:none;border-radius:8px;color:#ccc;font-size:13px;cursor:pointer}
+nav button.act{background:#7c5cfc;color:#fff}
+.content{padding:24px;max-width:1100px;margin:0 auto}
+
+/* TABS */
+.tab{display:none}.tab.act{display:block}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px}
+.stat{background:#1a1a24;border:1px solid #2a2a3a;border-radius:12px;padding:20px;text-align:center}
+.stat .num{font-size:32px;font-weight:800;background:linear-gradient(135deg,#7c5cfc,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat .lbl{font-size:12px;color:#888;margin-top:4px}
+
+/* TABLES */
+.card{background:#1a1a24;border:1px solid #2a2a3a;border-radius:12px;overflow:hidden;margin-bottom:20px}
+.card-head{padding:14px 18px;border-bottom:1px solid #2a2a3a;display:flex;align-items:center;gap:10px}
+.card-head h2{font-size:14px;font-weight:700;flex:1}
+table{width:100%;border-collapse:collapse}
+th{padding:10px 14px;text-align:left;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #1e1e2e}
+td{padding:10px 14px;font-size:13px;border-bottom:1px solid #1a1a24}
+tr:last-child td{border:none}
+tr:hover td{background:#1e1e2e}
+.badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.bp{background:#7c5cfc22;color:#a78bfa}
+.bf{background:#22222e;color:#888}
+.bg{background:#22c55e22;color:#22c55e}
+.br{background:#ef444422;color:#ef4444}
+.by{background:#f59e0b22;color:#f59e0b}
+
+/* FORM */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row.single{grid-template-columns:1fr}
+label{font-size:12px;color:#888;display:block;margin-bottom:4px}
+select{width:100%;padding:10px 12px;background:#12121a;border:1px solid #2a2a3a;border-radius:8px;color:#e8e8f0;font-size:13px;outline:none}
+.form-card{background:#1a1a24;border:1px solid #2a2a3a;border-radius:12px;padding:20px;margin-bottom:20px}
+.form-card h2{font-size:14px;font-weight:700;margin-bottom:16px}
+.msg{padding:10px 14px;border-radius:8px;font-size:13px;margin-top:10px;display:none}
+.msg.ok{background:#22c55e22;color:#22c55e;display:block}
+.msg.err{background:#ef444422;color:#ef4444;display:block}
+
+/* Loading */
+.loader{text-align:center;padding:40px;color:#888}
 </style>
 </head>
 <body>
-<div class="bg-mesh"></div>
-<div class="bg-grid"></div>
 
-<!-- NAV -->
-<nav>
-  <div class="logo" id="logo">TextHuman<span style="font-family:'DM Sans',sans-serif;font-weight:400;background:none;-webkit-text-fill-color:var(--text3)">.ai</span></div>
-  <div class="nav-r" id="nav-guest">
-    <select class="lang-sel" onchange="changeLang(this.value)" id="ls1">
-      <option value="es">🌐 Español</option>
-      <option value="en">🌐 English</option>
-      <option value="pt">🌐 Português</option>
-      <option value="fr">🌐 Français</option>
-    </select>
-    <button class="btn btn-g" onclick="openModal('login')">Entrar</button>
-    <button class="btn btn-p" onclick="openModal('register')">Registro gratis</button>
-  </div>
-  <div class="nav-r" id="nav-user" style="display:none">
-    <select class="lang-sel" onchange="changeLang(this.value)" id="ls2">
-      <option value="es">🌐 Español</option>
-      <option value="en">🌐 English</option>
-      <option value="pt">🌐 Português</option>
-      <option value="fr">🌐 Français</option>
-    </select>
-    <span class="plan-badge bf" id="nav-badge">GRATIS</span>
-    <div class="dw" id="dw">
-      <div class="av" id="nav-av" onclick="toggleDrop()">U</div>
-      <div class="dm" id="dm">
-        <div class="di" onclick="closeDropAndNav('profile')">👤 Mi perfil</div>
-        <div class="di" onclick="closeDropAndNav('plans')">⚡ Planes</div>
-        <div class="di" onclick="closeDropAndNav('app')">🏠 Inicio</div>
-        <div class="di" onclick="document.getElementById('dm').classList.remove('open');openReport('')">📢 Reportar problema</div>
-        <div class="dd"></div>
-        <div class="di red" onclick="logout()">🚪 Cerrar sesión</div>
-      </div>
-    </div>
-  </div>
-</nav>
-
-<!-- LANDING -->
-<div id="p-landing" class="page active">
-  <span class="tag">✦ Humanizador de Textos para Latinoamérica y España</span>
-  <h1 class="h1">Tu texto,<br><em>voz humana</em></h1>
-  <p class="sub">Convierte texto de IA en redacciones naturales y auténticas. Con la jerga y estilo de tu país.</p>
-  <div class="ctas">
-    <button class="btn btn-p btn-lg" onclick="openModal('register')">✨ Comenzar gratis →</button>
-    <button class="btn btn-g btn-lg" onclick="doNav('plans')">Ver planes</button>
-  </div>
-  <div class="feats">
-    <div class="feat"><div class="fi">🌎</div><div class="ft">36 países</div><div class="fd">Jerga real de México, Argentina, España, Colombia y más.</div></div>
-    <div class="feat"><div class="fi">🎚️</div><div class="ft">3 niveles de tono</div><div class="fd">Formal, semi-informal o casual según tu texto.</div></div>
-    <div class="feat"><div class="fi">📄</div><div class="ft">PDF, Word, PowerPoint</div><div class="fd">Sube tu archivo y recibe el texto humanizado.</div></div>
-    <div class="feat"><div class="fi">🛡️</div><div class="ft">Pasa detectores de IA</div><div class="fd">Metodología probada para sonar genuinamente humano.</div></div>
-  </div>
-  <div class="demo-box">
-    <div class="dlbl">Vista previa · México · Informal</div>
-    <div class="dtxt">La fotosíntesis es básicamente cómo las plantas "comen" usando la luz del sol — y la neta es un proceso bien padre. <span class="blr">Lo que pasa es que la planta agarra el CO₂ del aire y el agua del suelo, y con la energía de la luz los transforma en glucosa. O sea, es como si la planta tuviera su propia fábrica de comida adentro, wey...</span></div>
-    <div class="dcta" onclick="openModal('register')">
-      <span>🔓</span><span>Inicia sesión para ver el texto completo y humanizar el tuyo →</span>
-    </div>
+<!-- LOGIN -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-box">
+    <h1>🔐 Panel Admin</h1>
+    <p>TextHuman — Solo para el dueño</p>
+    <input type="text" id="api-url" placeholder="URL de tu Worker (https://...workers.dev)">
+    <input type="password" id="secret-inp" placeholder="Contraseña admin (ADMIN_SECRET)">
+    <button class="btn" onclick="doLogin()">Entrar</button>
+    <div id="login-err" style="color:#ef4444;font-size:13px;margin-top:10px;display:none"></div>
   </div>
 </div>
 
-<!-- APP -->
-<div id="p-app" class="page">
-  <div class="ah">
-    <div class="at">Hola, <span id="greet">usuario</span> 👋</div>
-    <div class="asb" id="app-sub">¿Qué texto humanizamos hoy?</div>
-  </div>
+<!-- MAIN -->
+<div id="main">
+  <nav>
+    <h1>⚡ TextHuman Admin</h1>
+    <button onclick="goTab('stats')" id="t-stats" class="act">📊 Stats</button>
+    <button onclick="goTab('users')" id="t-users">👥 Usuarios</button>
+    <button onclick="goTab('discounts')" id="t-discounts">🎟️ Descuentos</button>
+    <button onclick="goTab('payments')" id="t-payments">💰 Pagos</button>
+    <button onclick="doLogout()" style="color:#ef4444">Salir</button>
+  </nav>
 
-  <div class="uw">
-    <div class="ui"><div class="ul">Intentos texto</div><div class="uv" id="u-txt">5 / 5</div><div class="ut"><div class="uf fg" id="u-tfill" style="width:100%"></div></div></div>
-    <div class="ui"><div class="ul">Archivos hoy</div><div class="uv" id="u-fil">2 / 2</div><div class="ut"><div class="uf fg" id="u-ffill" style="width:100%"></div></div></div>
-    <div class="ui"><div class="ul">Plan activo</div><div class="uv" id="u-plan">Gratis</div></div>
-    <button class="bup" onclick="doNav('plans')">⚡ Ir Premium</button>
-  </div>
+  <div class="content">
 
-  <div class="bbar" id="bbar" style="display:none">
-    <div class="bl"><span style="font-size:26px">🔒</span>
-      <div><div class="bt" id="btitle">Límite alcanzado</div>
-      <div class="bs">Se restablece en <strong id="btimer">24:00:00</strong></div></div>
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="bacc" id="accbtn" onclick="openAccelModal()">⚡ Reducir a 1h — $1.99</button>
-      <button class="bup" onclick="doNav('plans')">🚀 Consigue Premium</button>
-    </div>
-  </div>
-
-  <div class="cfg">
-    <div class="ct">⚙ Configuración de humanización</div>
-    <div class="sl">📌 ¿Para qué será tu texto?</div>
-    <div class="pg">
-      <div class="pc" id="pur-formal" onclick="selPur('formal')">
-        <div class="pck">✓</div>
-        <div class="pct">🎓 Académico / Profesional</div>
-        <div class="pcr">Recomendamos: Algo formal pero humano</div>
-        <div class="pci">• Ensayos universitarios<br>• Informes y reportes<br>• Artículos de opinión<br>• Cartas formales<br>• Documentos profesionales<br>• Tesis y trabajos finales<br>• Conclusiones de proyectos<br>• Reportes académicos</div>
+    <!-- STATS -->
+    <div class="tab act" id="tab-stats">
+      <div class="stats-grid" id="stats-grid">
+        <div class="loader">Cargando estadísticas...</div>
       </div>
-      <div class="pc" id="pur-semi" onclick="selPur('semi')">
-        <div class="pck">✓</div>
-        <div class="pct">📋 Escolar / Informativo</div>
-        <div class="pcr">Recomendamos: Informal pero aprobatorio</div>
-        <div class="pci">• Resúmenes y notas<br>• Presentaciones PPT<br>• Explicaciones de tareas<br>• Foros escolares<br>• Blogs informativos<br>• Parafraseo de textos<br>• Descripciones de proyectos<br>• Notas de estudio</div>
-      </div>
-      <div class="pc" id="pur-casual" onclick="selPur('casual')">
-        <div class="pck">✓</div>
-        <div class="pct">💬 Personal / Explicativo</div>
-        <div class="pcr">Recomendamos: Casual y coloquial</div>
-        <div class="pci">• Reflexiones personales<br>• Comentarios de lectura<br>• Discusiones en clase<br>• Explicar temas a un amigo<br>• Conclusiones personales<br>• Respuestas desarrolladas<br>• Resúmenes explicativos<br>• Participaciones en clase</div>
+      <div class="card">
+        <div class="card-head"><h2>💰 Pagos recientes</h2></div>
+        <table>
+          <thead><tr><th>Correo</th><th>Tipo</th><th>Monto</th><th>Estado</th><th>Fecha</th><th>Acción</th></tr></thead>
+          <tbody id="pay-table"><tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr></tbody>
+        </table>
       </div>
     </div>
-    <div class="sl">🎚️ Nivel de formalidad</div>
-    <div class="lt">
-      <button class="ltb active" onclick="selLvl('formal',this)">Algo formal pero humano</button>
-      <button class="ltb" onclick="selLvl('semi',this)">Informal pero aprobatorio</button>
-      <button class="ltb" onclick="selLvl('casual',this)">Casual y coloquial</button>
-    </div>
-    <div class="sl">🌍 País de referencia</div>
-    <div class="cg" id="ctry-grid"></div>
-    <div class="nw" id="nwarn">⚠️ Sin país, el texto puede sonar menos natural. Recomendamos elegir uno.</div>
-  </div>
 
-  <div class="ag">
-    <div>
-      <div class="panel">
-        <div class="ph"><div class="phl"><div class="dot di2"></div><span class="pt">Tu texto</span></div><span class="pc2" id="wcnt">0 palabras</span></div>
-        <textarea class="ta" id="inp" placeholder="Pega aquí el texto que quieres humanizar..." oninput="cntW()"></textarea>
-        <div class="ab">
-          <button class="bhum" id="btnhum" onclick="doHumanize()">✨ Humanizar texto</button>
-          <span class="nt" id="pnote">Plan gratis: hasta 300 palabras</span>
+    <!-- USERS -->
+    <div class="tab" id="tab-users">
+      <div class="form-card">
+        <h2>⚡ Activar Premium manualmente</h2>
+        <div class="form-row">
+          <div><label>Correo del usuario</label><input type="email" id="act-email" placeholder="usuario@gmail.com"></div>
+          <div><label>Días de Premium</label><input type="number" id="act-days" value="30" min="1"></div>
         </div>
+        <button class="btn-sm btn-g" onclick="activateManual()">✅ Activar Premium</button>
+        <div id="act-msg" class="msg"></div>
       </div>
-      <div class="upl" id="uplarea" onclick="document.getElementById('fi').click()"
-           ondragover="event.preventDefault();this.classList.add('drag')"
-           ondragleave="this.classList.remove('drag')"
-           ondrop="dropF(event)">
-        <div class="ui2">📎</div>
-        <div class="ut2">Sube un archivo para humanizar</div>
-        <div class="uf2">PDF · DOCX · PPTX · TXT</div>
+      <div class="card">
+        <div class="card-head"><h2>👥 Usuarios registrados</h2><button class="btn-sm btn-b" onclick="loadUsers()">🔄 Actualizar</button></div>
+        <table>
+          <thead><tr><th>Nombre</th><th>Correo</th><th>Plan</th><th>Usos IA</th><th>Último acceso</th><th>Registrado</th></tr></thead>
+          <tbody id="users-table"><tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr></tbody>
+        </table>
       </div>
-      <input type="file" id="fi" accept=".pdf,.docx,.pptx,.txt" onchange="handleF(event)" style="display:none">
     </div>
-    <div>
-      <div class="panel">
-        <div class="ph"><div class="phl"><div class="dot do"></div><span class="pt">Texto humanizado</span></div>
-          <button class="bcpy" id="btncpy" onclick="doCopy()" style="display:none">📋 Copiar</button>
+
+    <!-- DISCOUNTS -->
+    <div class="tab" id="tab-discounts">
+      <div class="form-card">
+        <h2>➕ Crear código de descuento</h2>
+        <div class="form-row">
+          <div><label>Código (mayúsculas, sin espacios)</label><input type="text" id="dc-code" placeholder="MIDESCUENTO30" oninput="this.value=this.value.toUpperCase().replace(/\s/g,'')"></div>
+          <div><label>Tipo</label>
+            <select id="dc-type" onchange="toggleDcType()">
+              <option value="free">Gratis (días de Premium)</option>
+              <option value="percent">Porcentaje de descuento</option>
+            </select>
+          </div>
         </div>
-        <div class="oa" id="out"><div class="oph"><div class="opi">✨</div><div>Aquí aparecerá tu texto humanizado</div></div></div>
+        <div class="form-row" id="dc-days-row">
+          <div><label>Días de Premium gratis</label><input type="number" id="dc-days" value="30" min="1"></div>
+          <div><label>Descripción (visible al usuario)</label><input type="text" id="dc-desc" placeholder="🎉 30 días de Premium activados"></div>
+        </div>
+        <div class="form-row">
+          <div><label>Máximo de usos (vacío = ilimitado)</label><input type="number" id="dc-maxuses" placeholder="Ej: 50"></div>
+          <div><label>Fecha de expiración (opcional)</label><input type="date" id="dc-expires"></div>
+        </div>
+        <button class="btn-sm btn-g" onclick="createDiscount()">➕ Crear código</button>
+        <div id="dc-msg" class="msg"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>🎟️ Códigos activos</h2><button class="btn-sm btn-b" onclick="loadDiscounts()">🔄 Actualizar</button></div>
+        <table>
+          <thead><tr><th>Código</th><th>Tipo</th><th>Días</th><th>Descripción</th><th>Usos</th><th>Máx</th><th>Expira</th><th>Estado</th><th>Acción</th></tr></thead>
+          <tbody id="disc-table"><tr><td colspan="9" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr></tbody>
+        </table>
       </div>
     </div>
-  </div>
-  <div style="margin-top:28px;text-align:center;padding-bottom:10px">
-    <button onclick="openReport('')" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s" onmouseover="this.style.color='var(--text2)'" onmouseout="this.style.color='var(--text3)'">📢 Reportar un problema</button>
-    <span style="color:var(--text3);font-size:12px;margin:0 10px">·</span>
-    <button onclick="document.getElementById('disc-ov').classList.add('open')" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s" onmouseover="this.style.color='var(--yellow)'" onmouseout="this.style.color='var(--text3)'">🎟️ Código de descuento</button>
-  </div>
-</div>
-<div id="p-profile" class="page">
-  <div class="prh">
-    <div class="pra" id="prav">U</div>
-    <div><div class="prn" id="prname">Usuario</div><div class="pre" id="premail">—</div></div>
-  </div>
-  <div class="sct">Información personal</div>
-  <div class="prc">
-    <div class="prr"><span class="prl">Nombre</span><span class="prv" id="pr-name">—</span></div>
-    <div class="prr"><span class="prl">Correo</span><span class="prv" id="pr-email">—</span></div>
-    <div class="prr"><span class="prl">País preferido</span><span class="prv" id="pr-ctry">—</span></div>
-    <div class="prr"><span class="prl">Idioma</span><span class="prv" id="pr-lang">Español</span></div>
-  </div>
-  <div class="sct">Uso y plan</div>
-  <div class="prc">
-    <div class="prr"><span class="prl">Plan actual</span><span class="prv" id="pr-plan" style="color:var(--accent2)">Gratis</span></div>
-    <div class="prr"><span class="prl">Intentos de texto restantes</span><span class="prv" id="pr-ta">5 / 5</span></div>
-    <div class="prr"><span class="prl">Archivos restantes hoy</span><span class="prv" id="pr-fa">2 / 2</span></div>
-    <div class="prr"><span class="prl">Aceleraciones restantes</span><span class="prv" id="pr-ac">3 / 3</span></div>
-  </div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
-    <button class="btn btn-p" onclick="doNav('plans')">⚡ Ver planes</button>
-    <button class="btn btn-g" onclick="doNav('app')">← Volver al inicio</button>
-    <button class="btn btn-g" onclick="logout()">🚪 Cerrar sesión</button>
-  </div>
-</div>
 
-<!-- PLANS -->
-<div id="p-plans" class="page">
-  <div class="plt">Elige tu plan</div>
-  <p class="pls">Comienza gratis, pasa a premium cuando lo necesites.</p>
-  <div class="plg">
-    <div class="plc">
-      <div class="pln">Gratis</div>
-      <div class="plp"><sup>$</sup>0<sub>/mes</sub></div>
-      <div class="pld">Para probar la herramienta ocasionalmente.</div>
-      <ul class="plf">
-        <li>Hasta 300 palabras por texto</li>
-        <li>5 intentos de texto cada 24h</li>
-        <li>2 archivos por día</li>
-        <li>3 niveles de formalidad</li>
-        <li>3 aceleraciones de espera ($1.99 c/u)</li>
-        <li class="no">Textos y archivos ilimitados</li>
-        <li class="no">Exportar como PDF/DOCX</li>
-        <li class="no">Historial de humanizaciones</li>
-      </ul>
-      <button class="bpl curr" id="btn-fplan">Plan actual</button>
+    <!-- PAYMENTS -->
+    <div class="tab" id="tab-payments">
+      <div class="card">
+        <div class="card-head"><h2>💰 Todos los pagos</h2><button class="btn-sm btn-b" onclick="loadPayments()">🔄 Actualizar</button></div>
+        <table>
+          <thead><tr><th>Correo</th><th>Tipo</th><th>Monto</th><th>Estado</th><th>Fecha</th><th>Acción</th></tr></thead>
+          <tbody id="pay-table-full"><tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr></tbody>
+        </table>
+      </div>
     </div>
-    <div class="plc feat">
-      <div class="pln">Premium</div>
-      <div class="plp"><sup>$</sup>7.99<sub>/mes</sub></div>
-      <div class="pld">Para quienes necesitan humanizar textos a diario, sin límites.</div>
-      <ul class="plf">
-        <li>Textos ilimitados (sin límite de palabras)</li>
-        <li>Intentos y archivos ilimitados</li>
-        <li>PDF, DOCX, PPTX sin restricción</li>
-        <li>Los 36 países de referencia</li>
-        <li>Exportar resultado como PDF/DOCX</li>
-        <li>Historial completo de humanizaciones</li>
-        <li>Procesamiento prioritario</li>
-        <li>Soporte por email</li>
-      </ul>
-      <button class="bpl buy" id="btn-bplan" onclick="openPayModal()">🚀 Obtener Premium — $7.99/mes</button>
-    </div>
-  </div>
-  <div style="margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-    <button class="btn btn-g" onclick="doNav(S.user?'app':'landing')">← Volver</button>
-    <button class="btn btn-g" onclick="document.getElementById('disc-ov').classList.add('open')" style="border-color:var(--yellow);color:var(--yellow)">🎟️ Tengo un código de descuento</button>
+
   </div>
 </div>
-
-<!-- AUTH MODAL -->
-<div class="ov" id="auth-ov">
-  <div class="modal">
-    <button class="mx" onclick="closeModal('auth-ov')">✕</button>
-    <div class="mt" id="m-title">Crea tu cuenta gratis</div>
-    <p class="ms" id="m-sub">Únete y humaniza textos con el toque de tu país.</p>
-    <button class="btn-gg" onclick="loginGoogle()">
-      <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Continuar con Google
-    </button>
-    <div class="div">o con correo</div>
-    <input class="field" type="text" placeholder="Tu nombre" id="m-name">
-    <input class="field" type="email" placeholder="Correo electrónico" id="m-email">
-    <input class="field" type="password" placeholder="Contraseña (mín. 6 caracteres)" id="m-pass">
-    <button class="btn btn-p" style="width:100%;justify-content:center;padding:13px;font-size:14px;font-weight:700;border-radius:10px" onclick="submitAuth()" id="m-submit">Crear cuenta gratis</button>
-    <div class="msw" id="m-switch">¿Ya tienes cuenta? <a onclick="switchAuthMode('login')">Inicia sesión</a></div>
-  </div>
-</div>
-
-<!-- PAYMENT MODAL -->
-<div class="ov" id="pay-ov">
-  <div class="modal">
-    <button class="mx" onclick="closeModal('pay-ov')">✕</button>
-    <div class="mt">💳 Pago seguro</div>
-    <p class="ms">Premium · $7.99 USD / mes · Cancela cuando quieras</p>
-    <input class="field" type="email" placeholder="Correo electrónico" id="pay-email">
-    <input class="field" type="text" placeholder="Número de tarjeta" id="pay-card" maxlength="19" oninput="fmtCard(this)">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
-      <input class="field" type="text" placeholder="MM/AA" maxlength="5" style="margin:0" id="pay-exp">
-      <input class="field" type="text" placeholder="CVV" maxlength="4" style="margin:0" id="pay-cvv">
-    </div>
-    <input class="field" type="text" placeholder="Nombre en la tarjeta" id="pay-name">
-    <button class="btn btn-p" style="width:100%;justify-content:center;padding:13px;font-size:15px;font-weight:700;margin-top:4px;border-radius:10px" onclick="procPay()">🔒 Pagar $7.99/mes</button>
-    <div style="margin:14px 0;text-align:center;color:var(--text3);font-size:12px">— o paga con —</div>
-    <button class="bpp" onclick="ppGo()">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788l.038-.198 1.07-6.5.069-.374a.925.925 0 0 1 .922-.788h.58c3.76 0 6.7-1.528 7.556-5.946.36-1.847.174-3.388-.823-4.489z"/></svg>
-      Pagar con PayPal
-    </button>
-    <div class="psec" style="margin-top:12px">El pago abre PayPal. Cuando completes el pago, regresa aquí y haz clic en "Ya pagué".</div>
-    <button id="ya-pague-premium-btn" style="display:none;width:100%;margin-top:10px;padding:10px;background:var(--green);border:none;color:#000;font-weight:700;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px" onclick="confirmPremiumPayment()">✅ Ya pagué — activar Premium</button>
-  </div>
-</div>
-
-<!-- ACCEL MODAL -->
-<div class="ov" id="accel-ov">
-  <div class="modal" style="max-width:380px">
-    <button class="mx" onclick="closeModal('accel-ov')">✕</button>
-    <div class="mt">⚡ Acelerar espera</div>
-    <p class="ms">Reduce tu tiempo de espera a 1 hora pagando $1.99 USD.<br><br>Aceleraciones disponibles: <strong id="accel-count" style="color:var(--accent2)">3</strong> / 3</p>
-    <button class="bpp" onclick="ppAccel()" style="margin-bottom:12px">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788l.038-.198 1.07-6.5.069-.374a.925.925 0 0 1 .922-.788h.58c3.76 0 6.7-1.528 7.556-5.946.36-1.847.174-3.388-.823-4.489z"/></svg>
-      Pagar $1.99 con PayPal
-    </button>
-    <button class="bpl buy" onclick="closeModal('accel-ov');doNav('plans')" style="margin-top:0">🚀 Mejor me voy a Premium</button>
-    <div class="psec" style="margin-top:12px">El pago abre PayPal. Cuando completes el pago, regresa aquí y haz clic en "Ya pagué".</div>
-    <button id="ya-pague-btn" style="display:none;width:100%;margin-top:10px;padding:10px;background:var(--green);border:none;color:#000;font-weight:700;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px" onclick="confirmAccel()">✅ Ya pagué — activar</button>
-  </div>
-</div>
-
-<!-- EDIT NAME MODAL -->
-<div class="ov" id="edit-name-ov">
-  <div class="modal" style="max-width:360px">
-    <button class="mx" onclick="closeModal('edit-name-ov')">✕</button>
-    <div class="mt">Editar nombre</div>
-    <p class="ms">¿Cómo quieres que te llamemos?</p>
-    <input class="field" type="text" id="edit-name-inp" placeholder="Tu nombre">
-    <button class="btn btn-p" style="width:100%;justify-content:center;padding:12px;font-size:14px;font-weight:700;border-radius:10px;margin-top:4px" onclick="saveEditName()">Guardar</button>
-  </div>
-</div>
-
-<!-- REPORT MODAL -->
-<div class="ov" id="report-ov">
-  <div class="modal" style="max-width:400px">
-    <button class="mx" onclick="closeModal('report-ov')">✕</button>
-    <div class="mt">📢 Reportar un problema</div>
-    <p class="ms">Cuéntanos qué pasó y lo revisaremos pronto.</p>
-    <select class="field" id="rep-type" style="cursor:pointer">
-      <option value="">— Tipo de problema —</option>
-      <option value="humanizador_no_funciona">El humanizador no funciona</option>
-      <option value="error_al_pagar">Error al pagar</option>
-      <option value="cuenta_bloqueada">Mi cuenta está bloqueada</option>
-      <option value="texto_mal_humanizado">El texto salió mal humanizado</option>
-      <option value="archivo_no_carga">No puedo subir archivos</option>
-      <option value="otro">Otro problema</option>
-    </select>
-    <textarea class="field" id="rep-msg" placeholder="Describe el problema (opcional)..." rows="3" style="resize:vertical;height:auto"></textarea>
-    <input class="field" type="email" id="rep-email" placeholder="Tu correo para responderte (opcional)">
-    <button class="btn btn-p" style="width:100%;justify-content:center;padding:12px;font-size:14px;font-weight:700;border-radius:10px;margin-top:4px" onclick="sendReport()">📨 Enviar reporte</button>
-  </div>
-</div>
-
-<!-- DISCOUNT MODAL -->
-<div class="ov" id="disc-ov">
-  <div class="modal" style="max-width:360px">
-    <button class="mx" onclick="closeModal('disc-ov')">✕</button>
-    <div class="mt">🎟️ Código de descuento</div>
-    <p class="ms">Ingresa tu código y obtén Premium gratis o con descuento.</p>
-    <input class="field" type="text" id="disc-inp" placeholder="Ingresa tu código" style="text-transform:uppercase;letter-spacing:2px;font-weight:700;text-align:center" oninput="this.value=this.value.toUpperCase()">
-    <button class="btn btn-p" style="width:100%;justify-content:center;padding:12px;font-size:14px;font-weight:700;border-radius:10px;margin-top:4px" onclick="applyDiscount()">✅ Aplicar código</button>
-    <div id="disc-result" style="margin-top:12px;text-align:center;font-size:13px"></div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
 
 <script>
-// ═══ COUNTRIES ═══
-const CTRY=[
-  {code:'mx',name:'México',flag:'🇲🇽',words:{
-    formal:['sin embargo','es decir','por lo tanto','cabe mencionar','en ese sentido','de igual manera','con respecto a','en virtud de','dado que','en consecuencia','resulta importante','se puede observar','a su vez','por otro lado','en definitiva'],
-    semi:['o sea','pues','este...','la verdad','de hecho','al final del día','más o menos','igual y','no pues','fíjate que','o sea sí','ahí está','y pues','básicamente','de cierta forma'],
-    casual:['wey','chido','neta','órale','qué onda','de volada','a webo','va que va','qué pedo','chale','nel','simón','pos sí','ta cabrón','de poca']}},
-  {code:'ar',name:'Argentina',flag:'🇦🇷',words:{
-    formal:['en este sentido','cabe destacar','asimismo','por ende','en consecuencia','de hecho','no obstante','en función de','resulta evidente','a tal efecto','en virtud de ello','se destaca','vale aclarar','en rigor','por lo expuesto'],
-    semi:['re','igual','tipo','capaz','ponele','igual no','claro que sí','mirá','en serio','te juro que','bue','que sé yo','obvio','para nada','más o menos'],
-    casual:['boludo','che','posta','mirá vos','copado','de una','groso','re copado','bardear','macana','quilombo','zarpado','joya','piola','la rompe']}},
-  {code:'co',name:'Colombia',flag:'🇨🇴',words:{
-    formal:['en consecuencia','no obstante','cabe señalar','por consiguiente','en ese orden de ideas','de acuerdo con','resulta pertinente','vale la pena señalar','se evidencia que','en tal sentido','es menester','así las cosas','conviene destacar','por tanto','en efecto'],
-    semi:['bacano','chévere','parcero','qué más','ya','de una','listo','claro','hágale','cómo así','de malas','por ahí','juepucha','qué pena','a ver'],
-    casual:['parce','pilas','hágale','qué nota','chimba','ome','gonorrea','marica','vaina','el combo','ñero','camello','jarta','tombito','sí, claro pues']}},
-  {code:'es',name:'España',flag:'🇪🇸',words:{
-    formal:['asimismo','en efecto','no obstante','cabe reseñar','por consiguiente','en este sentido','resulta que','de igual modo','según se desprende','en todo caso','conviene señalar','a tal efecto','en suma','por lo demás','cabe añadir'],
-    semi:['tío','mola','venga','guay','vamos','hostia','en plan','a ver','claro','más o menos','tampoco es que','bueno','hombre','de hecho','o sea'],
-    casual:['tío/tía','joder','mazo','flipar','currar','ostia','de puta madre','tela','mola mogollón','qué fuerte','menuda','coñazo','ni de coña','pasarse de rosca','mogollón']}},
-  {code:'pe',name:'Perú',flag:'🇵🇪',words:{
-    formal:['en ese orden','de igual forma','considerando que','por tanto','resulta necesario','cabe indicar','se advierte que','en tal contexto','conviene precisar','al respecto','de conformidad','siendo así','en atención a','por lo expuesto','en mérito a'],
-    semi:['pata','bacán','jato','causa','al toque','chamba','de frente','ya pe','chibolo','qué tal','pues sí','claro pe','qué onda','asu mare','bótalo'],
-    casual:['paja','jerma','ficho','bacán pe','churro','seco','luca','plata','chévere pe','qué chévere','estar en llamas','al toque pe','jalarse','pitearse','qué palta']}},
-  {code:'cl',name:'Chile',flag:'🇨🇱',words:{
-    formal:['en ese contexto','al respecto','en definitiva','por lo mismo','considerando lo anterior','a su vez','resulta evidente','no obstante lo anterior','en razón de','de acuerdo a','siendo así','por lo tanto','en lo que respecta','en síntesis','dado lo expuesto'],
-    semi:['cachai','po','altiro','fome','al tiro','igual','ni que','ta bueno','cómo te fue','qué onda','ya pues','en serio que','obvio po','más o menos','pa qué'],
-    casual:['weon','bacán','la raja','ya po','cabra/cabro','al lote','qué talla','flaite','polola','cagado','penca','aweonao','al tiro pues','weá','tirar la talla']}},
-  {code:'ve',name:'Venezuela',flag:'🇻🇪',words:{
-    formal:['en atención a','con respecto a','por tal razón','considerando que','a los efectos','resulta oportuno','conviene destacar','en ese orden','siendo así','por lo anterior','cabe indicar','en virtud de','de conformidad','al respecto','en consecuencia'],
-    semi:['chamo','pana','chévere','arrecho','qué nota','de una','por ahí','eso es','claro que sí','cómo está la vaina','eso mismo','papi','vamos a ver','no te pongas','ya verás'],
-    casual:['chamo','coño','épale','mollejuo','na guará','pana mi vida','qué ladilla','marico','qué arrecho','vergación','chévere vale','bicho','estar prendido','estar en modo','ni loco']}},
-  {code:'ec',name:'Ecuador',flag:'🇪🇨',words:{
-    formal:['en efecto','por lo tanto','de ahí que','resulta pertinente','cabe señalar','en ese sentido','de igual manera','a tal efecto','en virtud de','al respecto','siendo así','en consecuencia','por consiguiente','conviene indicar','en lo que respecta'],
-    semi:['bicho','man','de ley','bacán','qué onda','sí pues','claro que','cómo así','de una','vamos pues','está bien pues','qué tal','a ver','más o menos','ni modo'],
-    casual:['mono','ñaño','fresco','achachay','chuta','verás','qué bestia','bravo','jajay','estar al palo','qué chévere','chiro','longo','ñaño querido','cómo me vas']}},
-  {code:'bo',name:'Bolivia',flag:'🇧🇴',words:{
-    formal:['en consideración','por cuanto','siendo así','en ese orden','resulta que','de acuerdo a','en virtud de','cabe señalar','a tal efecto','por consiguiente','en el entendido','a los efectos','de conformidad','en mérito','al respecto'],
-    semi:['jaya','no te hagas','de frente','qué tal','más o menos','cómo está','ya pues','ya nomás','eso sí','claro que','igual nomás','más allá','a ver pues','no pues','bueno pues'],
-    casual:['chura','wawa','chairo','bolita','igual nomás','qué tanta cosa','sonso','apantallar','jallalla','qué mishi','estar trabado','qué cuate','nomás','pues','chiquitingo']}},
-  {code:'py',name:'Paraguay',flag:'🇵🇾',words:{
-    formal:['por consiguiente','dado que','siendo esto así','resulta que','cabe indicar','en ese sentido','de igual forma','en virtud de','al respecto','en consecuencia','a tal efecto','por tanto','siendo así','conviene destacar','en lo que refiere'],
-    semi:['ko','che','ndaje','qué tal','cómo estás','de ley','más o menos','ya pue','claro que sí','pues sí','qué cosa','así nomás','por ahí','eso es','ya ndaje'],
-    casual:['tuicha','jopara','ña','ñamendive','añete','che roga','ha'e','mba'e','ñande','jakare','tereré','jaguapichú','che amigo','qué tereré','vamo arriba']}},
-  {code:'uy',name:'Uruguay',flag:'🇺🇾',words:{
-    formal:['en ese sentido','asimismo','al respecto','por consiguiente','no obstante','resulta que','cabe señalar','en virtud de','de igual manera','en consecuencia','dado que','siendo así','por lo tanto','a tal efecto','conviene indicar'],
-    semi:['ta','dale','bah','obvio','mirá','claro que','sí obvio','más o menos','qué sé yo','ni que','ta bárbaro','cómo andás','qué onda','eso sí','a ver'],
-    casual:['botija','gurí','fiaca','bárbaro','tá bueno','vieja/viejo','qué macana','rajarse','estar en pedo','qué boludo','re zarpado','la gilada','ni en pedo','ser un coso','qué groso']}},
-  {code:'cr',name:'Costa Rica',flag:'🇨🇷',words:{
-    formal:['en virtud de','consecuentemente','al respecto','en ese sentido','siendo así','resulta que','cabe señalar','de igual forma','por consiguiente','en consecuencia','dado que','por lo tanto','a tal efecto','conviene indicar','en lo que respecta'],
-    semi:['tuanis','mae','pura vida','diay','qué tal','cómo está','más o menos','claro que','eso sí','a ver','qué nota','de un tuanis','ya va','chante','qué vuelta'],
-    casual:['mae','chunche','pura vida mae','qué pereza','chuzo','bicho','qué frío','dar pelota','estar pelado','moncha','rajarse','birra','qué tanda','estar al palo','ni modo mae']}},
-  {code:'pa',name:'Panamá',flag:'🇵🇦',words:{
-    formal:['en ese sentido','por ende','al respecto','siendo así','resulta que','cabe señalar','en consecuencia','de igual forma','por consiguiente','dado que','en virtud de','a tal efecto','por lo tanto','conviene indicar','en lo que respecta'],
-    semi:['buay','chuleta','ñame','qué tal','cómo estás','más o menos','claro que','diay','eso es','raa','de frente','qué calor','a ver','así es','no mames'],
-    casual:['buay','ñame','viejón','raa','to bien','chuleta hombre','qué fue','telo','estar zafado','ser un plomo','qué rabona','hacer un gancho','estar chicha','melco','chuzo']}},
-  {code:'gt',name:'Guatemala',flag:'🇬🇹',words:{
-    formal:['en tal virtud','siendo así','al respecto','en ese sentido','resulta que','cabe señalar','en consecuencia','de igual forma','por consiguiente','dado que','en virtud de','a tal efecto','por lo tanto','conviene indicar','en mérito de'],
-    semi:['sho','cabal','canche','qué onda','cómo estás','más o menos','claro que','ya pue','eso es','buen punto','de frente','a ver','así es','eso mero','ta bien'],
-    casual:['vos','shuco','patojo','cabal pues','chavo','burro','estar cipote','qué canche','la gran','bicho','chapín','va','de ley vos','qué cipote','no jodás']}},
-  {code:'hn',name:'Honduras',flag:'🇭🇳',words:{
-    formal:['en ese orden','al efecto','siendo así','al respecto','resulta que','cabe señalar','en consecuencia','de igual forma','por consiguiente','dado que','en virtud de','a tal efecto','por lo tanto','conviene indicar','en lo que respecta'],
-    semi:['bicho','ahuevo','jodido','qué onda','cómo estás','más o menos','claro que','ya pue','eso es','de frente','a ver','así es','eso mero','ta bien','qué pasó'],
-    casual:['maje','bayunco','qué ondas','cheque','catracho','estar chilero','qué chilero','a la gran','cipote','canche','ser un chunche','estar encachimbado','qué chibolo','ya pue maje','ta suave']}},
-  {code:'sv',name:'El Salvador',flag:'🇸🇻',words:{
-    formal:['en ese contexto','de ahí que','al respecto','siendo así','resulta que','cabe señalar','en consecuencia','de igual forma','por consiguiente','dado que','en virtud de','a tal efecto','por lo tanto','conviene indicar','en lo que respecta'],
-    semi:['cipote','chero','bicho','qué onda','cómo estás','más o menos','claro que','ya pue','eso es','de frente','a ver','así es','eso mero','ta bien','qué pasó'],
-    casual:['cerote','mirá pues','cabal pues','vos sabes','chamba','estar en la chamba','qué chilero','a la gran','canche','qué cipote','chunche','estar encachimbado','ya pue cerote','ta suave','qué nota']}},
-  {code:'ni',name:'Nicaragua',flag:'🇳🇮',words:{
-    formal:['en ese sentido','siendo así','al respecto','resulta que','cabe señalar','en consecuencia','de igual forma','por consiguiente','dado que','en virtud de','a tal efecto','por lo tanto','conviene indicar','en lo que respecta','en mérito'],
-    semi:['chavalos','diay','igualmente','qué onda','cómo estás','más o menos','claro que','ya pue','eso es','de frente','a ver','así es','eso mero','ta bien','qué pasó'],
-    casual:['vos','maje','que chivo','qué nota','a saber','chonete','chunche','estar cargado','qué chilero','cipote','nica','qué macana','ni modo maje','ya pue','de chiripa']}},
-  {code:'do',name:'Rep. Dominicana',flag:'🇩🇴',words:{
-    formal:['en ese orden','por ende','al respecto','siendo así','resulta que','cabe señalar','en consecuencia','de igual forma','por consiguiente','dado que','en virtud de','a tal efecto','por lo tanto','conviene indicar','en lo que respecta'],
-    semi:['tiguere','vaina','caballero','qué lo que','cómo tú estás','más o menos','claro que','eso es','de frente','a ver','así es','ta bien','qué pasó','eso mero','bien tranquilo'],
-    casual:['manin','tato','fuego','dímelo','qué lo que','ser un diablo','estar en la yola','qué vaina','tigueraje','a qué tú','se formó','se viraron','qué pecao','ayayay','qué bululú']}},
-  {code:'cu',name:'Cuba',flag:'🇨🇺',words:{
-    formal:['en ese sentido','siendo así','al respecto','resulta que','cabe señalar','en consecuencia','de igual forma','por consiguiente','dado que','en virtud de','a tal efecto','por lo tanto','conviene indicar','en lo que respecta','en función de'],
-    semi:['asere','yuma','socio','qué bolá','cómo tú estás','más o menos','claro que','eso es','de frente','a ver','así es','ta bien','qué pasó','eso mero','acere qué'],
-    casual:['asere qué bolá','fula','jebo','ecobio','tremendo','guagua','yuma','monina','qué jama','estar en la lona','qué arrecho','jinetera','resolver','qué mangón','tu tá loco']}},
-  {code:'pr',name:'Puerto Rico',flag:'🇵🇷',words:{
-    formal:['siendo así','por lo tanto','al respecto','resulta que','cabe señalar','en consecuencia','de igual forma','por consiguiente','dado que','en virtud de','a tal efecto','conviene indicar','en lo que respecta','en función de','no obstante'],
-    semi:['acho','brutal','qué lo que','cómo tú estás','más o menos','claro que','eso es','de frente','a ver','así es','ta bien','qué pasó','eso mero','bien tranquilo','sí mira'],
-    casual:['puñeta','wepa','corillo','boricua','bicho','qué xopa','eso ta brutal','estar bien chévere','qué nota','la jangueo','qué pato','estar en la vaina','tiguere','to los días','qué jangueo']}},
-  {code:'mx-nor',name:'México (Norte)',flag:'🇲🇽',words:{
-    formal:['así mismo','sin duda','por lo tanto','al respecto','de igual forma','resulta que','cabe señalar','en consecuencia','siendo así','dado que','en virtud de','a tal efecto','conviene indicar','en lo que respecta','no obstante'],
-    semi:['ahorita','pos','simón','ándale','más o menos','claro que','eso es','de frente','a ver','así es','ta bien','qué pasó','eso mero','ta bien','va que va'],
-    casual:['bato','carnal','de huevos','pos wey','a toda madre','que padre','ta de aquellas','sepa la bola','qué pedo norteño','estar de no creer','feria','jale','andar pedo','qué chulada','estar en su mero mole']}},
-  {code:'us',name:'EE.UU. (Latino)',flag:'🇺🇸',words:{
-    formal:['importantly','furthermore','as a result','in this regard','it is worth noting','consequently','in contrast','in addition','given that','therefore','it should be noted','on the other hand','in summary','in conclusion','with respect to'],
-    semi:['oye','dale','nice','básicamente','qué tal','más o menos','claro','lo que es','a ver','así que','ta bien','eso es','de cierta forma','o sea','en plan'],
-    casual:['bro','sorry','está weird','no mames','de feria','it is what it is','qué onda bro','random','qué loco','estar ghosteando','cringe','lit','vibe','buscar el side hustle','qué stalker']}},
-  {code:'ca',name:'Canadá (Latino)',flag:'🇨🇦',words:{
-    formal:['en consecuencia','al respecto','de igual manera','resulta que','cabe señalar','siendo así','dado que','en virtud de','por consiguiente','a tal efecto','no obstante','por lo tanto','conviene indicar','en lo que respecta','asimismo'],
-    semi:['okay','no worries','de hecho','más o menos','claro que','eso es','a ver','así es','ta bien','qué pasó','eso mero','en serio','la verdad','más que nada','por acá'],
-    casual:['eh','sorry','chido','ta bien','qué onda eh','toque de queda','estar bien chill','qué cold','no mames eh','random af','ser un loonie','Tim Hortons vibes','qué prairie','dar un toque','estar bien maple']}},
-  {code:'br',name:'Brasil (Port.)',flag:'🇧🇷',words:{
-    formal:['nesse sentido','portanto','sendo assim','ao passo que','no entanto','em virtude disso','cabe ressaltar','em função de','de forma que','vale destacar','à medida que','em decorrência','ressalta-se que','desta forma','em síntese'],
-    semi:['cara','tipo','né','saudade','mais ou menos','claro que','é isso','de certa forma','olha','tá bom','já era','que foi','tá ligado','pode ser','qualé'],
-    casual:['mano','caramba','vixi maria','que saudade','legal demais','que saudade mano','oxe','eita','nossa','que bagunça','tô ligado','que mico','tá maluco','arrasa','que delícia']}},
-  {code:'neutral',name:'Sin país, neutral',flag:'🌐',words:{formal:[],semi:[],casual:[]}},
-];
+let WORKER_URL = '';
+let ADMIN_SECRET = '';
 
-const LANGS={
-  es:{hum:'✨ Humanizar texto',lim:'Plan gratis: hasta 300 palabras',sub:'¿Qué texto humanizamos hoy?'},
-  en:{hum:'✨ Humanize text',lim:'Free plan: up to 300 words',sub:'What text shall we humanize today?'},
-  pt:{hum:'✨ Humanizar texto',lim:'Plano grátis: até 300 palavras',sub:'Qual texto vamos humanizar hoje?'},
-  fr:{hum:'✨ Humaniser le texte',lim:'Plan gratuit: jusqu\'à 300 mots',sub:'Quel texte allons-nous humaniser?'},
-};
+function doLogin(){
+  const url = document.getElementById('api-url').value.trim().replace(/\/$/,'');
+  const sec = document.getElementById('secret-inp').value.trim();
+  if(!url || !sec){showLoginErr('Completa los dos campos');return;}
+  WORKER_URL = url;
+  ADMIN_SECRET = sec;
+  // Test connection
+  callAdmin('stats').then(r=>{
+    localStorage.setItem('th_admin',JSON.stringify({url,sec}));
+    document.getElementById('login-wrap').style.display='none';
+    document.getElementById('main').style.display='block';
+    renderStats(r);
+  }).catch(e=>showLoginErr(e.message));
+}
 
-const PROXY_URL = 'https://texthuman-api.mirandavilla341.workers.dev';
-const API = PROXY_URL; // todas las rutas cuelgan de aquí
+function doLogout(){
+  localStorage.removeItem('th_admin');
+  location.reload();
+}
 
-// ═══ STATE ═══
-let S={
-  token:null, user:null, plan:'free',
-  premiumUntil:null,
-  txtLeft:5, filLeft:2, accelLeft:3,
-  blocked:false, blockedUntil:null,
-  fileBlocked:false, fileBlockedUntil:null,
-  purpose:null, level:'formal', country:null, lang:'es'
-};
+function showLoginErr(msg){
+  const el=document.getElementById('login-err');
+  el.textContent=msg;el.style.display='block';
+}
 
-// ═══ INIT ═══
-(function(){
-  try{const v=localStorage.getItem('th3');if(v)S=Object.assign(S,JSON.parse(v));}catch(e){}
-  buildCountries();
-  detectLang();
-  if(S.token){
-    showPage('app');
-    applyUserUI(false);
-    verifySession();
-  } else {
-    showPage('landing');
-  }
-  setInterval(tick,1000);
-  document.addEventListener('click',e=>{
-    if(!e.target.closest('#dw'))document.getElementById('dm').classList.remove('open');
-  });
-  document.getElementById('logo').onclick=()=>S.token?doNav('app'):showPage('landing');
-})();
-
-function save(){try{localStorage.setItem('th3',JSON.stringify(S));}catch(e){}}
-
-async function verifySession(){
+// Auto-login from storage
+window.onload=()=>{
   try{
-    const r=await api('/status',{token:S.token});
-    applyServerData(r);
-  }catch(e){
-    if(e.message==='Sesión expirada'||e.message==='Sin token'){
-      S.token=null;save();
-      document.getElementById('nav-guest').style.display='flex';
-      document.getElementById('nav-user').style.display='none';
-      showPage('landing');
+    const saved=JSON.parse(localStorage.getItem('th_admin')||'{}');
+    if(saved.url&&saved.sec){
+      document.getElementById('api-url').value=saved.url;
+      document.getElementById('secret-inp').value=saved.sec;
     }
-  }
-}
+  }catch(e){}
+};
 
-function applyServerData(r){
-  if(!r)return;
-  S.plan = r.plan||'free';
-  S.premiumUntil = r.premium_until||null;
-  S.txtLeft = r.txt_left??5;
-  S.filLeft = r.fil_left??2;
-  S.accelLeft = r.accel_left??3;
-  S.blockedUntil = r.blocked_until||null;
-  S.fileBlockedUntil = r.file_blocked_until||null;
-  S.blocked = !!(S.blockedUntil && new Date(S.blockedUntil)>new Date());
-  S.fileBlocked = !!(S.fileBlockedUntil && new Date(S.fileBlockedUntil)>new Date());
-  if(r.name) S.user = {name:r.name, email:r.email};
-  save();
-  applyUserUI(false);
-  refreshUsage();
-}
-
-async function api(path, body){
-  const r = await fetch(API+path,{
+async function callAdmin(action, data={}){
+  const r = await fetch(WORKER_URL+'/admin',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(body)
+    body:JSON.stringify({secret:ADMIN_SECRET, action, data})
   });
   const d = await r.json().catch(()=>({}));
   if(!r.ok) throw new Error(d.error||'Error '+r.status);
   return d;
 }
 
-function detectLang(){
-  const l=(navigator.language||'es').toLowerCase();
-  if(l.startsWith('pt'))S.lang='pt';
-  else if(l.startsWith('fr'))S.lang='fr';
-  else if(l.startsWith('en'))S.lang='en';
-  else S.lang='es';
-  applyLang();
+function goTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('act'));
+  document.getElementById('tab-'+name).classList.add('act');
+  document.getElementById('t-'+name).classList.add('act');
+  if(name==='users') loadUsers();
+  if(name==='discounts') loadDiscounts();
+  if(name==='payments') loadPayments();
 }
 
-// ═══ NAVIGATION ═══
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const el=document.getElementById('p-'+id);
-  if(el){el.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
-}
-function doNav(id){
-  if((id==='app'||id==='profile')&&!S.user){openModal('login');return;}
-  if(id==='profile'){fillProfile();showPage('profile');return;}
-  showPage(id);
-}
-function closeDropAndNav(id){
-  document.getElementById('dm').classList.remove('open');
-  doNav(id);
-}
-
-// ═══ AUTH ═══
-let authMode='register';
-function openModal(mode){
-  if(typeof mode==='string'&&(mode==='login'||mode==='register')){
-    authMode=mode;
-    const r=mode==='register';
-    document.getElementById('m-title').textContent=r?'Crea tu cuenta gratis':'Bienvenido de vuelta';
-    document.getElementById('m-sub').textContent=r?'Únete y humaniza textos con el toque de tu país.':'Inicia sesión para continuar.';
-    document.getElementById('m-name').style.display=r?'block':'none';
-    document.getElementById('m-submit').textContent=r?'Crear cuenta gratis':'Iniciar sesión';
-    document.getElementById('m-switch').innerHTML=r
-      ?'¿Ya tienes cuenta? <a onclick="switchAuthMode(\'login\')">Inicia sesión</a>'
-      :'¿No tienes cuenta? <a onclick="switchAuthMode(\'register\')">Regístrate gratis</a>';
-    document.getElementById('auth-ov').classList.add('open');
-  }
-}
-function switchAuthMode(mode){
-  document.getElementById('auth-ov').classList.remove('open');
-  setTimeout(()=>openModal(mode),150);
-}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-
-function loginGoogle(){
-  const nameInp=document.getElementById('m-name');
-  const emailInp=document.getElementById('m-email');
-  const name=nameInp.value.trim();
-  const email=emailInp.value.trim();
-  if(!name){toast('Escribe tu nombre primero','w');nameInp.style.display='block';nameInp.focus();return;}
-  const fakeEmail=email||(name.toLowerCase().replace(/\s+/g,'.')+'@gmail.com');
-  const fakePass='google_'+Math.random().toString(36).slice(2);
-  doRegisterOrLogin(name,fakeEmail,fakePass);
+// ── STATS ───────────────────────────────────────
+function renderStats(r){
+  document.getElementById('stats-grid').innerHTML=`
+    <div class="stat"><div class="num">${r.total}</div><div class="lbl">Usuarios totales</div></div>
+    <div class="stat"><div class="num">${r.premium}</div><div class="lbl">Premium activos</div></div>
+    <div class="stat"><div class="num">${r.free}</div><div class="lbl">Plan gratuito</div></div>
+    <div class="stat"><div class="num">${r.today}</div><div class="lbl">Activos hoy</div></div>
+    <div class="stat"><div class="num">${r.thisWeek}</div><div class="lbl">Esta semana</div></div>
+    <div class="stat"><div class="num">${r.newToday}</div><div class="lbl">Nuevos hoy</div></div>
+    <div class="stat"><div class="num">${r.totalHum}</div><div class="lbl">Humanizaciones</div></div>
+    <div class="stat"><div class="num">$${r.revenue}</div><div class="lbl">Ingresos totales USD</div></div>
+  `;
+  renderPayTable(r.recentPayments||[], 'pay-table');
 }
 
-async function submitAuth(){
-  const email=document.getElementById('m-email').value.trim();
-  const name=document.getElementById('m-name').value.trim();
-  const pass=document.getElementById('m-pass').value;
-  if(!email){toast('Ingresa tu correo','w');return;}
-  if(authMode==='register'){
-    if(!name){toast('Ingresa tu nombre','w');return;}
-    if(pass.length<6){toast('Contraseña: mínimo 6 caracteres','w');return;}
-    const btn=document.getElementById('m-submit');
-    btn.textContent='Creando cuenta...';btn.disabled=true;
-    try{
-      const r=await api('/register',{name,email,password:pass});
-      finishLogin(r);
-    }catch(e){
-      toast(e.message,'e');
-    }finally{btn.textContent='Crear cuenta gratis';btn.disabled=false;}
-  } else {
-    const btn=document.getElementById('m-submit');
-    btn.textContent='Entrando...';btn.disabled=true;
-    try{
-      const r=await api('/login',{email,password:pass});
-      finishLogin(r);
-    }catch(e){
-      toast(e.message,'e');
-    }finally{btn.textContent='Iniciar sesión';btn.disabled=false;}
-  }
+// ── USERS ───────────────────────────────────────
+async function loadUsers(){
+  const tb=document.getElementById('users-table');
+  tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr>';
+  const r = await callAdmin('list_users').catch(e=>({users:[]}));
+  const now = new Date();
+  tb.innerHTML = (r.users||[]).map(u=>{
+    const isPrem = u.plan==='premium' && u.premium_until && new Date(u.premium_until)>now;
+    const days = isPrem ? Math.ceil((new Date(u.premium_until)-now)/(1000*3600*24)) : 0;
+    const lastLogin = u.last_login ? fmtDate(u.last_login) : '—';
+    const created = u.created_at ? fmtDate(u.created_at) : '—';
+    return `<tr>
+      <td>${u.name||'—'}</td>
+      <td style="color:#888">${u.email}</td>
+      <td><span class="badge ${isPrem?'bp':'bf'}">${isPrem?'Premium · '+days+'d':'Gratis'}</span></td>
+      <td>${u.total_humanizations||0}</td>
+      <td>${lastLogin}</td>
+      <td>${created}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Sin usuarios aún</td></tr>';
 }
 
-async function doRegisterOrLogin(name,email,pass){
-  const btn=document.getElementById('m-submit');
-  btn.textContent='Entrando...';btn.disabled=true;
+async function activateManual(){
+  const email=document.getElementById('act-email').value.trim();
+  const days=parseInt(document.getElementById('act-days').value)||30;
+  if(!email){showMsg('act-msg','Ingresa un correo','err');return;}
+  const r=await callAdmin('activate_premium',{email,days}).catch(e=>({error:e.message}));
+  if(r.error) showMsg('act-msg',r.error,'err');
+  else{ showMsg('act-msg','✅ Premium activado hasta '+fmtDate(r.until),'ok'); loadUsers(); }
+}
+
+// ── DISCOUNTS ───────────────────────────────────
+async function loadDiscounts(){
+  const tb=document.getElementById('disc-table');
+  tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr>';
+  const r=await callAdmin('list_discounts').catch(()=>({codes:[]}));
+  tb.innerHTML=(r.codes||[]).map(c=>{
+    const exp=c.expires_at?fmtDate(c.expires_at):'Sin límite';
+    const active=c.active;
+    return `<tr>
+      <td style="font-weight:700;letter-spacing:1px">${c.code}</td>
+      <td><span class="badge ${c.type==='free'?'bp':'by'}">${c.type==='free'?'Gratis':'%'}</span></td>
+      <td>${c.days||'—'}</td>
+      <td style="color:#888;font-size:12px">${c.description||'—'}</td>
+      <td>${c.uses_count||0}</td>
+      <td>${c.max_uses||'∞'}</td>
+      <td style="font-size:12px;color:#888">${exp}</td>
+      <td><span class="badge ${active?'bg':'br'}">${active?'Activo':'Inactivo'}</span></td>
+      <td><button class="btn-sm ${active?'btn-r':'btn-g'}" onclick="toggleDiscount('${c.code}',${!active})">${active?'Desactivar':'Activar'}</button></td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="9" style="text-align:center;color:#888;padding:20px">Sin códigos aún</td></tr>';
+}
+
+async function createDiscount(){
+  const code=document.getElementById('dc-code').value.trim();
+  const type=document.getElementById('dc-type').value;
+  const days=parseInt(document.getElementById('dc-days').value)||30;
+  const description=document.getElementById('dc-desc').value.trim();
+  const max_uses=parseInt(document.getElementById('dc-maxuses').value)||null;
+  const expires_at=document.getElementById('dc-expires').value||null;
+  if(!code||!description){showMsg('dc-msg','Código y descripción son obligatorios','err');return;}
+  const r=await callAdmin('create_discount',{code,type,days,description,max_uses,expires_at}).catch(e=>({error:e.message}));
+  if(r.error) showMsg('dc-msg',r.error,'err');
+  else{ showMsg('dc-msg','✅ Código "'+code+'" creado correctamente','ok'); loadDiscounts(); }
+}
+
+async function toggleDiscount(code,active){
+  await callAdmin('toggle_discount',{code,active}).catch(()=>{});
+  loadDiscounts();
+}
+
+function toggleDcType(){
+  const t=document.getElementById('dc-type').value;
+  document.getElementById('dc-days-row').style.display=t==='free'?'grid':'none';
+}
+
+// ── PAYMENTS ────────────────────────────────────
+async function loadPayments(){
+  const tb=document.getElementById('pay-table-full');
+  tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Cargando...</td></tr>';
+  const r=await callAdmin('stats').catch(()=>({recentPayments:[]}));
+  renderPayTable(r.recentPayments||[], 'pay-table-full');
+  // re-render stats too
+  if(r.total!==undefined) renderStats(r);
+}
+
+function renderPayTable(payments, tableId){
+  const tb=document.getElementById(tableId);
+  tb.innerHTML=payments.map(p=>{
+    const type=p.type==='premium'?'Premium ($7.99)':'Aceleración ($1.99)';
+    const statusMap={pending_verification:'⏳ Pendiente',verified:'✅ Verificado',refunded:'↩️ Reembolsado'};
+    const isPending=p.status==='pending_verification';
+    return `<tr>
+      <td style="color:#888">${p.email||'—'}</td>
+      <td>${type}</td>
+      <td style="color:#22c55e;font-weight:700">$${p.amount}</td>
+      <td><span class="badge ${isPending?'by':'bg'}">${statusMap[p.status]||p.status}</span></td>
+      <td style="font-size:12px;color:#888">${p.created_at?fmtDate(p.created_at):'—'}</td>
+      <td>${isPending?`<button class="btn-sm btn-g" onclick="verifyPay('${p.email}','${p.type}')">✅ Verificar</button>`:'—'}</td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="6" style="text-align:center;color:#888;padding:20px">Sin pagos aún</td></tr>';
+}
+
+async function verifyPay(email,type){
+  await callAdmin('verify_payment',{email,type}).catch(()=>{});
+  toast('Pago marcado como verificado ✓');
+  loadPayments();
+}
+
+// ── HELPERS ─────────────────────────────────────
+function fmtDate(iso){
   try{
-    let r;
-    try{ r=await api('/register',{name,email,password:pass}); }
-    catch(e){
-      if(e.message.includes('ya está registrado')){
-        r=await api('/login',{email,password:pass});
-      } else throw e;
-    }
-    finishLogin(r);
-  }catch(e){toast(e.message,'e');}
-  finally{btn.textContent='Crear cuenta gratis';btn.disabled=false;}
+    const d=new Date(iso);
+    return d.toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  }catch{return iso;}
 }
-
-function finishLogin(r){
-  S.token=r.token;
-  applyServerData(r);
-  closeModal('auth-ov');
-  const firstName=(S.user?.name||'').split(' ')[0];
-  toast('¡Bienvenido, '+firstName+'! 🎉','s');
-  showPage('app');
+function showMsg(id,msg,type){
+  const el=document.getElementById(id);
+  el.textContent=msg;el.className='msg '+type;
+  setTimeout(()=>el.className='msg',4000);
 }
-
-function applyUserUI(showT){
-  if(!S.user)return;
-  const ini=S.user.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
-  document.getElementById('nav-guest').style.display='none';
-  document.getElementById('nav-user').style.display='flex';
-  document.getElementById('nav-av').textContent=ini;
-  document.getElementById('nav-badge').textContent=S.plan==='premium'?'PREMIUM':'GRATIS';
-  document.getElementById('nav-badge').className='plan-badge '+(S.plan==='premium'?'bpr':'bf');
-  document.getElementById('greet').textContent=S.user.name.split(' ')[0];
-  refreshUsage();
-  if(showT)toast('¡Bienvenido, '+S.user.name.split(' ')[0]+'! 🎉','s');
-}
-
-function logout(){
-  S={token:null,user:null,plan:'free',premiumUntil:null,txtLeft:5,filLeft:2,accelLeft:3,
-    blocked:false,blockedUntil:null,fileBlocked:false,fileBlockedUntil:null,
-    purpose:S.purpose,level:S.level,country:S.country,lang:S.lang};
-  save();
-  document.getElementById('nav-guest').style.display='flex';
-  document.getElementById('nav-user').style.display='none';
-  showPage('landing');
-  toast('Sesión cerrada','s');
-}
-function toggleDrop(){document.getElementById('dm').classList.toggle('open');}
-
-// ═══ CONFIG ═══
-function buildCountries(){
-  document.getElementById('ctry-grid').innerHTML=CTRY.map(c=>
-    `<button class="cb" id="c-${c.code}" onclick="selCtry('${c.code}')"><span style="font-size:16px">${c.flag}</span><span>${c.name}</span></button>`
-  ).join('');
-  if(S.country){
-    const el=document.getElementById('c-'+S.country);
-    if(el)el.classList.add('sel');
-    if(S.country==='neutral')document.getElementById('nwarn').classList.add('show');
-  }
-}
-function selCtry(code){
-  S.country=code;save();
-  document.querySelectorAll('.cb').forEach(b=>b.classList.remove('sel'));
-  const el=document.getElementById('c-'+code);
-  if(el)el.classList.add('sel');
-  document.getElementById('nwarn').classList.toggle('show',code==='neutral');
-}
-function selPur(t){
-  S.purpose=t;save();
-  ['formal','semi','casual'].forEach(x=>document.getElementById('pur-'+x).classList.remove('sel'));
-  document.getElementById('pur-'+t).classList.add('sel');
-  const tabs=document.querySelectorAll('.ltb');
-  ['formal','semi','casual'].forEach((x,i)=>tabs[i].classList.toggle('active',x===t));
-  S.level=t;
-}
-function selLvl(l,el){
-  S.level=l;save();
-  document.querySelectorAll('.ltb').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-}
-
-// ═══ CHAR COUNT ═══
-function cntW(){
-  const t=document.getElementById('inp').value.trim();
-  document.getElementById('wcnt').textContent=(t?t.split(/\s+/).length:0)+' palabras';
-}
-
-// ═══ HUMANIZE ═══
-async function doHumanize(){
-  if(!S.token){openModal('login');return;}
-  if(S.blocked){toast('Límite alcanzado. Espera o acelera el tiempo.','w');return;}
-  let text=document.getElementById('inp').value.trim();
-  if(!text){toast('Escribe o pega un texto primero','w');return;}
-  if(!S.country)toast('Selecciona un país para mejores resultados 🌍','w');
-  if(!S.purpose)toast('Selecciona el tipo de texto arriba 📌','w');
-
-  const c=CTRY.find(x=>x.code===S.country);
-  const cn=c?c.name:'neutro';
-  const cw=c&&S.country!=='neutral'?(c.words[S.level]||[]).join(', '):'';
-  const ld={
-    formal:'formal pero con naturalidad humana — evita sonar robótico, mantén vocabulario apropiado académico o profesional',
-    semi:'semi-informal y aprobatorio — claro y directo, ni muy formal ni muy coloquial, apropiado para tareas escolares',
-    casual:'casual y coloquial — como explicarle a un amigo con tus propias palabras, fluido y natural'
-  };
-  const sys=`Eres un experto humanizador de textos en español. Reescribe el texto para que suene completamente natural y humano, como si lo escribiera una persona real, NO una IA.\n\nINSTRUCCIONES:\n- Nivel de formalidad: ${ld[S.level]||ld.formal}\n- País de referencia: ${cn}${cw?'. Incluye ocasionalmente expresiones naturales como: '+cw:''}\n- NO uses frases genéricas de IA como "en conclusión", "es importante destacar", "cabe mencionar"\n- Varía la longitud de oraciones. Mezcla cortas y largas naturalmente\n- Agrega conectores humanos y el flujo natural del pensamiento\n- El texto debe pasar detectores de contenido de IA\n- Mantén el significado e información original del texto\n- Responde SOLO con el texto humanizado, sin explicaciones previas ni comentarios`;
-
-  const out=document.getElementById('out');
-  out.innerHTML='<div class="dots"><div class="d"></div><div class="d"></div><div class="d"></div></div>';
-  document.getElementById('btnhum').disabled=true;
-  document.getElementById('btncpy').style.display='none';
-  try{
-    const d=await api('/humanize',{token:S.token, text, system:sys});
-    // Actualizar estado desde respuesta del servidor
-    if(d.isPremium!==undefined) S.plan=d.isPremium?'premium':'free';
-    if(d.txtLeft!==undefined) S.txtLeft=d.txtLeft;
-    if(d.txtLeft===0){
-      S.blocked=true;
-      S.blockedUntil=new Date(Date.now()+24*3600*1000).toISOString();
-    }
-    save(); refreshUsage();
-
-    let html=d.result.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-    const truncated=S.plan==='free'&&text.split(/\s+/).length>=300;
-    if(truncated)html+=`<br><br><div style="padding:13px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.2);border-radius:10px;margin-top:8px"><strong style="color:var(--accent3)">⚡ Texto truncado — Plan Gratis</strong><br><span style="font-size:12px;color:var(--text2)">Solo las primeras 300 palabras. Pasa a Premium para sin límites.</span><br><button class="bup" style="margin-top:9px;font-size:12px" onclick="doNav('plans')">Ver Premium</button></div>`;
-    out.innerHTML='<div style="line-height:1.8">'+html+'</div>';
-    document.getElementById('btncpy').style.display='flex';
-    if(S.blocked)document.getElementById('bbar').style.display='flex';
-  }catch(e){
-    const isLimit=e.message==='LIMIT_TEXT';
-    if(isLimit){setBlocked('text');out.innerHTML='';}
-    else out.innerHTML=`<div style="color:var(--red);padding:16px"><strong>Error al conectar con el servidor</strong><br><small style="color:var(--text3)">${e.message}</small><br><br><button class="bacc" style="margin-top:8px" onclick="openReport('humanizer_error')">📢 Reportar este error</button></div>`;
-  }
-  document.getElementById('btnhum').disabled=false;
-}
-
-// ═══ FILES ═══
-function dropF(e){
-  e.preventDefault();
-  document.getElementById('uplarea').classList.remove('drag');
-  if(e.dataTransfer.files[0])procFile(e.dataTransfer.files[0]);
-}
-function handleF(e){if(e.target.files[0])procFile(e.target.files[0]);}
-function procFile(file){
-  if(!S.user){openModal('login');return;}
-  if(S.fileBlocked){toast('Límite de archivos. Espera 24h o pasa a Premium.','w');return;}
-  if(S.plan==='free'&&S.filLeft<=0){setBlocked('file');return;}
-  const ext='.'+file.name.split('.').pop().toLowerCase();
-  if(!['.pdf','.docx','.pptx','.txt'].includes(ext)){toast('Formato no soportado. Usa PDF, DOCX, PPTX o TXT.','e');return;}
-  if(S.plan==='free'){
-    S.filLeft--;
-    if(S.filLeft<=0){S.fileBlocked=true;S.fileBlockedUntil=new Date(Date.now()+24*3600*1000).toISOString();}
-    save();refreshUsage();
-  }
-  toast('📄 Cargando "'+file.name+'"...','s');
-  const r=new FileReader();
-  r.onload=(ev)=>{
-    let content=ev.target.result||'';
-    if(ext==='.txt'){
-      document.getElementById('inp').value=content;
-    } else {
-      document.getElementById('inp').value='[Texto de: "'+file.name+'"]\n\nCopia y pega aquí el texto del archivo para humanizarlo.';
-    }
-    cntW();
-    toast('Archivo cargado. Ajusta el texto y haz clic en Humanizar ✨','s');
-  };
-  if(ext==='.txt'){r.readAsText(file,'utf-8');}
-  else{r.readAsArrayBuffer(file);}
-}
-
-// ═══ BLOCKED ═══
-function setBlocked(type){
-  if(type==='text'){S.blocked=true;S.blockedUntil=new Date(Date.now()+24*3600*1000).toISOString();}
-  else{S.fileBlocked=true;S.fileBlockedUntil=new Date(Date.now()+24*3600*1000).toISOString();}
-  save();refreshUsage();
-  document.getElementById('bbar').style.display='flex';
-  document.getElementById('btitle').textContent=type==='text'?'Límite de textos alcanzado':'Límite de archivos alcanzado';
-  toast('Límite del plan gratuito alcanzado 😅','w');
-}
-function tick(){
-  const now=Date.now();
-  let anyBlocked=false;
-  if(S.blocked&&S.blockedUntil){
-    if(new Date(S.blockedUntil)-now<=0){
-      S.blocked=false;S.blockedUntil=null;S.txtLeft=5;save();refreshUsage();toast('¡Intentos de texto restablecidos! 🎉','s');
-    } else anyBlocked=true;
-  }
-  if(S.fileBlocked&&S.fileBlockedUntil){
-    if(new Date(S.fileBlockedUntil)-now<=0){
-      S.fileBlocked=false;S.fileBlockedUntil=null;S.filLeft=2;save();refreshUsage();toast('¡Intentos de archivo restablecidos! 🎉','s');
-    } else anyBlocked=true;
-  }
-  if(!anyBlocked){document.getElementById('bbar').style.display='none';return;}
-  const target=S.blockedUntil||S.fileBlockedUntil;
-  const diff=new Date(target)-now;
-  const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
-  const el=document.getElementById('btimer');
-  if(el)el.textContent=pad(h)+':'+pad(m)+':'+pad(s);
-}
-function pad(n){return String(n).padStart(2,'0');}
-
-// ═══ ACCEL ═══
-function openAccelModal(){
-  if(S.accelLeft<=0){toast('Sin aceleraciones disponibles. Pasa a Premium.','w');doNav('plans');return;}
-  document.getElementById('accel-count').textContent=S.accelLeft;
-  document.getElementById('ya-pague-btn').style.display='none';
-  document.getElementById('accel-ov').classList.add('open');
-}
-function ppAccel(){
-  window.open('https://www.paypal.me/mirandavilla341/1.99USD','_blank');
-  document.getElementById('ya-pague-btn').style.display='block';
-  toast('PayPal abierto. Completa el pago y regresa aquí.','s');
-}
-async function confirmAccel(){
-  if(!S.token){toast('Inicia sesión primero','w');return;}
-  const btn=document.getElementById('ya-pague-btn');
-  btn.textContent='Activando...';btn.disabled=true;
-  try{
-    const r=await api('/confirm-payment',{token:S.token,type:'accel'});
-    S.accelLeft=r.accel_left;
-    if(r.blocked_until)S.blockedUntil=r.blocked_until;
-    save();fillProfile();
-    closeModal('accel-ov');
-    toast('⚡ Espera reducida a 1 hora. Aceleraciones restantes: '+S.accelLeft,'s');
-    if(S.accelLeft===0){document.getElementById('accbtn').textContent='Sin aceleraciones → Premium';document.getElementById('accbtn').onclick=()=>doNav('plans');}
-  }catch(e){toast(e.message,'e');}
-  finally{btn.textContent='✅ Ya pagué — activar';btn.disabled=false;}
-}
-
-// ═══ COPY ═══
-function doCopy(){
-  const t=document.getElementById('out').innerText;
-  navigator.clipboard.writeText(t).then(()=>toast('Copiado al portapapeles ✓','s')).catch(()=>toast('No se pudo copiar','e'));
-}
-
-// ═══ PAYMENT ═══
-function openPayModal(){
-  if(S.user)document.getElementById('pay-email').value=S.user.email||'';
-  document.getElementById('pay-ov').classList.add('open');
-}
-function fmtCard(el){el.value=el.value.replace(/\D/g,'').substring(0,16).replace(/(.{4})/g,'$1 ').trim();}
-function procPay(){
-  const e=document.getElementById('pay-email').value;
-  const c=document.getElementById('pay-card').value;
-  const exp=document.getElementById('pay-exp').value;
-  const nm=document.getElementById('pay-name').value;
-  if(!e||!c||!exp||!nm){toast('Completa todos los datos de pago','w');return;}
-  closeModal('pay-ov');
-  ppGo();
-}
-function ppGo(){
-  window.open('https://www.paypal.me/mirandavilla341/7.99USD','_blank');
-  setTimeout(()=>{document.getElementById('ya-pague-premium-btn').style.display='block';},1500);
-  toast('Completa el pago en PayPal y regresa aquí','s');
-}
-async function confirmPremiumPayment(){
-  if(!S.token){toast('Inicia sesión primero','w');return;}
-  const btn=document.getElementById('ya-pague-premium-btn');
-  btn.textContent='Activando...';btn.disabled=true;
-  try{
-    const r=await api('/confirm-payment',{token:S.token,type:'premium'});
-    applyServerData(r);
-    closeModal('pay-ov');
-    activatePremiumUI();
-  }catch(e){toast(e.message,'e');}
-  finally{btn.textContent='✅ Ya pagué — activar Premium';btn.disabled=false;}
-}
-function activatePremiumUI(){
-  S.plan='premium';save();
-  document.getElementById('nav-badge').textContent='PREMIUM';
-  document.getElementById('nav-badge').className='plan-badge bpr';
-  document.getElementById('u-plan').textContent='Premium ⚡';
-  document.getElementById('bbar').style.display='none';
-  document.getElementById('btn-fplan').textContent='Plan anterior';
-  document.getElementById('btn-bplan').textContent='✓ Plan activo';
-  document.getElementById('btn-bplan').className='bpl curr';
-  document.getElementById('pnote').textContent='Plan Premium: sin límites ✨';
-  refreshUsage();fillProfile();
-  toast('¡Bienvenido a Premium! 🚀 Todo desbloqueado.','s');
-  doNav('app');
-}
-
-// ═══ UI REFRESH ═══
-function refreshUsage(){
-  if(!S.user)return;
-  if(S.plan==='premium'){
-    document.getElementById('u-txt').textContent='∞';
-    document.getElementById('u-fil').textContent='∞';
-    document.getElementById('u-plan').textContent='Premium ⚡';
-    document.getElementById('u-tfill').style.width='100%';
-    document.getElementById('u-ffill').style.width='100%';
-    document.getElementById('u-tfill').className='uf fg';
-    document.getElementById('u-ffill').className='uf fg';
-    if(S.premiumUntil){
-      const days=Math.ceil((new Date(S.premiumUntil)-new Date())/(1000*3600*24));
-      document.getElementById('pnote').textContent='Premium activo · vence en '+days+' día'+(days!==1?'s':'');
-    }
-    return;
-  }
-  const tp=Math.max(0,S.txtLeft)/5*100,fp=Math.max(0,S.filLeft)/2*100;
-  document.getElementById('u-txt').textContent=Math.max(0,S.txtLeft)+' / 5';
-  document.getElementById('u-fil').textContent=Math.max(0,S.filLeft)+' / 2';
-  document.getElementById('u-tfill').style.width=tp+'%';
-  document.getElementById('u-ffill').style.width=fp+'%';
-  const col=p=>p>60?'fg':p>30?'fy':'fr';
-  document.getElementById('u-tfill').className='uf '+col(tp);
-  document.getElementById('u-ffill').className='uf '+col(fp);
-  if(S.blocked||S.fileBlocked)document.getElementById('bbar').style.display='flex';
-}
-function fillProfile(){
-  if(!S.user)return;
-  const ini=S.user.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
-  document.getElementById('prav').textContent=ini;
-  document.getElementById('prname').textContent=S.user.name;
-  document.getElementById('premail').textContent=S.user.email;
-  document.getElementById('pr-name').innerHTML=S.user.name+' <button class="bsm" onclick="openEditName()">Editar</button>';
-  document.getElementById('pr-email').textContent=S.user.email;
-  const c=CTRY.find(x=>x.code===S.country);
-  document.getElementById('pr-ctry').innerHTML=(c?c.flag+' '+c.name:'No seleccionado')+' <button class="bsm" onclick="doNav(\'app\')">Cambiar</button>';
-  document.getElementById('pr-plan').textContent=S.plan==='premium'?'⚡ Premium':'Gratis';
-  document.getElementById('pr-plan').style.color=S.plan==='premium'?'var(--green)':'var(--accent2)';
-  if(S.premiumUntil&&S.plan==='premium'){
-    const days=Math.ceil((new Date(S.premiumUntil)-new Date())/(1000*3600*24));
-    document.getElementById('pr-plan').textContent='⚡ Premium · vence en '+days+' día'+(days!==1?'s':'');
-  }
-  document.getElementById('pr-ta').textContent=S.plan==='premium'?'∞':Math.max(0,S.txtLeft)+' / 5';
-  document.getElementById('pr-fa').textContent=S.plan==='premium'?'∞':Math.max(0,S.filLeft)+' / 2';
-  document.getElementById('pr-ac').textContent=S.accelLeft+' / 3';
-  const ln={es:'Español',en:'English',pt:'Português',fr:'Français'};
-  document.getElementById('pr-lang').textContent=ln[S.lang]||'Español';
-}
-function openEditName(){
-  document.getElementById('edit-name-inp').value=S.user.name||'';
-  document.getElementById('edit-name-ov').classList.add('open');
-}
-function saveEditName(){
-  const n=document.getElementById('edit-name-inp').value.trim();
-  if(!n){toast('El nombre no puede estar vacío','w');return;}
-  S.user.name=n;save();
-  applyUserUI(false);fillProfile();
-  closeModal('edit-name-ov');
-  toast('Nombre actualizado ✓','s');
-}
-
-// ═══ REPORT ═══
-function openReport(prefill){
-  if(prefill)document.getElementById('rep-type').value=prefill.split(':')[0]||'';
-  if(S.user)document.getElementById('rep-email').value=S.user.email||'';
-  document.getElementById('report-ov').classList.add('open');
-}
-function sendReport(){
-  const type=document.getElementById('rep-type').value;
-  const msg=document.getElementById('rep-msg').value.trim();
-  const email=document.getElementById('rep-email').value.trim();
-  if(!type){toast('Selecciona el tipo de problema','w');return;}
-  const subject=encodeURIComponent('TextHuman — Reporte: '+type);
-  const body=encodeURIComponent('Tipo: '+type+'\n\nDescripción: '+(msg||'sin descripción')+'\n\nUsuario: '+(S.user?S.user.name+' / '+S.user.email:'No identificado')+'\nPlan: '+(S.plan||'free')+'\nCorreo respuesta: '+(email||'no indicado')+'\nFecha: '+new Date().toLocaleString());
-  window.open('mailto:mirandavilla341@gmail.com?subject='+subject+'&body='+body,'_blank');
-  closeModal('report-ov');
-  toast('¡Reporte enviado! Te respondemos pronto 📬','s');
-}
-
-// ═══ DISCOUNT ═══
-async function applyDiscount(){
-  const code=document.getElementById('disc-inp').value.trim().toUpperCase();
-  const res=document.getElementById('disc-result');
-  if(!code){toast('Ingresa un código','w');return;}
-  if(!S.token){res.innerHTML='<span style="color:var(--yellow)">⚠️ Inicia sesión primero</span>';openModal('login');return;}
-  const btn=document.querySelector('#disc-ov .btn-p');
-  btn.textContent='Aplicando...';btn.disabled=true;
-  try{
-    const r=await api('/apply-discount',{token:S.token,code});
-    res.innerHTML='<span style="color:var(--green)">✅ '+r.desc||'✅ Descuento aplicado'+'</span>';
-    applyServerData(r);
-    setTimeout(()=>{closeModal('disc-ov');activatePremiumUI();toast('🎉 '+r.desc||'✅ Descuento aplicado','s');},1000);
-  }catch(e){
-    res.innerHTML='<span style="color:var(--red)">❌ '+e.message+'</span>';
-  }finally{btn.textContent='✅ Aplicar código';btn.disabled=false;}
-}
-
-// ═══ LANGUAGE ═══
-function applyLang(){
-  const l=LANGS[S.lang]||LANGS.es;
-  const bh=document.getElementById('btnhum');if(bh)bh.innerHTML=l.hum;
-  const pn=document.getElementById('pnote');if(pn&&S.plan!=='premium')pn.textContent=l.lim;
-  const sub=document.getElementById('app-sub');if(sub)sub.textContent=l.sub;
-  const l1=document.getElementById('ls1');if(l1)l1.value=S.lang;
-  const l2=document.getElementById('ls2');if(l2)l2.value=S.lang;
-}
-function changeLang(code){S.lang=code;save();applyLang();}
-
-// ═══ TOAST ═══
-let tT;
-function toast(msg,type='s'){
-  const el=document.getElementById('toast');
-  el.innerHTML=({s:'✅',w:'⚠️',e:'❌'}[type]||'ℹ️')+' '+msg;
-  el.className='toast '+type+' show';
-  clearTimeout(tT);tT=setTimeout(()=>el.classList.remove('show'),3800);
+let tT2;
+function toast(msg){
+  let el=document.getElementById('adm-toast');
+  if(!el){el=document.createElement('div');el.id='adm-toast';el.style.cssText='position:fixed;bottom:20px;right:20px;background:#22c55e;color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999';document.body.appendChild(el);}
+  el.textContent=msg;el.style.display='block';
+  clearTimeout(tT2);tT2=setTimeout(()=>el.style.display='none',3000);
 }
 </script>
 </body>
