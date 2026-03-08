@@ -1280,9 +1280,9 @@ async function applyDiscount(){
   btn.textContent='Aplicando...';btn.disabled=true;
   try{
     const r=await api('/apply-discount',{token:S.token,code});
-    res.innerHTML='<span style="color:var(--green)">✅ '+r.desc||'✅ Descuento aplicado'+'</span>';
+    res.innerHTML='<span style="color:var(--green)">✅ '+(r.desc||'Descuento aplicado')+'</span>';
     applyServerData(r);
-    setTimeout(()=>{closeModal('disc-ov');activatePremiumUI();toast('🎉 '+r.desc||'✅ Descuento aplicado','s');},1000);
+    setTimeout(()=>{closeModal('disc-ov');activatePremiumUI();toast('🎉 '+(r.desc||'Descuento aplicado'),'s');},1000);
   }catch(e){
     res.innerHTML='<span style="color:var(--red)">❌ '+e.message+'</span>';
   }finally{btn.textContent='✅ Aplicar código';btn.disabled=false;}
