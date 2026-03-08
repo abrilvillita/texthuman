@@ -1013,7 +1013,40 @@ async function doHumanize(){
     semi:'semi-informal y aprobatorio — claro y directo, ni muy formal ni muy coloquial, apropiado para tareas escolares',
     casual:'casual y coloquial — como explicarle a un amigo con tus propias palabras, fluido y natural'
   };
-  const sys=`Eres un experto humanizador de textos en español. Reescribe el texto para que suene completamente natural y humano, como si lo escribiera una persona real, NO una IA.\n\nINSTRUCCIONES:\n- Nivel de formalidad: ${ld[S.level]||ld.formal}\n- País de referencia: ${cn}${cw?'. Incluye ocasionalmente expresiones naturales como: '+cw:''}\n- NO uses frases genéricas de IA como "en conclusión", "es importante destacar", "cabe mencionar"\n- Varía la longitud de oraciones. Mezcla cortas y largas naturalmente\n- Agrega conectores humanos y el flujo natural del pensamiento\n- El texto debe pasar detectores de contenido de IA\n- Mantén el significado e información original del texto\n- Responde SOLO con el texto humanizado, sin explicaciones previas ni comentarios`;
+  const purposeCtx = {
+    formal: 'El texto es para un contexto académico o profesional (ensayo, informe, tesis, carta formal). Debe sonar como una persona real que estudió o trabaja, no como IA.',
+    semi: 'El texto es para una tarea escolar, resumen o presentación. Debe sonar como un estudiante que entiende el tema y lo explica con sus propias palabras.',
+    casual: 'El texto es para uso personal: reflexión, explicación a un amigo, comentario de clase. Debe sonar completamente coloquial y humano.'
+  };
+  const experienceHints = S.purpose ? `
+CONTEXTO DEL TEXTO (${S.purpose}): ${purposeCtx[S.purpose]||purposeCtx.formal}
+Dado este contexto, cuando sea natural y apropiado puedes agregar frases de experiencia personal como:
+- "según entendí", "a mi parecer", "según leí", "en mi opinión", "lo que yo interpreto es"
+- "me parece que", "creo que", "en lo que vi", "según lo que estudié"
+IMPORTANTE: Solo agrégalas si encajan naturalmente. NUNCA las inventes si no hay contexto para ello.` : '';
+
+  const sys=`Eres un humanizador de textos experto. Tu trabajo es reescribir texto generado por IA para que suene 100% humano y pase detectores de IA.
+
+ELIMINA OBLIGATORIAMENTE estos patrones típicos de ChatGPT/IA:
+- Emojis de cualquier tipo (❌ quítalos todos sin excepción)
+- Listas con viñetas o numeradas (conviértelas en párrafo fluido)
+- Títulos o subtítulos en negrita
+- Frases de cierre como "En conclusión,", "En resumen,", "En definitiva,", "Para finalizar,", "En síntesis,"
+- Frases de apertura como "Es importante destacar que", "Cabe mencionar que", "Vale la pena señalar que", "Es fundamental comprender que"
+- Frases de relleno como "En el ámbito de", "En el contexto de", "A lo largo de la historia", "Desde tiempos inmemoriales"
+- Cualquier estructura tipo: introducción → desarrollo → conclusión con esas etiquetas explícitas
+- Signos de exclamación múltiples o entusiasmo artificial
+
+APLICA estas reglas de humanización:
+- Nivel de formalidad: ${ld[S.level]||ld.formal}
+- País de referencia: ${cn}${cw?'. Usa ocasionalmente expresiones de ese país como: '+cw:''}
+- Escribe como una persona real que piensa mientras escribe: alterna oraciones cortas y largas
+- Usa conectores humanos: "o sea", "la verdad es que", "lo que pasa es que", "igual", "de hecho", "eso sí"
+- Si el texto tiene una conclusión, intégrala naturalmente al último párrafo sin anunciarla
+- Si tiene listas, conviértelas en texto corrido: "primero X, después Y, y por último Z"
+${experienceHints}
+
+RESULTADO: Devuelve SOLO el texto humanizado. Sin explicaciones, sin comentarios, sin introducción tuya.`;
 
   const out=document.getElementById('out');
   out.innerHTML='<div class="dots"><div class="d"></div><div class="d"></div><div class="d"></div></div>';
