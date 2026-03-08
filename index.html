@@ -128,12 +128,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;
 .field::placeholder{color:var(--text3)}
 .msw{text-align:center;margin-top:14px;font-size:13px;color:var(--text2)}
 .msw a{color:var(--accent3);cursor:pointer}
+/* INFO BOX en modal */
+.info-box{background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.2);
+  border-radius:9px;padding:10px 13px;font-size:12px;color:var(--text2);line-height:1.6;
+  margin-bottom:12px;display:none}
+.info-box.show{display:block}
+.forgot-link{text-align:center;margin-top:8px;font-size:12px;color:var(--text3)}
+.forgot-link a{color:var(--accent3);cursor:pointer}
 /* APP */
 #p-app{padding:80px 20px 60px;max-width:1160px;margin:0 auto}
 .ah{margin-bottom:24px}
 .at{font-family:'Syne',sans-serif;font-size:26px;font-weight:700}
 .at span{color:var(--accent2)}
 .asb{color:var(--text2);font-size:13px;margin-top:3px}
+/* Alerta de premium por vencer */
+.renew-bar{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.3);
+  border-radius:var(--r);padding:14px 18px;margin-bottom:14px;
+  display:none;align-items:center;gap:11px;flex-wrap:wrap}
+.renew-bar.show{display:flex}
 .uw{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
   padding:17px 20px;margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 .ui{display:flex;flex-direction:column;gap:4px;flex:1;min-width:130px}
@@ -192,6 +204,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;
   border-radius:8px;padding:9px 13px;font-size:12px;color:var(--yellow);
   margin-top:9px;display:none}
 .nw.show{display:block}
+/* FUENTES SECTION */
+.src-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px}
+.src-btn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:8px 13px;border-radius:9px;
+  font-size:12px;cursor:pointer;border:1px solid var(--border);background:var(--bg2);
+  color:var(--text2);transition:.2s;font-family:'DM Sans',sans-serif;font-weight:500;
+  user-select:none}
+.src-btn:hover{border-color:var(--border2);color:var(--text)}
+.src-btn.sel{border-color:var(--green);color:var(--green);background:rgba(34,211,165,.08)}
+.src-note{font-size:11px;color:var(--text3);margin-top:6px;line-height:1.6}
+.adv-tog{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:9px;font-size:13px;cursor:pointer;border:1px solid var(--border);background:var(--bg2);color:var(--text2);transition:.2s;font-family:'DM Sans',sans-serif;font-weight:500;user-select:none}
+.adv-tog:hover{border-color:var(--border2);color:var(--text)}
+.adv-tog.on{border-color:var(--accent);color:var(--accent3);background:rgba(124,92,252,.1);font-weight:600}
 .ag{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media(max-width:840px){.ag{grid-template-columns:1fr}}
 .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
@@ -375,11 +399,21 @@ textarea.ta::placeholder{color:var(--text3)}
     <div class="asb" id="app-sub">¿Qué texto humanizamos hoy?</div>
   </div>
 
+  <!-- Alerta de Premium por vencer -->
+  <div class="renew-bar" id="renew-bar">
+    <span style="font-size:22px">⚠️</span>
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:600;color:var(--yellow)" id="renew-title">Tu Premium vence pronto</div>
+      <div style="font-size:12px;color:var(--text2)" id="renew-sub">Renueva para no perder el acceso ilimitado.</div>
+    </div>
+    <button class="bup" onclick="openPayModal()">🔄 Renovar Premium</button>
+  </div>
+
   <div class="uw">
     <div class="ui"><div class="ul">Intentos texto</div><div class="uv" id="u-txt">5 / 5</div><div class="ut"><div class="uf fg" id="u-tfill" style="width:100%"></div></div></div>
     <div class="ui"><div class="ul">Archivos hoy</div><div class="uv" id="u-fil">2 / 2</div><div class="ut"><div class="uf fg" id="u-ffill" style="width:100%"></div></div></div>
     <div class="ui"><div class="ul">Plan activo</div><div class="uv" id="u-plan">Gratis</div></div>
-    <button class="bup" onclick="doNav('plans')">⚡ Ir Premium</button>
+    <button class="bup" id="upgrade-btn" onclick="doNav('plans')">⚡ Ir Premium</button>
   </div>
 
   <div class="bbar" id="bbar" style="display:none">
@@ -416,6 +450,92 @@ textarea.ta::placeholder{color:var(--text3)}
         <div class="pci">• Reflexiones personales<br>• Comentarios de lectura<br>• Discusiones en clase<br>• Explicar temas a un amigo<br>• Conclusiones personales<br>• Respuestas desarrolladas<br>• Resúmenes explicativos<br>• Participaciones en clase</div>
       </div>
     </div>
+
+    <!-- ═══ SECCIÓN AVANZADA: 4 OPCIONES ═══ -->
+    <div style="margin-bottom:18px">
+
+      <!-- 1. EXPERIENCIAS -->
+      <div class="sl">🎭 Experiencias <span style="color:var(--text3);font-weight:400;font-size:12px">(opcional · la IA decide el tono según el texto)</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="adv-tog" id="tog-exp" onclick="toggleAdv('exp')">🎭 Agregar experiencias personales</button>
+      </div>
+      <div id="exp-panel" style="display:none">
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px">
+          <button class="src-btn" id="exp-auto" onclick="selExpTone('auto')" title="La IA detecta el tono según el texto">✨ Auto (recomendado)</button>
+          <button class="src-btn" id="exp-pos" onclick="selExpTone('pos')">😊 Positiva / entusiasta</button>
+          <button class="src-btn" id="exp-neg" onclick="selExpTone('neg')">😔 Difícil / costó trabajo</button>
+          <button class="src-btn" id="exp-neu" onclick="selExpTone('neu')">😐 Neutral / curiosidad</button>
+        </div>
+        <div style="position:relative">
+          <textarea id="exp-custom" class="field" placeholder="(Opcional) Escribe tu propia experiencia y la incluiremos tal cual en el texto... ej: 'al inicio no entendía nada y tuve que leerlo tres veces'" rows="2" style="resize:none;margin-bottom:0;padding-right:14px;font-size:12px;line-height:1.5"></textarea>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px;line-height:1.6">
+          💡 Si no escribes nada, la IA inventa una experiencia que encaje con el texto según el tono que elegiste.
+        </div>
+      </div>
+
+      <!-- 2. FUENTES DE RELLENO -->
+      <div class="sl" style="margin-top:16px">📚 Fuentes de relleno <span style="color:var(--text3);font-weight:400;font-size:12px">(opcional · puedes elegir varias)</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="adv-tog" id="tog-src" onclick="toggleAdv('src')">📚 Agregar fuentes</button>
+      </div>
+      <div id="src-panel" style="display:none">
+        <div class="src-grid" id="src-grid">
+          <button class="src-btn" id="src-libro" onclick="toggleSrc('libro')">📘 Libro de texto</button>
+          <button class="src-btn" id="src-cuaderno" onclick="toggleSrc('cuaderno')">📓 Cuaderno / apuntes</button>
+          <button class="src-btn" id="src-actividades" onclick="toggleSrc('actividades')">📋 Libro de actividades</button>
+          <button class="src-btn" id="src-escolar" onclick="toggleSrc('escolar')">📗 Libro escolar</button>
+          <button class="src-btn" id="src-profe" onclick="toggleSrc('profe')">👨‍🏫 Clase del profesor</button>
+          <button class="src-btn" id="src-profa" onclick="toggleSrc('profa')">👩‍🏫 Clase de la profesora</button>
+          <button class="src-btn" id="src-curso" onclick="toggleSrc('curso')">🎓 Curso / taller</button>
+          <button class="src-btn" id="src-investigacion" onclick="toggleSrc('investigacion')">🔍 Investigación propia</button>
+          <button class="src-btn" id="src-internet" onclick="toggleSrc('internet')">🌐 Internet / Wikipedia</button>
+          <button class="src-btn" id="src-experimento" onclick="toggleSrc('experimento')">🧪 Experimento / práctica</button>
+          <button class="src-btn" id="src-pelicula" onclick="toggleSrc('pelicula')">🎬 Documental / película</button>
+          <button class="src-btn" id="src-video" onclick="toggleSrc('video')">▶️ Video / YouTube</button>
+        </div>
+        <div style="margin-top:8px;position:relative">
+          <input type="text" id="src-custom" class="field" placeholder='Fuente personalizada (ej: "Enciclopedia Larousse", "manual del laboratorio")' style="margin-bottom:0;font-size:12px">
+        </div>
+        <div class="src-note" id="src-note" style="display:none;margin-top:6px">✅ Incluirá referencias a: <span id="src-list-display" style="font-weight:600"></span></div>
+      </div>
+
+      <!-- 3. ANTIA PRO -->
+      <div class="sl" style="margin-top:16px">🛡️ AntiIA Pro <span style="color:var(--text3);font-weight:400;font-size:12px">(opcional · reduce drásticamente la detección)</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="adv-tog" id="tog-anti" onclick="toggleAdv('anti')">🛡️ Activar AntiIA Pro</button>
+      </div>
+      <div id="anti-panel" style="display:none">
+        <div style="background:rgba(124,92,252,.06);border:1px solid rgba(124,92,252,.2);border-radius:10px;padding:13px;font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:9px">
+          Agrega frases de <strong style="color:var(--accent3)">humildad epistémica</strong> que los detectores de IA rara vez asocian con texto generado:<br>
+          <span style="color:var(--text3)">"según entendí", "a mi parecer", "lo que yo interpreto es", "pienso que", "lo que entendí cuando leí esto fue que..."</span>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:500">Intensidad:</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="src-btn" id="anti-low" onclick="selAnti('low')">🔅 Sutil (1-2 frases)</button>
+          <button class="src-btn sel" id="anti-med" onclick="selAnti('med')">⚡ Normal (3-4 frases)</button>
+          <button class="src-btn" id="anti-high" onclick="selAnti('high')">🔥 Intenso (5+ frases)</button>
+        </div>
+      </div>
+
+      <!-- 4. PERSPECTIVA -->
+      <div class="sl" style="margin-top:16px">👤 Perspectiva del texto <span style="color:var(--text3);font-weight:400;font-size:12px">(opcional)</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="adv-tog" id="tog-pov" onclick="toggleAdv('pov')">👤 Elegir perspectiva</button>
+      </div>
+      <div id="pov-panel" style="display:none">
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="src-btn sel" id="pov-yo" onclick="selPov('yo')">🧑 Yo solo/a<br><small style="color:var(--text3);font-size:10px">"yo entendí", "a mí me pareció"</small></button>
+          <button class="src-btn" id="pov-dupla" onclick="selPov('dupla')">👥 Dupla / pareja<br><small style="color:var(--text3);font-size:10px">"nosotros analizamos", "mi compañero y yo"</small></button>
+          <button class="src-btn" id="pov-equipo" onclick="selPov('equipo')">👨‍👩‍👧 Equipo<br><small style="color:var(--text3);font-size:10px">"en equipo concluimos", "nuestro grupo"</small></button>
+          <button class="src-btn" id="pov-grupo" onclick="selPov('grupo')">🏫 Grupo / clase<br><small style="color:var(--text3);font-size:10px">"en clase vimos", "el grupo aprendió"</small></button>
+          <button class="src-btn" id="pov-imp" onclick="selPov('imp')">📝 Impersonal<br><small style="color:var(--text3);font-size:10px">"se observa", "se puede concluir"</small></button>
+        </div>
+      </div>
+
+    </div>
+    <!-- FIN SECCIÓN AVANZADA -->
+
     <div class="sl">🎚️ Nivel de formalidad</div>
     <div class="lt">
       <button class="ltb active" onclick="selLvl('formal',this)">Algo formal pero humano</button>
@@ -462,6 +582,8 @@ textarea.ta::placeholder{color:var(--text3)}
     <button onclick="document.getElementById('disc-ov').classList.add('open')" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s" onmouseover="this.style.color='var(--yellow)'" onmouseout="this.style.color='var(--text3)'">🎟️ Código de descuento</button>
   </div>
 </div>
+
+<!-- PROFILE -->
 <div id="p-profile" class="page">
   <div class="prh">
     <div class="pra" id="prav">U</div>
@@ -477,6 +599,7 @@ textarea.ta::placeholder{color:var(--text3)}
   <div class="sct">Uso y plan</div>
   <div class="prc">
     <div class="prr"><span class="prl">Plan actual</span><span class="prv" id="pr-plan" style="color:var(--accent2)">Gratis</span></div>
+    <div class="prr"><span class="prl">Vencimiento Premium</span><span class="prv" id="pr-expiry">—</span></div>
     <div class="prr"><span class="prl">Intentos de texto restantes</span><span class="prv" id="pr-ta">5 / 5</span></div>
     <div class="prr"><span class="prl">Archivos restantes hoy</span><span class="prv" id="pr-fa">2 / 2</span></div>
     <div class="prr"><span class="prl">Aceleraciones restantes</span><span class="prv" id="pr-ac">3 / 3</span></div>
@@ -532,22 +655,53 @@ textarea.ta::placeholder{color:var(--text3)}
   </div>
 </div>
 
-<!-- AUTH MODAL -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  AUTH MODAL — FIX: siempre pide contraseña             -->
+<!-- ═══════════════════════════════════════════════════════ -->
 <div class="ov" id="auth-ov">
   <div class="modal">
     <button class="mx" onclick="closeModal('auth-ov')">✕</button>
     <div class="mt" id="m-title">Crea tu cuenta gratis</div>
     <p class="ms" id="m-sub">Únete y humaniza textos con el toque de tu país.</p>
-    <button class="btn-gg" onclick="loginGoogle()">
-      <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Continuar con Google
-    </button>
-    <div class="div">o con correo</div>
-    <input class="field" type="text" placeholder="Tu nombre" id="m-name">
+
+    <!-- Aviso para registro -->
+    <div class="info-box show" id="m-info-reg">
+      💡 <strong>Guarda tu contraseña.</strong> La necesitarás para volver a entrar desde cualquier dispositivo.
+    </div>
+    <!-- Aviso para login -->
+    <div class="info-box" id="m-info-login">
+      🔐 Usa el correo y contraseña que pusiste al registrarte.
+    </div>
+
+    <input class="field" type="text" placeholder="Tu nombre completo" id="m-name">
     <input class="field" type="email" placeholder="Correo electrónico" id="m-email">
-    <input class="field" type="password" placeholder="Contraseña (mín. 6 caracteres)" id="m-pass">
+    <input class="field" type="password" placeholder="Contraseña (mín. 6 caracteres)" id="m-pass" onkeydown="if(event.key==='Enter')submitAuth()">
+
+    <!-- Mostrar/ocultar contraseña -->
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:12px;font-size:12px;color:var(--text3);cursor:pointer" onclick="togglePass()">
+      <span id="pass-eye" style="font-size:15px">👁️</span>
+      <span id="pass-label">Mostrar contraseña</span>
+    </div>
+
     <button class="btn btn-p" style="width:100%;justify-content:center;padding:13px;font-size:14px;font-weight:700;border-radius:10px" onclick="submitAuth()" id="m-submit">Crear cuenta gratis</button>
     <div class="msw" id="m-switch">¿Ya tienes cuenta? <a onclick="switchAuthMode('login')">Inicia sesión</a></div>
+    <div class="forgot-link" id="m-forgot" style="display:none">
+      ¿Olvidaste tu contraseña? <a onclick="openForgot()">Recupérala aquí</a>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="ov" id="forgot-ov">
+  <div class="modal" style="max-width:380px">
+    <button class="mx" onclick="closeModal('forgot-ov')">✕</button>
+    <div class="mt">🔑 Recuperar contraseña</div>
+    <p class="ms">Escríbenos con tu correo registrado y te la enviamos.</p>
+    <input class="field" type="email" id="forgot-email" placeholder="Tu correo registrado">
+    <button class="btn btn-p" style="width:100%;justify-content:center;padding:12px;font-size:14px;font-weight:700;border-radius:10px;margin-top:4px" onclick="sendForgot()">📨 Solicitar recuperación</button>
+    <div style="margin-top:14px;text-align:center;font-size:12px;color:var(--text3);line-height:1.7">
+      O escríbenos directamente a<br><a href="mailto:mirandavilla341@gmail.com" style="color:var(--accent3)">mirandavilla341@gmail.com</a>
+    </div>
   </div>
 </div>
 
@@ -556,7 +710,11 @@ textarea.ta::placeholder{color:var(--text3)}
   <div class="modal">
     <button class="mx" onclick="closeModal('pay-ov')">✕</button>
     <div class="mt">💳 Pago seguro</div>
-    <p class="ms">Premium · $7.99 USD / mes · Cancela cuando quieras</p>
+    <p class="ms" id="pay-subtitle">Premium · $7.99 USD / mes · Cancela cuando quieras</p>
+    <!-- Aviso de renovación si ya es premium -->
+    <div id="renew-info" style="display:none;background:rgba(34,211,165,.08);border:1px solid rgba(34,211,165,.25);border-radius:9px;padding:10px 13px;font-size:12px;color:var(--green);margin-bottom:14px;line-height:1.6">
+      ✅ Tu plan actual vence el <strong id="renew-date">—</strong>. Al renovar, se extenderá 30 días más desde hoy.
+    </div>
     <input class="field" type="email" placeholder="Correo electrónico" id="pay-email">
     <input class="field" type="text" placeholder="Número de tarjeta" id="pay-card" maxlength="19" oninput="fmtCard(this)">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
@@ -582,7 +740,7 @@ textarea.ta::placeholder{color:var(--text3)}
     <div class="mt">⚡ Acelerar espera</div>
     <p class="ms">Reduce tu tiempo de espera a 1 hora pagando $1.99 USD.<br><br>Aceleraciones disponibles: <strong id="accel-count" style="color:var(--accent2)">3</strong> / 3</p>
     <button class="bpp" onclick="ppAccel()" style="margin-bottom:12px">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788l.038-.198 1.07-6.5.069-.374a.925.925 0 0 1 .922-.788h.58c3.76 0 6.7-1.528 7.556-5.946.36-1.847.174-3.388-.823-4.489z"/></svg>
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788l.038-.198 1.07-6.5.069-.374a.925.925 0 0 1 .922-.788h.580c3.76 0 6.7-1.528 7.556-5.946.36-1.847.174-3.388-.823-4.489z"/></svg>
       Pagar $1.99 con PayPal
     </button>
     <button class="bpl buy" onclick="closeModal('accel-ov');doNav('plans')" style="margin-top:0">🚀 Mejor me voy a Premium</button>
@@ -615,6 +773,7 @@ textarea.ta::placeholder{color:var(--text3)}
       <option value="cuenta_bloqueada">Mi cuenta está bloqueada</option>
       <option value="texto_mal_humanizado">El texto salió mal humanizado</option>
       <option value="archivo_no_carga">No puedo subir archivos</option>
+      <option value="olvide_contrasena">Olvidé mi contraseña</option>
       <option value="otro">Otro problema</option>
     </select>
     <textarea class="field" id="rep-msg" placeholder="Describe el problema (opcional)..." rows="3" style="resize:vertical;height:auto"></textarea>
@@ -739,6 +898,18 @@ const CTRY=[
   {code:'neutral',name:'Sin país, neutral',flag:'🌐',words:{formal:[],semi:[],casual:[]}},
 ];
 
+// ═══ SOURCES CONFIG ═══
+const SOURCES = {
+  libro:        { label: '📘 libro de texto',         phrases: ['según el libro', 'como dice el libro', 'lo leí en el libro', 'el libro explica que', 'según lo que leí en el libro'] },
+  cuaderno:     { label: '📓 mis apuntes',             phrases: ['según mis apuntes', 'lo anoté en mi cuaderno', 'como escribí en mis notas', 'según lo que apunté', 'tengo en mis notas que'] },
+  actividades:  { label: '📋 libro de actividades',   phrases: ['según el libro de actividades', 'como indica el libro de actividades', 'en el libro de actividades dice que'] },
+  clase:        { label: '👩‍🏫 lo que explicó el/la profe', phrases: ['según lo que explicó el/la profe', 'como dijo el/la maestro/a en clase', 'según lo que entendí en clase', 'el/la profe explicó que', 'lo que recuerdo de la clase es que'] },
+  investigacion:{ label: '🔍 mi propia investigación', phrases: ['según lo que investigué', 'en lo que encontré', 'a partir de mi investigación', 'lo que busqué dice que', 'según lo que yo analicé'] },
+  internet:     { label: '🌐 internet / Wikipedia',   phrases: ['según lo que encontré en internet', 'según Wikipedia', 'en internet dice que', 'busqué y encontré que', 'según lo que leí en línea'] },
+  experimento:  { label: '🧪 un experimento',          phrases: ['según el experimento', 'como pude observar en la práctica', 'en el experimento se vio que', 'cuando hicimos la práctica', 'lo que observé fue que'] },
+  pelicula:     { label: '🎬 un documental',           phrases: ['según el documental', 'en la película explicaban que', 'como mostraba el documental', 'vi en un video que', 'el documental decía que'] },
+};
+
 const LANGS={
   es:{hum:'✨ Humanizar texto',lim:'Plan gratis: hasta 300 palabras',sub:'¿Qué texto humanizamos hoy?'},
   en:{hum:'✨ Humanize text',lim:'Free plan: up to 300 words',sub:'What text shall we humanize today?'},
@@ -747,7 +918,7 @@ const LANGS={
 };
 
 const PROXY_URL = 'https://texthuman-api.mirandavilla341.workers.dev';
-const API = PROXY_URL; // todas las rutas cuelgan de aquí
+const API = PROXY_URL;
 
 // ═══ STATE ═══
 let S={
@@ -756,34 +927,92 @@ let S={
   txtLeft:5, filLeft:2, accelLeft:3,
   blocked:false, blockedUntil:null,
   fileBlocked:false, fileBlockedUntil:null,
-  purpose:null, level:'formal', country:null, lang:'es'
+  purpose:null, level:'formal', country:null, lang:'es',
+  sources: [],          // fuentes de relleno seleccionadas
+  expActive: false,     // experiencias activadas
+  expTone: 'auto',      // auto|pos|neg|neu
+  antiActive: false,    // antiaIA pro activado
+  antiLevel: 'med',     // low|med|high
+  pov: 'yo'              // yo|dupla|equipo|grupo|imp
 };
 
 // ═══ INIT ═══
 (function(){
   try{const v=localStorage.getItem('th3');if(v)S=Object.assign(S,JSON.parse(v));}catch(e){}
+  if(!S.sources) S.sources=[];
   buildCountries();
   detectLang();
   if(S.token){
     showPage('app');
     applyUserUI(false);
     verifySession();
+    checkPremiumExpiry();
   } else {
     showPage('landing');
   }
   setInterval(tick,1000);
+  setInterval(checkPremiumExpiry, 60000); // checa vencimiento cada minuto
   document.addEventListener('click',e=>{
     if(!e.target.closest('#dw'))document.getElementById('dm').classList.remove('open');
   });
   document.getElementById('logo').onclick=()=>S.token?doNav('app'):showPage('landing');
+  // Restaurar estado avanzado guardado
+  if(S.sources && S.sources.length>0){
+    S.sources.forEach(src=>{ const el=document.getElementById('src-'+src); if(el)el.classList.add('sel'); });
+    // Si había fuentes, abrir panel
+    const sp=document.getElementById('src-panel');
+    if(sp){sp.style.display='block';document.getElementById('tog-src').classList.add('on');}
+    updateSrcNote();
+  }
+  if(S.expActive){
+    const ep=document.getElementById('exp-panel');
+    if(ep){ep.style.display='block';document.getElementById('tog-exp').classList.add('on');}
+    selExpTone(S.expTone||'auto');
+  }
+  if(S.antiActive){
+    const ap=document.getElementById('anti-panel');
+    if(ap){ap.style.display='block';document.getElementById('tog-anti').classList.add('on');}
+    selAnti(S.antiLevel||'med');
+  }
+  // pov siempre restaurar visual aunque el panel esté cerrado
+  selPov(S.pov||'yo');
 })();
 
 function save(){try{localStorage.setItem('th3',JSON.stringify(S));}catch(e){}}
+
+// ═══ PREMIUM EXPIRY CHECK ═══
+function checkPremiumExpiry(){
+  if(S.plan !== 'premium' || !S.premiumUntil) return;
+  const now = new Date();
+  const until = new Date(S.premiumUntil);
+  const diffMs = until - now;
+  const diffDays = diffMs / (1000*3600*24);
+
+  const bar = document.getElementById('renew-bar');
+  if(diffMs <= 0){
+    // Ya venció → degradar a free sin tocar el servidor
+    S.plan = 'free'; S.premiumUntil = null;
+    save(); refreshUsage();
+    toast('Tu Premium ha vencido. ¡Renueva para seguir sin límites!','w');
+    bar.classList.remove('show');
+    return;
+  }
+  if(diffDays <= 3){
+    // Aviso 3 días antes
+    const d = Math.ceil(diffDays);
+    document.getElementById('renew-title').textContent = `Tu Premium vence en ${d} día${d!==1?'s':''}`;
+    document.getElementById('renew-sub').textContent = `Renueva ahora para no perder el acceso ilimitado.`;
+    bar.classList.add('show');
+    document.getElementById('upgrade-btn').textContent = '🔄 Renovar Premium';
+    document.getElementById('upgrade-btn').onclick = openPayModal;
+  }
+}
 
 async function verifySession(){
   try{
     const r=await api('/status',{token:S.token});
     applyServerData(r);
+    checkPremiumExpiry();
   }catch(e){
     if(e.message==='Sesión expirada'||e.message==='Sin token'){
       S.token=null;save();
@@ -847,81 +1076,110 @@ function closeDropAndNav(id){
   doNav(id);
 }
 
-// ═══ AUTH ═══
+// ═══ AUTH — FIX COMPLETO ═══
 let authMode='register';
+
 function openModal(mode){
   if(typeof mode==='string'&&(mode==='login'||mode==='register')){
     authMode=mode;
     const r=mode==='register';
-    document.getElementById('m-title').textContent=r?'Crea tu cuenta gratis':'Bienvenido de vuelta';
-    document.getElementById('m-sub').textContent=r?'Únete y humaniza textos con el toque de tu país.':'Inicia sesión para continuar.';
-    document.getElementById('m-name').style.display=r?'block':'none';
-    document.getElementById('m-submit').textContent=r?'Crear cuenta gratis':'Iniciar sesión';
-    document.getElementById('m-switch').innerHTML=r
-      ?'¿Ya tienes cuenta? <a onclick="switchAuthMode(\'login\')">Inicia sesión</a>'
-      :'¿No tienes cuenta? <a onclick="switchAuthMode(\'register\')">Regístrate gratis</a>';
+
+    document.getElementById('m-title').textContent = r ? 'Crea tu cuenta gratis' : 'Bienvenido de vuelta';
+    document.getElementById('m-sub').textContent = r
+      ? 'Crea tu cuenta con correo y contraseña. Guárdala bien, la necesitarás para volver a entrar.'
+      : 'Ingresa con el correo y contraseña que usaste al registrarte.';
+
+    // Nombre: solo en registro
+    document.getElementById('m-name').style.display = r ? 'block' : 'none';
+    document.getElementById('m-name').required = r;
+
+    // Info boxes
+    document.getElementById('m-info-reg').className = 'info-box ' + (r ? 'show' : '');
+    document.getElementById('m-info-login').className = 'info-box ' + (!r ? 'show' : '');
+
+    // Forgot password link
+    document.getElementById('m-forgot').style.display = r ? 'none' : 'block';
+
+    document.getElementById('m-submit').textContent = r ? 'Crear cuenta gratis' : 'Iniciar sesión';
+    document.getElementById('m-switch').innerHTML = r
+      ? '¿Ya tienes cuenta? <a onclick="switchAuthMode(\'login\')">Inicia sesión</a>'
+      : '¿No tienes cuenta? <a onclick="switchAuthMode(\'register\')">Regístrate gratis</a>';
+
+    // Limpiar campos
+    document.getElementById('m-email').value = '';
+    document.getElementById('m-pass').value = '';
+    if(r) document.getElementById('m-name').value = '';
+
     document.getElementById('auth-ov').classList.add('open');
   }
 }
+
+function togglePass(){
+  const inp = document.getElementById('m-pass');
+  const lbl = document.getElementById('pass-label');
+  const eye = document.getElementById('pass-eye');
+  if(inp.type==='password'){ inp.type='text'; lbl.textContent='Ocultar contraseña'; eye.textContent='🙈'; }
+  else { inp.type='password'; lbl.textContent='Mostrar contraseña'; eye.textContent='👁️'; }
+}
+
+function openForgot(){
+  closeModal('auth-ov');
+  if(S.user) document.getElementById('forgot-email').value = S.user.email||'';
+  else document.getElementById('forgot-email').value = document.getElementById('m-email').value||'';
+  setTimeout(()=>document.getElementById('forgot-ov').classList.add('open'), 150);
+}
+
+function sendForgot(){
+  const email = document.getElementById('forgot-email').value.trim();
+  if(!email){ toast('Ingresa tu correo','w'); return; }
+  const subject = encodeURIComponent('TextHuman — Recuperación de contraseña');
+  const body = encodeURIComponent('Hola, olvidé mi contraseña.\nMi correo registrado es: '+email+'\n\nFavor de ayudarme a recuperarla.\n\nGracias.');
+  window.open('mailto:mirandavilla341@gmail.com?subject='+subject+'&body='+body,'_blank');
+  closeModal('forgot-ov');
+  toast('Solicitud enviada. Te responderemos pronto 📬','s');
+}
+
 function switchAuthMode(mode){
   document.getElementById('auth-ov').classList.remove('open');
   setTimeout(()=>openModal(mode),150);
 }
-function closeModal(id){document.getElementById(id).classList.remove('open');}
 
-function loginGoogle(){
-  const nameInp=document.getElementById('m-name');
-  const emailInp=document.getElementById('m-email');
-  const name=nameInp.value.trim();
-  const email=emailInp.value.trim();
-  if(!name){toast('Escribe tu nombre primero','w');nameInp.style.display='block';nameInp.focus();return;}
-  const fakeEmail=email||(name.toLowerCase().replace(/\s+/g,'.')+'@gmail.com');
-  const fakePass='google_'+Math.random().toString(36).slice(2);
-  doRegisterOrLogin(name,fakeEmail,fakePass);
-}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
 
 async function submitAuth(){
   const email=document.getElementById('m-email').value.trim();
-  const name=document.getElementById('m-name').value.trim();
   const pass=document.getElementById('m-pass').value;
-  if(!email){toast('Ingresa tu correo','w');return;}
+
+  if(!email){ toast('Ingresa tu correo','w'); return; }
+  if(!pass || pass.length<6){ toast('La contraseña debe tener al menos 6 caracteres','w'); return; }
+
   if(authMode==='register'){
-    if(!name){toast('Ingresa tu nombre','w');return;}
-    if(pass.length<6){toast('Contraseña: mínimo 6 caracteres','w');return;}
+    const name=document.getElementById('m-name').value.trim();
+    if(!name){ toast('Ingresa tu nombre','w'); return; }
     const btn=document.getElementById('m-submit');
-    btn.textContent='Creando cuenta...';btn.disabled=true;
+    btn.textContent='Creando cuenta...'; btn.disabled=true;
     try{
       const r=await api('/register',{name,email,password:pass});
       finishLogin(r);
     }catch(e){
       toast(e.message,'e');
-    }finally{btn.textContent='Crear cuenta gratis';btn.disabled=false;}
+    }finally{ btn.textContent='Crear cuenta gratis'; btn.disabled=false; }
   } else {
     const btn=document.getElementById('m-submit');
-    btn.textContent='Entrando...';btn.disabled=true;
+    btn.textContent='Entrando...'; btn.disabled=true;
     try{
       const r=await api('/login',{email,password:pass});
       finishLogin(r);
     }catch(e){
-      toast(e.message,'e');
-    }finally{btn.textContent='Iniciar sesión';btn.disabled=false;}
+      // Mensaje más claro
+      if(e.message.toLowerCase().includes('contraseña') || e.message.toLowerCase().includes('incorrect') || e.message.toLowerCase().includes('invalid')){
+        toast('Correo o contraseña incorrectos. ¿Olvidaste tu contraseña?','e');
+        document.getElementById('m-forgot').style.display='block';
+      } else {
+        toast(e.message,'e');
+      }
+    }finally{ btn.textContent='Iniciar sesión'; btn.disabled=false; }
   }
-}
-
-async function doRegisterOrLogin(name,email,pass){
-  const btn=document.getElementById('m-submit');
-  btn.textContent='Entrando...';btn.disabled=true;
-  try{
-    let r;
-    try{ r=await api('/register',{name,email,password:pass}); }
-    catch(e){
-      if(e.message.includes('ya está registrado')){
-        r=await api('/login',{email,password:pass});
-      } else throw e;
-    }
-    finishLogin(r);
-  }catch(e){toast(e.message,'e');}
-  finally{btn.textContent='Crear cuenta gratis';btn.disabled=false;}
 }
 
 function finishLogin(r){
@@ -931,6 +1189,7 @@ function finishLogin(r){
   const firstName=(S.user?.name||'').split(' ')[0];
   toast('¡Bienvenido, '+firstName+'! 🎉','s');
   showPage('app');
+  checkPremiumExpiry();
 }
 
 function applyUserUI(showT){
@@ -949,7 +1208,8 @@ function applyUserUI(showT){
 function logout(){
   S={token:null,user:null,plan:'free',premiumUntil:null,txtLeft:5,filLeft:2,accelLeft:3,
     blocked:false,blockedUntil:null,fileBlocked:false,fileBlockedUntil:null,
-    purpose:S.purpose,level:S.level,country:S.country,lang:S.lang};
+    purpose:S.purpose,level:S.level,country:S.country,lang:S.lang,
+    sources:[],expActive:false,expTone:'auto',antiActive:false,antiLevel:'med',pov:'yo'};
   save();
   document.getElementById('nav-guest').style.display='flex';
   document.getElementById('nav-user').style.display='none';
@@ -957,6 +1217,131 @@ function logout(){
   toast('Sesión cerrada','s');
 }
 function toggleDrop(){document.getElementById('dm').classList.toggle('open');}
+
+// ═══ SECCIÓN AVANZADA: toggle panels ═══
+function toggleAdv(key){
+  const panel = document.getElementById(key+'-panel');
+  const btn = document.getElementById('tog-'+key);
+  const open = panel.style.display === 'none';
+  panel.style.display = open ? 'block' : 'none';
+  btn.classList.toggle('on', open);
+  if(open){
+    if(key==='exp'){ selExpTone(S.expTone||'auto'); S.expActive=true; }
+    if(key==='anti'){ selAnti(S.antiLevel||'med'); S.antiActive=true; }
+    if(key==='pov'){ selPov(S.pov||'yo'); }
+    if(key==='src'){ updateSrcNote(); }
+  } else {
+    if(key==='exp') S.expActive=false;
+    if(key==='anti') S.antiActive=false;
+  }
+  save();
+}
+
+function selExpTone(t){
+  S.expTone=t; save();
+  ['auto','pos','neg','neu'].forEach(x=>{
+    const el=document.getElementById('exp-'+x);
+    if(el) el.classList.toggle('sel', x===t);
+  });
+}
+
+function toggleSrc(key){
+  if(!S.sources) S.sources=[];
+  const idx = S.sources.indexOf(key);
+  if(idx>=0) S.sources.splice(idx,1);
+  else S.sources.push(key);
+  save();
+  const btn = document.getElementById('src-'+key);
+  if(btn) btn.classList.toggle('sel', S.sources.includes(key));
+  updateSrcNote();
+}
+
+function updateSrcNote(){
+  const note = document.getElementById('src-note');
+  const listEl = document.getElementById('src-list-display');
+  const customVal = (document.getElementById('src-custom')?.value||'').trim();
+  const allLabels = (S.sources||[]).map(k => SOURCES[k]?.label || k);
+  if(customVal) allLabels.push('"'+customVal+'"');
+  if(allLabels.length===0){ note.style.display='none'; return; }
+  listEl.textContent = allLabels.join(', ');
+  note.style.display = 'block';
+}
+
+function selAnti(l){
+  S.antiLevel=l; save();
+  ['low','med','high'].forEach(x=>{
+    const el=document.getElementById('anti-'+x);
+    if(el) el.classList.toggle('sel', x===l);
+  });
+}
+
+function selPov(p){
+  S.pov=p; save();
+  ['yo','dupla','equipo','grupo','imp'].forEach(x=>{
+    const el=document.getElementById('pov-'+x);
+    if(el) el.classList.toggle('sel', x===p);
+  });
+}
+
+function buildSourcesPrompt(){
+  const srcs = S.sources||[];
+  const customSrc = (document.getElementById('src-custom')?.value||'').trim();
+  if(srcs.length===0 && !customSrc) return '';
+  const allPhrases = srcs.flatMap(k => SOURCES[k]?.phrases || []);
+  const srcLabels = srcs.map(k=>SOURCES[k]?.label||k);
+  if(customSrc) srcLabels.push(customSrc);
+  const samplePhrases = allPhrases.slice(0,5).join('", "');
+  return `
+FUENTES DE RELLENO: El alumno consultó: ${srcLabels.join(', ')}.
+Integra naturalmente 1-3 referencias a estas fuentes usando frases como: "${samplePhrases}".
+Que suene orgánico, nunca al inicio de párrafo ni forzado.`;
+}
+
+function buildExpPrompt(){
+  if(!S.expActive) return '';
+  const custom = (document.getElementById('exp-custom')?.value||'').trim();
+  const toneMap = {
+    auto: 'Detecta el tono del texto y elige experiencias que encajen: si es tema difícil → dificultad/esfuerzo; si es positivo/interesante → entusiasmo; si es neutro → curiosidad.',
+    pos: 'Usa experiencias POSITIVAS o entusiastas: "me pareció muy interesante", "me sorprendió mucho", "la verdad me gustó bastante entender esto".',
+    neg: 'Usa experiencias de DIFICULTAD o esfuerzo: "al inicio no entenía nada y tuve que releerlo", "fue difícil pero lo logré", "me costó bastante pero al final lo entendí".',
+    neu: 'Usa experiencias NEUTRALES o de curiosidad: "me generó curiosidad", "quise saber más", "me pareció interesante aunque al principio no lo veía tan claro".'
+  };
+  let prompt = `
+EXPERIENCIAS PERSONALES: ${toneMap[S.expTone||'auto']}
+Agrega 1-2 frases de experiencia personal que fluyan naturalmente en el texto.
+NUNCA las pongas como listas ni como oración aparte aislada — deben integrarse dentro de los párrafos.`;
+  if(custom){
+    prompt += `
+ADEMÁS, incluye esta experiencia personal real del alumno de forma natural: "${custom}"`;
+  }
+  return prompt;
+}
+
+function buildAntiPrompt(){
+  if(!S.antiActive) return '';
+  const countMap = {low:'1-2', med:'3-4', high:'5-6'};
+  const phrases = ['"según entendí"','"a mi parecer"','"lo que yo interpreto es que"',
+    '"pienso que"','"creo que"','"lo que entendí cuando leí esto fue que"',
+    '"en mi opinión"','"según lo que comprendí"','"me parece que"',
+    '"lo que yo concluyo es"','"si no me equivoco"','"según lo que analizé"'];
+  return `
+ANTIA PRO — HUMILDAD EPISTÉMICA: Incluye exactamente ${countMap[S.antiLevel||'med']} frases de estas (o similares naturales):
+${phrases.join(', ')}.
+REGLAS: (1) Distriibúyelas en distintos párrafos, no juntas. (2) Que encajen con el contenido. (3) Varía las frases.`;
+}
+
+function buildPovPrompt(){
+  const povMap = {
+    yo:     'Escribe en PRIMERA PERSONA SINGULAR: "yo entendí", "a mí me pareció", "lo que yo analizé", "según lo que estudié".',
+    dupla:  'Escribe en PRIMERA PERSONA PLURAL DE DUPLA/PAREJA: "mi compañero/a y yo", "nosotros analizamos", "entre los dos concluimos".',
+    equipo: 'Escribe en PRIMERA PERSONA PLURAL DE EQUIPO: "en nuestro equipo", "como equipo concluimos", "lo que analizamos fue".',
+    grupo:  'Escribe en PRIMERA PERSONA PLURAL DE GRUPO/CLASE: "en clase vimos", "el grupo concluyó", "como grupo aprendimos".',
+    imp:    'Escribe en forma IMPERSONAL: "se puede observar", "se concluye que", "se evidencia que", sin hablar en primera persona.'
+  };
+  const pov = S.pov||'yo';
+  return `
+PERSPECTIVA: ${povMap[pov]}`;
+}
 
 // ═══ CONFIG ═══
 function buildCountries(){
@@ -1018,6 +1403,13 @@ async function doHumanize(){
     semi: 'El texto es para una tarea escolar, resumen o presentación. Debe sonar como un estudiante que entiende el tema y lo explica con sus propias palabras.',
     casual: 'El texto es para uso personal: reflexión, explicación a un amigo, comentario de clase. Debe sonar completamente coloquial y humano.'
   };
+
+  // ═══ PROMPTS AVANZADOS ═══
+  const sourcesPrompt = buildSourcesPrompt();
+  const expPrompt = buildExpPrompt();
+  const antiPrompt = buildAntiPrompt();
+  const povPrompt = buildPovPrompt();
+
   const experienceHints = S.purpose ? `
 CONTEXTO DEL TEXTO (${S.purpose}): ${purposeCtx[S.purpose]||purposeCtx.formal}
 Dado este contexto, cuando sea natural y apropiado puedes agregar frases de experiencia personal como:
@@ -1045,6 +1437,7 @@ APLICA estas reglas de humanización:
 - Si el texto tiene una conclusión, intégrala naturalmente al último párrafo sin anunciarla
 - Si tiene listas, conviértelas en texto corrido: "primero X, después Y, y por último Z"
 ${experienceHints}
+${sourcesPrompt}${expPrompt}${antiPrompt}${povPrompt}
 
 RESULTADO: Devuelve SOLO el texto humanizado. Sin explicaciones, sin comentarios, sin introducción tuya.`;
 
@@ -1054,7 +1447,6 @@ RESULTADO: Devuelve SOLO el texto humanizado. Sin explicaciones, sin comentarios
   document.getElementById('btncpy').style.display='none';
   try{
     const d=await api('/humanize',{token:S.token, text, system:sys});
-    // Actualizar estado desde respuesta del servidor
     if(d.isPremium!==undefined) S.plan=d.isPremium?'premium':'free';
     if(d.txtLeft!==undefined) S.txtLeft=d.txtLeft;
     if(d.txtLeft===0){
@@ -1178,7 +1570,18 @@ function doCopy(){
 
 // ═══ PAYMENT ═══
 function openPayModal(){
-  if(S.user)document.getElementById('pay-email').value=S.user.email||'';
+  if(S.user) document.getElementById('pay-email').value=S.user.email||'';
+  // Mostrar info de renovación si ya es premium
+  const renewInfo = document.getElementById('renew-info');
+  if(S.plan==='premium' && S.premiumUntil){
+    document.getElementById('renew-date').textContent = new Date(S.premiumUntil).toLocaleDateString('es-MX',{day:'2-digit',month:'long',year:'numeric'});
+    renewInfo.style.display='block';
+    document.getElementById('pay-subtitle').textContent='Renovar Premium · $7.99 USD / 30 días más';
+  } else {
+    renewInfo.style.display='none';
+    document.getElementById('pay-subtitle').textContent='Premium · $7.99 USD / mes · Cancela cuando quieras';
+  }
+  document.getElementById('ya-pague-premium-btn').style.display='none';
   document.getElementById('pay-ov').classList.add('open');
 }
 function fmtCard(el){el.value=el.value.replace(/\D/g,'').substring(0,16).replace(/(.{4})/g,'$1 ').trim();}
@@ -1193,7 +1596,10 @@ function procPay(){
 }
 function ppGo(){
   window.open('https://www.paypal.me/mirandavilla341/7.99USD','_blank');
-  setTimeout(()=>{document.getElementById('ya-pague-premium-btn').style.display='block';},1500);
+  setTimeout(()=>{
+    document.getElementById('ya-pague-premium-btn').style.display='block';
+    document.getElementById('pay-ov').classList.add('open');
+  },1500);
   toast('Completa el pago en PayPal y regresa aquí','s');
 }
 async function confirmPremiumPayment(){
@@ -1214,10 +1620,13 @@ function activatePremiumUI(){
   document.getElementById('nav-badge').className='plan-badge bpr';
   document.getElementById('u-plan').textContent='Premium ⚡';
   document.getElementById('bbar').style.display='none';
+  document.getElementById('renew-bar').classList.remove('show');
   document.getElementById('btn-fplan').textContent='Plan anterior';
   document.getElementById('btn-bplan').textContent='✓ Plan activo';
   document.getElementById('btn-bplan').className='bpl curr';
   document.getElementById('pnote').textContent='Plan Premium: sin límites ✨';
+  document.getElementById('upgrade-btn').textContent='⚡ Ir Premium';
+  document.getElementById('upgrade-btn').onclick=()=>doNav('plans');
   refreshUsage();fillProfile();
   toast('¡Bienvenido a Premium! 🚀 Todo desbloqueado.','s');
   doNav('app');
@@ -1236,7 +1645,8 @@ function refreshUsage(){
     document.getElementById('u-ffill').className='uf fg';
     if(S.premiumUntil){
       const days=Math.ceil((new Date(S.premiumUntil)-new Date())/(1000*3600*24));
-      document.getElementById('pnote').textContent='Premium activo · vence en '+days+' día'+(days!==1?'s':'');
+      if(days>0) document.getElementById('pnote').textContent='Premium activo · vence en '+days+' día'+(days!==1?'s':'');
+      else document.getElementById('pnote').textContent='Premium activo ✨';
     }
     return;
   }
@@ -1262,10 +1672,18 @@ function fillProfile(){
   document.getElementById('pr-ctry').innerHTML=(c?c.flag+' '+c.name:'No seleccionado')+' <button class="bsm" onclick="doNav(\'app\')">Cambiar</button>';
   document.getElementById('pr-plan').textContent=S.plan==='premium'?'⚡ Premium':'Gratis';
   document.getElementById('pr-plan').style.color=S.plan==='premium'?'var(--green)':'var(--accent2)';
-  if(S.premiumUntil&&S.plan==='premium'){
+
+  // Fecha de vencimiento
+  const expiryEl = document.getElementById('pr-expiry');
+  if(S.premiumUntil && S.plan==='premium'){
     const days=Math.ceil((new Date(S.premiumUntil)-new Date())/(1000*3600*24));
+    const dateStr = new Date(S.premiumUntil).toLocaleDateString('es-MX',{day:'2-digit',month:'long',year:'numeric'});
     document.getElementById('pr-plan').textContent='⚡ Premium · vence en '+days+' día'+(days!==1?'s':'');
+    expiryEl.innerHTML=dateStr+' <button class="bsm" onclick="openPayModal()" style="border-color:var(--green);color:var(--green)">🔄 Renovar</button>';
+  } else {
+    expiryEl.textContent = S.plan==='premium' ? 'Activo' : '—';
   }
+
   document.getElementById('pr-ta').textContent=S.plan==='premium'?'∞':Math.max(0,S.txtLeft)+' / 5';
   document.getElementById('pr-fa').textContent=S.plan==='premium'?'∞':Math.max(0,S.filLeft)+' / 2';
   document.getElementById('pr-ac').textContent=S.accelLeft+' / 3';
