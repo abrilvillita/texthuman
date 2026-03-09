@@ -336,12 +336,13 @@ textarea.ta::placeholder{color:var(--text3)}
   border:1px solid rgba(124,92,252,.3);pointer-events:all;cursor:pointer}
 .prem-lock-wrap{position:relative;border-radius:12px;overflow:hidden}
 .prem-lock-wrap .prem-lock-btn{position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;background:rgba(10,10,18,.75);
-  border-radius:12px;cursor:pointer;z-index:10;gap:6px;
-  border:1px solid rgba(124,92,252,.25);backdrop-filter:blur(2px)}
-.prem-lock-wrap .prem-lock-btn span:first-child{font-size:22px}
-.prem-lock-wrap .prem-lock-btn span:last-child{font-size:12px;font-weight:700;
-  color:var(--accent3);letter-spacing:.3px}
+  align-items:center;justify-content:center;background:rgba(10,10,18,.55);
+  border-radius:12px;cursor:pointer;z-index:10;gap:8px;
+  border:1px solid rgba(124,92,252,.4);backdrop-filter:blur(1px)}
+.prem-lock-wrap .prem-lock-btn span:first-child{font-size:26px}
+.prem-lock-wrap .prem-lock-btn span:last-child{font-size:13px;font-weight:700;
+  color:#fff;letter-spacing:.3px;background:rgba(124,92,252,.7);
+  padding:4px 12px;border-radius:20px}
 </style>
 <script>
 // Stubs para botones que se clickean antes de que cargue el JS principal
@@ -381,8 +382,8 @@ textarea.ta::placeholder{color:var(--text3)}
       <option value="pt">🌐 Português</option>
       <option value="fr">🌐 Français</option>
     </select>
-    <button class="btn btn-g" onclick="openModal('login')">Entrar</button>
-    <button class="btn btn-p" onclick="openModal('register')">Registro gratis</button>
+    <button class="btn btn-g" onclick="openModal('login')" class="btn btn-g nav-login-btn">Entrar</button>
+    <button class="btn btn-p" onclick="openModal('register')" class="btn btn-p nav-reg-btn">Registro gratis</button>
   </div>
   <div class="nav-r" id="nav-user" style="display:none">
     <select class="lang-sel" onchange="changeLang(this.value)" id="ls2">
@@ -467,23 +468,23 @@ textarea.ta::placeholder{color:var(--text3)}
 
   <div class="cfg">
     <div class="ct">⚙ Configuración de humanización</div>
-    <div class="sl">📌 ¿Para qué será tu texto?</div>
+    <div class="sl" id="cfg-purpose-lbl">📌 ¿Para qué será tu texto?</div>
     <div class="pg">
       <div class="pc" id="pur-formal" onclick="selPur('formal')">
         <div class="pck">✓</div>
-        <div class="pct">🎓 Académico / Profesional</div>
+        <div class="pct" id="pur-formal-lbl">🎓 Académico / Profesional</div>
         <div class="pcr">Recomendamos: Algo formal pero humano</div>
         <div class="pci">• Ensayos universitarios<br>• Informes y reportes<br>• Artículos de opinión<br>• Cartas formales<br>• Documentos profesionales<br>• Tesis y trabajos finales<br>• Conclusiones de proyectos<br>• Reportes académicos</div>
       </div>
       <div class="pc" id="pur-semi" onclick="selPur('semi')">
         <div class="pck">✓</div>
-        <div class="pct">📋 Escolar / Informativo</div>
+        <div class="pct" id="pur-semi-lbl">📋 Escolar / Informativo</div>
         <div class="pcr">Recomendamos: Informal pero aprobatorio</div>
         <div class="pci">• Resúmenes y notas<br>• Presentaciones PPT<br>• Explicaciones de tareas<br>• Foros escolares<br>• Blogs informativos<br>• Parafraseo de textos<br>• Descripciones de proyectos<br>• Notas de estudio</div>
       </div>
       <div class="pc" id="pur-casual" onclick="selPur('casual')">
         <div class="pck">✓</div>
-        <div class="pct">💬 Personal / Explicativo</div>
+        <div class="pct" id="pur-casual-lbl">💬 Personal / Explicativo</div>
         <div class="pcr">Recomendamos: Casual y coloquial</div>
         <div class="pci">• Reflexiones personales<br>• Comentarios de lectura<br>• Discusiones en clase<br>• Explicar temas a un amigo<br>• Conclusiones personales<br>• Respuestas desarrolladas<br>• Resúmenes explicativos<br>• Participaciones en clase</div>
       </div>
@@ -499,7 +500,7 @@ textarea.ta::placeholder{color:var(--text3)}
       <div style="opacity:.4;pointer-events:none;padding:12px">
 
       <!-- 1. EXPERIENCIAS -->
-      <div class="sl">🎭 Experiencias <span style="color:var(--text3);font-weight:400;font-size:12px">(opcional · la IA decide el tono según el texto)</span></div>
+      <div class="sl" id="adv-exp-lbl-wrap">🎭 <span id="adv-exp-lbl">Experiencias</span> <span style="color:var(--text3);font-weight:400;font-size:12px">(opcional · la IA decide el tono según el texto)</span></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
         <button class="adv-tog" id="tog-exp" onclick="toggleAdv('exp')">🎭 Agregar experiencias personales</button>
       </div>
@@ -519,7 +520,7 @@ textarea.ta::placeholder{color:var(--text3)}
       </div>
 
       <!-- 2. FUENTES DE RELLENO -->
-      <div class="sl" style="margin-top:16px">📚 Fuentes de relleno <span style="color:var(--text3);font-weight:400;font-size:12px">(opcional · puedes elegir varias)</span></div>
+      <div class="sl" style="margin-top:16px" id="adv-src-lbl-wrap">📚 <span id="adv-src-lbl">Fuentes de relleno</span> <span style="color:var(--text3);font-weight:400;font-size:12px">(opcional · puedes elegir varias)</span></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
         <button class="adv-tog" id="tog-src" onclick="toggleAdv('src')">📚 Agregar fuentes</button>
       </div>
@@ -545,7 +546,7 @@ textarea.ta::placeholder{color:var(--text3)}
       </div>
 
       <!-- 3. ANTIA PRO -->
-      <div class="sl" style="margin-top:16px">🛡️ AntiIA Pro <span style="color:var(--text3);font-weight:400;font-size:12px">(opcional · reduce drásticamente la detección)</span></div>
+      <div class="sl" style="margin-top:16px" id="adv-anti-lbl-wrap">🛡️ <span id="adv-anti-lbl">AntiIA Pro</span> <span style="color:var(--text3);font-weight:400;font-size:12px">(opcional · reduce drásticamente la detección)</span></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
         <button class="adv-tog" id="tog-anti" onclick="toggleAdv('anti')">🛡️ Activar AntiIA Pro</button>
       </div>
@@ -563,7 +564,7 @@ textarea.ta::placeholder{color:var(--text3)}
       </div>
 
       <!-- 4. PERSPECTIVA -->
-      <div class="sl" style="margin-top:16px">👤 Perspectiva del texto <span style="color:var(--text3);font-weight:400;font-size:12px">(opcional)</span></div>
+      <div class="sl" style="margin-top:16px" id="adv-pov-lbl-wrap">👤 <span id="adv-pov-lbl">Perspectiva del texto</span> <span style="color:var(--text3);font-weight:400;font-size:12px">(opcional)</span></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
         <button class="adv-tog" id="tog-pov" onclick="toggleAdv('pov')">👤 Elegir perspectiva</button>
       </div>
@@ -582,13 +583,13 @@ textarea.ta::placeholder{color:var(--text3)}
     </div><!-- /adv-lock-wrap preview -->
     </div><!-- /adv-section -->
 
-    <div class="sl">🎚️ Nivel de formalidad</div>
+    <div class="sl" id="cfg-level-lbl">🎚️ Nivel de formalidad</div>
     <div class="lt">
       <button class="ltb active" onclick="selLvl('formal',this)">Algo formal pero humano</button>
       <button class="ltb" onclick="selLvl('semi',this)">Informal pero aprobatorio</button>
       <button class="ltb" onclick="selLvl('casual',this)">Casual y coloquial</button>
     </div>
-    <div class="sl">🌍 País de referencia</div>
+    <div class="sl" id="cfg-country-lbl">🌍 País de referencia</div>
     <div class="cg" id="ctry-grid"></div>
     <div class="nw" id="nwarn">⚠️ Sin país, el texto puede sonar menos natural. Recomendamos elegir uno.</div>
   </div>
@@ -608,7 +609,7 @@ textarea.ta::placeholder{color:var(--text3)}
            ondragleave="this.classList.remove('drag')"
            ondrop="dropF(event)">
         <div class="ui2">📎</div>
-        <div class="ut2">Sube un archivo para humanizar</div>
+        <div class="ut2" id="upload-title-lbl">Sube un archivo para humanizar</div>
         <div class="uf2">PDF · DOCX · PPTX · TXT</div>
       </div>
       <input type="file" id="fi" accept=".pdf,.docx,.pptx,.txt" onchange="handleF(event)" style="display:none">
@@ -652,34 +653,35 @@ textarea.ta::placeholder{color:var(--text3)}
   </div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
     <button class="btn btn-p" onclick="doNav('plans')">⚡ Ver planes</button>
-    <button class="btn btn-g" onclick="doNav('app')">← Volver al inicio</button>
+    <button class="btn btn-g" onclick="doNav('app')">← Regresar</button>
     <button class="btn btn-g" onclick="logout()">🚪 Cerrar sesión</button>
   </div>
 </div>
 
 <!-- PLANS -->
 <div id="p-plans" class="page">
-  <div class="plt">Elige tu plan</div>
-  <p class="pls">Comienza gratis, pasa a premium cuando lo necesites.</p>
+  <button onclick="doNav('app')" style="background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;margin-bottom:16px;font-family:'DM Sans',sans-serif" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">← Regresar</button>
+  <div class="plt" id="plans-title">Elige tu plan</div>
+  <p class="pls" id="plans-sub">Comienza gratis, pasa a premium cuando lo necesites.</p>
   <div class="plg">
     <div class="plc">
-      <div class="pln">Gratis</div>
+      <div class="pln" id="free-plan-name">Gratis</div>
       <div class="plp"><sup>$</sup>0<sub>/mes</sub></div>
-      <div class="pld">Para probar la herramienta ocasionalmente.</div>
+      <div class="pld" id="free-plan-desc">Para probar la herramienta ocasionalmente.</div>
       <ul class="plf">
-        <li>Hasta 150 palabras por texto</li>
-        <li>2 intentos de texto cada 24h</li>
+        <li id="feat-words">Hasta 150 palabras por texto</li>
+        <li id="feat-txt">2 intentos de texto cada 24h</li>
         <li>2 archivos por día</li>
         <li>3 niveles de formalidad</li>
-        <li>3 aceleraciones de espera ($1.99 c/u)</li>
-        <li class="no">Textos y archivos ilimitados</li>
-        <li class="no">Exportar como PDF/DOCX</li>
-        <li class="no">Historial de humanizaciones</li>
+        <li id="feat-accel">3 aceleraciones de espera ($1.99 c/u)</li>
+        <li class="no" id="feat-unlimited">Textos y archivos ilimitados</li>
+        <li class="no" id="feat-export">Exportar como PDF/DOCX</li>
+        <li class="no" id="feat-history">Historial de humanizaciones</li>
       </ul>
       <button class="bpl curr" id="btn-fplan">Plan actual</button>
     </div>
     <div class="plc feat">
-      <div class="pln">Premium</div>
+      <div class="pln" id="prem-plan-name">Premium</div>
       <div class="plp"><sup>$</sup>7.99<sub>/mes</sub></div>
       <div class="pld">Para quienes necesitan humanizar textos a diario, sin límites.</div>
       <ul class="plf">
@@ -968,10 +970,70 @@ const SOURCES = {
 };
 
 const LANGS={
-  es:{hum:'✨ Humanizar texto',lim:'Plan gratis: hasta 150 palabras',sub:'¿Qué texto humanizamos hoy?'},
-  en:{hum:'✨ Humanize text',lim:'Free plan: up to 150 words',sub:'What text shall we humanize today?'},
-  pt:{hum:'✨ Humanizar texto',lim:'Plano grátis: até 150 palavras',sub:'Qual texto vamos humanizar hoje?'},
-  fr:{hum:'✨ Humaniser le texte',lim:'Plan gratuit: jusqu\'à 150 mots',sub:'Quel texte allons-nous humaniser?'},
+  es:{hum:'✨ Humanizar texto',lim:'Plan gratis: hasta 150 palabras',sub:'¿Qué texto humanizamos hoy?',
+    nav_login:'Entrar',nav_reg:'Registro gratis',nav_plans:'Planes',nav_profile:'Mi perfil',nav_logout:'Cerrar sesión',
+    plans_title:'Elige tu plan',plans_sub:'Comienza gratis, pasa a premium cuando lo necesites.',
+    free_name:'Gratis',prem_name:'Premium',free_desc:'Para probar la herramienta ocasionalmente.',
+    prem_desc:'Para quien necesita humanizar sin límites.',
+    feat_words:'Hasta 150 palabras por texto',feat_txt:'2 intentos de texto cada 24h',
+    feat_files:'1 archivo por día',feat_accel:'3 aceleraciones de espera ($1.99 c/u)',
+    feat_unlimited:'Textos y archivos ilimitados',feat_export:'Exportar como PDF/DOCX',feat_history:'Historial de humanizaciones',
+    btn_current:'Plan actual',btn_get:'🚀 Obtener Premium — $7.99 USD/mes',
+    inp_ph:'Pega aquí el texto que quieres humanizar...',out_ph:'Aquí aparecerá tu texto humanizado',
+    btn_copy:'📋 Copiar',cfg_purpose:'📌 ¿Para qué será tu texto?',cfg_level:'🎚️ Nivel de formalidad',cfg_country:'🌍 País de referencia',
+    pur_formal:'🎓 Académico / Profesional',pur_semi:'📋 Escolar / Informativo',pur_casual:'💬 Personal / Explicativo',
+    lvl_formal:'Algo formal pero humano',lvl_semi:'Informal pero aprobatorio',lvl_casual:'Casual y coloquial',
+    upload_title:'Sube un archivo para humanizar',blocked_title:'Límite alcanzado',blocked_sub:'Se restablece en',
+    accel_btn:'⚡ Reducir a 1h — $1.99 USD',upgrade_btn:'⚡ Ir Premium',wcnt_lbl:'palabras',
+    adv_exp:'🎭 Experiencias',adv_src:'📚 Fuentes de relleno',adv_anti:'🛡️ AntiIA Pro',adv_pov:'👤 Perspectiva del texto'},
+  en:{hum:'✨ Humanize text',lim:'Free plan: up to 150 words',sub:'What text shall we humanize today?',
+    nav_login:'Sign in',nav_reg:'Register free',nav_plans:'Plans',nav_profile:'My profile',nav_logout:'Sign out',
+    plans_title:'Choose your plan',plans_sub:'Start free, go premium when you need it.',
+    free_name:'Free',prem_name:'Premium',free_desc:'For occasional use of the tool.',
+    prem_desc:'For those who need to humanize without limits.',
+    feat_words:'Up to 150 words per text',feat_txt:'2 text attempts per day',
+    feat_files:'1 file per day',feat_accel:'3 speed-ups ($1.99 each)',
+    feat_unlimited:'Unlimited texts and files',feat_export:'Export as PDF/DOCX',feat_history:'Humanization history',
+    btn_current:'Current plan',btn_get:'🚀 Get Premium — $7.99 USD/mo',
+    inp_ph:'Paste the text you want to humanize here...',out_ph:'Your humanized text will appear here',
+    btn_copy:'📋 Copy',cfg_purpose:'📌 What is your text for?',cfg_level:'🎚️ Formality level',cfg_country:'🌍 Reference country',
+    pur_formal:'🎓 Academic / Professional',pur_semi:'📋 School / Informative',pur_casual:'💬 Personal / Explanatory',
+    lvl_formal:'Somewhat formal but human',lvl_semi:'Informal but acceptable',lvl_casual:'Casual and colloquial',
+    upload_title:'Upload a file to humanize',blocked_title:'Limit reached',blocked_sub:'Resets in',
+    accel_btn:'⚡ Reduce to 1h — $1.99 USD',upgrade_btn:'⚡ Go Premium',wcnt_lbl:'words',
+    adv_exp:'🎭 Experiences',adv_src:'📚 Fill sources',adv_anti:'🛡️ AntiAI Pro',adv_pov:'👤 Text perspective'},
+  pt:{hum:'✨ Humanizar texto',lim:'Plano grátis: até 150 palavras',sub:'Qual texto vamos humanizar hoje?',
+    nav_login:'Entrar',nav_reg:'Registro grátis',nav_plans:'Planos',nav_profile:'Meu perfil',nav_logout:'Sair',
+    plans_title:'Escolha seu plano',plans_sub:'Comece grátis, vá premium quando precisar.',
+    free_name:'Grátis',prem_name:'Premium',free_desc:'Para uso ocasional da ferramenta.',
+    prem_desc:'Para quem precisa humanizar sem limites.',
+    feat_words:'Até 150 palavras por texto',feat_txt:'2 tentativas de texto por dia',
+    feat_files:'1 arquivo por dia',feat_accel:'3 acelerações ($1.99 cada)',
+    feat_unlimited:'Textos e arquivos ilimitados',feat_export:'Exportar como PDF/DOCX',feat_history:'Histórico de humanizações',
+    btn_current:'Plano atual',btn_get:'🚀 Obter Premium — $7.99 USD/mês',
+    inp_ph:'Cole aqui o texto que você quer humanizar...',out_ph:'Seu texto humanizado aparecerá aqui',
+    btn_copy:'📋 Copiar',cfg_purpose:'📌 Para que será seu texto?',cfg_level:'🎚️ Nível de formalidade',cfg_country:'🌍 País de referência',
+    pur_formal:'🎓 Acadêmico / Profissional',pur_semi:'📋 Escolar / Informativo',pur_casual:'💬 Pessoal / Explicativo',
+    lvl_formal:'Um pouco formal mas humano',lvl_semi:'Informal mas aprovável',lvl_casual:'Casual e coloquial',
+    upload_title:'Envie um arquivo para humanizar',blocked_title:'Limite atingido',blocked_sub:'Reinicia em',
+    accel_btn:'⚡ Reduzir para 1h — $1.99 USD',upgrade_btn:'⚡ Ir Premium',wcnt_lbl:'palavras',
+    adv_exp:'🎭 Experiências',adv_src:'📚 Fontes de preenchimento',adv_anti:'🛡️ AntiIA Pro',adv_pov:'👤 Perspectiva do texto'},
+  fr:{hum:'✨ Humaniser le texte',lim:"Plan gratuit: jusqu'à 150 mots",sub:'Quel texte allons-nous humaniser?',
+    nav_login:'Connexion',nav_reg:'Inscription gratuite',nav_plans:'Plans',nav_profile:'Mon profil',nav_logout:'Déconnexion',
+    plans_title:'Choisissez votre plan',plans_sub:'Commencez gratuitement, passez premium quand vous en avez besoin.',
+    free_name:'Gratuit',prem_name:'Premium',free_desc:"Pour utiliser l'outil occasionnellement.",
+    prem_desc:'Pour ceux qui ont besoin de humaniser sans limites.',
+    feat_words:"Jusqu'à 150 mots par texte",feat_txt:'2 tentatives de texte par jour',
+    feat_files:'1 fichier par jour',feat_accel:'3 accélérations ($1.99 chacune)',
+    feat_unlimited:'Textes et fichiers illimités',feat_export:'Exporter en PDF/DOCX',feat_history:'Historique des humanisations',
+    btn_current:'Plan actuel',btn_get:'🚀 Obtenir Premium — $7.99 USD/mois',
+    inp_ph:'Collez ici le texte que vous voulez humaniser...',out_ph:'Votre texte humanisé apparaîtra ici',
+    btn_copy:'📋 Copier',cfg_purpose:'📌 À quoi servira votre texte?',cfg_level:'🎚️ Niveau de formalité',cfg_country:'🌍 Pays de référence',
+    pur_formal:'🎓 Académique / Professionnel',pur_semi:'📋 Scolaire / Informatif',pur_casual:'💬 Personnel / Explicatif',
+    lvl_formal:'Un peu formel mais humain',lvl_semi:'Informel mais acceptable',lvl_casual:'Décontracté et familier',
+    upload_title:'Téléchargez un fichier à humaniser',blocked_title:'Limite atteinte',blocked_sub:'Réinitialise dans',
+    accel_btn:'⚡ Réduire à 1h — $1.99 USD',upgrade_btn:'⚡ Passer Premium',wcnt_lbl:'mots',
+    adv_exp:'🎭 Expériences',adv_src:'📚 Sources de remplissage',adv_anti:'🛡️ AntiIA Pro',adv_pov:'👤 Perspective du texte'},
 };
 
 const PROXY_URL = 'https://texthuman-api.mirandavilla341.workers.dev';
@@ -1189,14 +1251,27 @@ function openForgot(){
   setTimeout(()=>document.getElementById('forgot-ov').classList.add('open'), 150);
 }
 
-function sendForgot(){
+async function sendForgot(){
   const email = document.getElementById('forgot-email').value.trim();
   if(!email){ toast('Ingresa tu correo','w'); return; }
-  const subject = encodeURIComponent('TextHuman — Recuperación de contraseña');
-  const body = encodeURIComponent('Hola, olvidé mi contraseña.\nMi correo registrado es: '+email+'\n\nFavor de ayudarme a recuperarla.\n\nGracias.');
-  window.open('mailto:mirandavilla341@gmail.com?subject='+subject+'&body='+body,'_blank');
-  closeModal('forgot-ov');
-  toast('Solicitud enviada. Te responderemos pronto 📬','s');
+  const btn = document.getElementById('forgot-btn');
+  const origTxt = btn.textContent;
+  btn.textContent = 'Enviando...'; btn.disabled = true;
+  try{
+    const r = await api('/forgot-password', {email});
+    if(r.error) throw new Error(r.error);
+    closeModal('forgot-ov');
+    toast('Si el correo existe, recibirás un enlace en minutos 📬','s');
+  }catch(e){
+    // Si no hay servicio de email configurado, fallback a mailto
+    const subject = encodeURIComponent('TextHuman — Recuperación de contraseña');
+    const body = encodeURIComponent('Hola, olvidé mi contraseña.\nMi correo: '+email);
+    window.open('mailto:mirandavilla341@gmail.com?subject='+subject+'&body='+body,'_blank');
+    closeModal('forgot-ov');
+    toast('Te contactaremos pronto para ayudarte 📬','s');
+  }finally{
+    btn.textContent = origTxt; btn.disabled = false;
+  }
 }
 
 function switchAuthMode(mode){
@@ -1448,6 +1523,20 @@ async function doHumanize(){
   if(S.blocked){toast('Límite alcanzado. Espera o acelera el tiempo.','w');return;}
   let text=document.getElementById('inp').value.trim();
   if(!text){toast('Escribe o pega un texto primero','w');return;}
+  // CHECK LÍMITE DE PALABRAS — antes de llamar al servidor
+  if(S.plan!=='premium'){
+    const wc=text.split(/\s+/).filter(Boolean).length;
+    if(wc>150){
+      toast('Plan gratis: máximo 150 palabras. Tu texto tiene '+wc+'. ¡Pasa a Premium! ⚡','w');
+      document.getElementById('out').innerHTML=`<div style="padding:16px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.2);border-radius:10px;text-align:center">
+        <div style="font-size:22px;margin-bottom:8px">⚡</div>
+        <strong style="color:var(--accent3)">Límite del plan gratis</strong>
+        <p style="color:var(--text2);font-size:13px;margin:8px 0">Tu texto tiene <strong>${wc} palabras</strong>. El plan gratis permite hasta <strong>150 palabras</strong>.</p>
+        <button class="bup" style="margin-top:4px" onclick="doNav('plans')">Ver Premium — sin límites</button>
+      </div>`;
+      return;
+    }
+  }
   if(!S.country)toast('Selecciona un país para mejores resultados 🌍','w');
   if(!S.purpose)toast('Selecciona el tipo de texto arriba 📌','w');
 
@@ -1478,29 +1567,29 @@ Dado este contexto, cuando sea natural y apropiado puedes agregar frases de expe
 - "me parece que", "creo que", "en lo que vi", "según lo que estudié"
 IMPORTANTE: Solo agrégalas si encajan naturalmente. NUNCA las inventes si no hay contexto para ello.` : '';
 
-  const sys=`Eres un humanizador de textos experto. Tu trabajo es reescribir texto generado por IA para que suene 100% humano y pase detectores de IA.
+  const sys=`Eres un humanizador de textos para estudiantes latinoamericanos. Reescribe el texto de IA para que suene COMPLETAMENTE humano — como lo escribiría un estudiante real.
 
-ELIMINA OBLIGATORIAMENTE estos patrones típicos de ChatGPT/IA:
-- Emojis de cualquier tipo (❌ quítalos todos sin excepción)
-- Listas con viñetas o numeradas (conviértelas en párrafo fluido)
-- Títulos o subtítulos en negrita
-- Frases de cierre como "En conclusión,", "En resumen,", "En definitiva,", "Para finalizar,", "En síntesis,"
-- Frases de apertura como "Es importante destacar que", "Cabe mencionar que", "Vale la pena señalar que", "Es fundamental comprender que"
-- Frases de relleno como "En el ámbito de", "En el contexto de", "A lo largo de la historia", "Desde tiempos inmemoriales"
-- Cualquier estructura tipo: introducción → desarrollo → conclusión con esas etiquetas explícitas
-- Signos de exclamación múltiples o entusiasmo artificial
+ELIMINA sin excepción:
+- Todos los emojis
+- Listas con viñetas o números → conviértelas en prosa corrida
+- Negritas y subtítulos → intégralos al texto natural
+- Frases de IA: "En conclusión,", "En resumen,", "Cabe mencionar que", "Es importante destacar que", "En el ámbito de", "A lo largo de la historia", "Es fundamental comprender que", "Vale la pena señalar que", "En síntesis,", "Para finalizar,", "En definitiva,", "Cabe señalar que", "Es preciso mencionar"
+- Estructura rígida intro-desarrollo-conclusión con etiquetas
+- Oraciones perfectamente simétricas y equilibradas
+- Exceso de comas y subordinadas encadenadas
 
-APLICA estas reglas de humanización:
+ESCRIBE como humano real:
+- Alterna oraciones CORTAS y largas — cambia el ritmo como lo hace una persona
+- Incluye pausas y muletillas naturales: "O sea,", "La verdad es que", "Lo que pasa es que", "Igual,", "De hecho,", "Eso sí,", "Bueno,", "Pues", "O bueno,"
+- Repite palabras ocasionalmente — los humanos lo hacemos, la IA lo evita
+- Permite oraciones que empiezan con "Y" o "Pero"
+- La conclusión debe fluir del último párrafo sin anunciarse
 - Nivel de formalidad: ${ld[S.level]||ld.formal}
-- País de referencia: ${cn}${cw?'. Usa ocasionalmente expresiones de ese país como: '+cw:''}
-- Escribe como una persona real que piensa mientras escribe: alterna oraciones cortas y largas
-- Usa conectores humanos: "o sea", "la verdad es que", "lo que pasa es que", "igual", "de hecho", "eso sí"
-- Si el texto tiene una conclusión, intégrala naturalmente al último párrafo sin anunciarla
-- Si tiene listas, conviértelas en texto corrido: "primero X, después Y, y por último Z"
+- País: ${cn}${cw ? ". Integra naturalmente algunas de estas expresiones propias del lugar: "+cw : ""}
 ${experienceHints}
 ${sourcesPrompt}${expPrompt}${antiPrompt}${povPrompt}
 
-RESULTADO: Devuelve SOLO el texto humanizado. Sin explicaciones, sin comentarios, sin introducción tuya.`;
+Devuelve SOLO el texto reescrito. Sin explicaciones ni comentarios.`;
 
   const out=document.getElementById('out');
   out.innerHTML='<div class="dots"><div class="d"></div><div class="d"></div><div class="d"></div></div>';
@@ -1604,10 +1693,12 @@ function openAccelModal(){
 async function procAccelPay(){
   if(!S.token){toast('Inicia sesión primero','w');return;}
   const btn = document.querySelector('#accel-ov .btn-p');
+  const origTxt = btn?.textContent||'⚡ Ir a pagar — $1.99';
   if(btn){ btn.textContent='⏳ Generando pago...'; btn.disabled=true; }
   try{
     const r = await api('/create-preference',{token:S.token, type:'accel'});
     if(r.error) throw new Error(r.error);
+    if(!r.init_point) throw new Error('No se pudo generar el link de pago');
     closeModal('accel-ov');
     window.open(r.init_point,'_blank');
     toast('Checkout abierto — completa tu pago ⚡','s');
@@ -1615,7 +1706,7 @@ async function procAccelPay(){
   }catch(e){
     toast(e.message||'Error al generar pago','e');
   }finally{
-    if(btn){ btn.textContent='⚡ Ir a pagar — $1.99'; btn.disabled=false; }
+    if(btn){ btn.textContent=origTxt; btn.disabled=false; }
   }
 }
 
@@ -1641,19 +1732,26 @@ function openPayModal(){
 async function procPay(){
   if(!S.token){toast('Inicia sesión primero','w');return;}
   const btn = document.querySelector('#pay-ov .btn-p');
+  if(!btn)return;
+  const origTxt = btn.textContent;
   btn.textContent='⏳ Generando pago...'; btn.disabled=true;
   try{
     const r = await api('/create-preference',{token:S.token, type:'premium'});
     if(r.error) throw new Error(r.error);
+    if(!r.init_point) throw new Error('No se pudo generar el link de pago');
     closeModal('pay-ov');
     window.open(r.init_point,'_blank');
     toast('Checkout abierto — completa tu pago 🔒','s');
-    // Verificar cada 10s si ya se activó el premium
     startPaymentCheck();
   }catch(e){
-    toast(e.message||'Error al generar pago','e');
+    const msg = e.message||'';
+    if(msg.includes('autorizado')||msg.includes('authorized')||msg.includes('403')){
+      toast('Error de configuración. Contacta soporte.','e');
+    } else {
+      toast(msg||'Error al generar pago','e');
+    }
   }finally{
-    btn.textContent='🔒 Ir a pagar — $7.99/mes'; btn.disabled=false;
+    btn.textContent=origTxt; btn.disabled=false;
   }
 }
 function activatePremiumUI(){
@@ -1693,9 +1791,9 @@ function refreshUsage(){
     }
     return;
   }
-  const tp=Math.max(0,S.txtLeft)/5*100,fp=Math.max(0,S.filLeft)/2*100;
-  document.getElementById('u-txt').textContent=Math.max(0,S.txtLeft)+' / 5';
-  document.getElementById('u-fil').textContent=Math.max(0,S.filLeft)+' / 2';
+  const tp=Math.max(0,S.txtLeft)/2*100,fp=Math.max(0,S.filLeft)/1*100;
+  document.getElementById('u-txt').textContent=Math.max(0,S.txtLeft)+' / 2';
+  document.getElementById('u-fil').textContent=Math.max(0,S.filLeft)+' / 1';
   document.getElementById('u-tfill').style.width=tp+'%';
   document.getElementById('u-ffill').style.width=fp+'%';
   const col=p=>p>60?'fg':p>30?'fy':'fr';
@@ -1785,11 +1883,65 @@ async function applyDiscount(){
 // ═══ LANGUAGE ═══
 function applyLang(){
   const l=LANGS[S.lang]||LANGS.es;
-  const bh=document.getElementById('btnhum');if(bh)bh.innerHTML=l.hum;
+  // helpers
+  const set=(id,txt)=>{const e=document.getElementById(id);if(e)e.textContent=txt;};
+  const setH=(id,txt)=>{const e=document.getElementById(id);if(e)e.innerHTML=txt;};
+  const setP=(id,txt)=>{const e=document.getElementById(id);if(e)e.placeholder=txt;};
+  const setV=(id,val)=>{const e=document.getElementById(id);if(e)e.value=val;};
+
+  // NAV
+  setH('btnhum',l.hum);
   const pn=document.getElementById('pnote');if(pn&&S.plan!=='premium')pn.textContent=l.lim;
-  const sub=document.getElementById('app-sub');if(sub)sub.textContent=l.sub;
-  const l1=document.getElementById('ls1');if(l1)l1.value=S.lang;
-  const l2=document.getElementById('ls2');if(l2)l2.value=S.lang;
+  set('app-sub',l.sub);
+  setV('ls1',S.lang); setV('ls2',S.lang);
+
+  // Botones nav
+  const nb=document.querySelectorAll('.nav-login-btn');nb.forEach(b=>b.textContent=l.nav_login);
+  const nr=document.querySelectorAll('.nav-reg-btn');nr.forEach(b=>b.textContent=l.nav_reg);
+
+  // Config secciones
+  const cfgLabels=[
+    ['cfg-purpose-lbl',l.cfg_purpose],['cfg-level-lbl',l.cfg_level],['cfg-country-lbl',l.cfg_country],
+    ['adv-exp-lbl',l.adv_exp],['adv-src-lbl',l.adv_src],['adv-anti-lbl',l.adv_anti],['adv-pov-lbl',l.adv_pov]
+  ];
+  cfgLabels.forEach(([id,txt])=>set(id,txt));
+
+  // Propósito
+  set('pur-formal-lbl',l.pur_formal); set('pur-semi-lbl',l.pur_semi); set('pur-casual-lbl',l.pur_casual);
+
+  // Nivel
+  const lvlBtns=document.querySelectorAll('.ltb');
+  if(lvlBtns[0])lvlBtns[0].textContent=l.lvl_formal;
+  if(lvlBtns[1])lvlBtns[1].textContent=l.lvl_semi;
+  if(lvlBtns[2])lvlBtns[2].textContent=l.lvl_casual;
+
+  // Input / output
+  setP('inp',l.inp_ph);
+
+  // Botones de acción
+  const copBtn=document.getElementById('btncpy');if(copBtn)copBtn.textContent=l.btn_copy;
+  const accBtn=document.getElementById('accbtn');if(accBtn)accBtn.textContent=l.accel_btn;
+  const upBtn=document.getElementById('upgrade-btn');if(upBtn&&S.plan!=='premium')upBtn.textContent=l.upgrade_btn;
+
+  // Planes
+  set('plans-title',l.plans_title); set('plans-sub',l.plans_sub);
+  set('free-plan-name',l.free_name); set('prem-plan-name',l.prem_name);
+  set('free-plan-desc',l.free_desc); set('prem-plan-desc',l.prem_desc);
+  set('feat-words',l.feat_words); set('feat-txt',l.feat_txt); set('feat-files',l.feat_files);
+  set('feat-accel',l.feat_accel); set('feat-unlimited',l.feat_unlimited);
+  set('feat-export',l.feat_export); set('feat-history',l.feat_history);
+  const btnGet=document.getElementById('btn-bplan');if(btnGet&&S.plan!=='premium')btnGet.textContent=l.btn_get;
+  const btnCur=document.getElementById('btn-fplan');if(btnCur)btnCur.textContent=l.btn_current;
+
+  // Upload area
+  set('upload-title-lbl',l.upload_title);
+
+  // Blocked bar
+  set('btitle',l.blocked_title);
+
+  // Word counter suffix
+  const wc=document.getElementById('wcnt');
+  if(wc){const n=wc.textContent.split(' ')[0];wc.textContent=n+' '+l.wcnt_lbl;}
 }
 function changeLang(code){S.lang=code;save();applyLang();}
 
@@ -1819,10 +1971,12 @@ function startPaymentCheck(){
   }, 10000);
 }
 
-// Detectar retorno de Mercado Pago
-(function checkPayReturn(){
+// Detectar retorno de Mercado Pago y reset de contraseña
+(function checkURLParams(){
   const params = new URLSearchParams(window.location.search);
   const pay = params.get('pay');
+  const reset = params.get('reset');
+
   if(pay === 'ok'){
     history.replaceState({},'',window.location.pathname);
     if(S.token) startPaymentCheck();
@@ -1834,8 +1988,46 @@ function startPaymentCheck(){
     history.replaceState({},'',window.location.pathname);
     toast('Pago pendiente — se activará cuando se confirme.','w');
   }
+
+  if(reset){
+    history.replaceState({},'',window.location.pathname);
+    // Mostrar modal de nueva contraseña
+    document.getElementById('reset-token-inp').value = reset;
+    setTimeout(()=>document.getElementById('reset-ov').classList.add('open'), 500);
+  }
 })();
 
+
+// ═══ RESET PASSWORD ═══
+function checkResetPass(){
+  const p1 = document.getElementById('reset-pass-inp').value;
+  const p2 = document.getElementById('reset-pass2-inp').value;
+  const msg = document.getElementById('reset-match');
+  const btn = document.getElementById('reset-submit-btn');
+  if(p2.length===0){msg.style.display='none';btn.disabled=true;return;}
+  if(p1===p2 && p1.length>=6){
+    msg.textContent='✅ Las contraseñas coinciden';msg.style.color='var(--green)';msg.style.display='block';btn.disabled=false;
+  } else {
+    msg.textContent=p1.length<6?'Mínimo 6 caracteres':'Las contraseñas no coinciden';
+    msg.style.color='var(--red)';msg.style.display='block';btn.disabled=true;
+  }
+}
+async function doResetPassword(){
+  const token = document.getElementById('reset-token-inp').value;
+  const password = document.getElementById('reset-pass-inp').value;
+  const btn = document.getElementById('reset-submit-btn');
+  btn.textContent='Guardando...'; btn.disabled=true;
+  try{
+    const r = await api('/reset-password',{token, password});
+    if(r.error) throw new Error(r.error);
+    closeModal('reset-ov');
+    toast('✅ Contraseña actualizada. Inicia sesión con tu nueva contraseña.','s');
+    setTimeout(()=>openModal('login'),1500);
+  }catch(e){
+    toast(e.message||'Error al cambiar contraseña','e');
+    btn.textContent='Guardar nueva contraseña'; btn.disabled=false;
+  }
+}
 // ═══ TOAST ═══
 let tT;
 function toast(msg,type='s'){
@@ -1848,5 +2040,23 @@ function toast(msg,type='s'){
 
 if(window.__runQueue) window.__runQueue();
 </script>
+
+<!-- MODAL NUEVA CONTRASEÑA -->
+<div class="modal-ov" id="reset-ov">
+  <div class="modal" style="max-width:380px">
+    <div class="mh"><span>🔐 Nueva contraseña</span><button onclick="closeModal('reset-ov')">✕</button></div>
+    <div class="mb">
+      <input type="hidden" id="reset-token-inp">
+      <div class="fi"><label>Nueva contraseña (mínimo 6 caracteres)</label>
+        <input type="password" id="reset-pass-inp" placeholder="Nueva contraseña" oninput="checkResetPass()">
+      </div>
+      <div class="fi"><label>Confirmar contraseña</label>
+        <input type="password" id="reset-pass2-inp" placeholder="Repite la contraseña" oninput="checkResetPass()">
+      </div>
+      <div id="reset-match" style="font-size:12px;margin-bottom:10px;display:none"></div>
+      <button class="btn-p" id="reset-submit-btn" onclick="doResetPassword()" style="width:100%;padding:13px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#7c5cfc,#a78bfa);color:#fff" disabled>Guardar nueva contraseña</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
