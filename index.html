@@ -810,7 +810,7 @@ textarea.ta::placeholder{color:var(--text3)}
 
 <div class="toast" id="toast"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
+<script>
 // ═══ PREMIUM LOCK — secciones avanzadas ═══
 function updateAdvLock(){
   const wrap = document.getElementById('adv-lock-wrap');
@@ -818,7 +818,6 @@ function updateAdvLock(){
   if(wrap){
     wrap.style.display = isPrem ? 'none' : 'block';
   }
-  // También deshabilitar interacción en los toggles si es free
   ['tog-exp','tog-src','tog-anti','tog-pov'].forEach(id=>{
     const el = document.getElementById(id);
     if(el){
@@ -828,7 +827,6 @@ function updateAdvLock(){
   });
 }
 
-</script><script>
 // ═══ COUNTRIES ═══
 const CTRY=[
   {code:'mx',name:'México',flag:'🇲🇽',words:{
@@ -1747,3 +1745,12 @@ function changeLang(code){S.lang=code;save();applyLang();}
 // ═══ TOAST ═══
 let tT;
 function toast(msg,type='s'){
+  clearTimeout(tT);
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast show '+(type==='e'?'te':type==='w'?'tw':'ts');
+  tT=setTimeout(()=>t.classList.remove('show'),3500);
+}
+</script>
+</body>
+</html>
