@@ -343,6 +343,29 @@ textarea.ta::placeholder{color:var(--text3)}
 .prem-lock-wrap .prem-lock-btn span:last-child{font-size:12px;font-weight:700;
   color:var(--accent3);letter-spacing:.3px}
 </style>
+<script>
+// Stubs para botones que se clickean antes de que cargue el JS principal
+(function(){
+  var _q=[];
+  function stub(fn){return function(){_q.push([fn,arguments]);};}
+  ['openModal','doNav','changeLang','selPur','selLvl','selCtry',
+   'toggleSrc','toggleAdv','selExpTone','selAnti','selPov',
+   'doHumanize','doCopy','openAccelModal','openPayModal','procPay',
+   'procAccelPay','logout','toggleDrop','closeDropAndNav',
+   'openReport','openForgot','switchAuthMode','submitAuth',
+   'openDisc','applyDisc','fillProfile','openEditName','saveEditName',
+   'togglePass','closeModal'
+  ].forEach(function(fn){ window[fn]=stub(fn); });
+  window.__runQueue=function(){
+    _q.forEach(function(item){
+      if(typeof window[item[0]]==='function' && window[item[0]]!==stub(item[0])){
+        window[item[0]].apply(null,item[1]);
+      }
+    });
+    _q=[];
+  };
+})();
+</script>
 </head>
 <body>
 <div class="bg-mesh"></div>
@@ -810,7 +833,11 @@ textarea.ta::placeholder{color:var(--text3)}
 
 <div class="toast" id="toast"></div>
 
+
+
+
 <script>
+
 // ═══ PREMIUM LOCK — secciones avanzadas ═══
 function updateAdvLock(){
   const wrap = document.getElementById('adv-lock-wrap');
@@ -966,6 +993,7 @@ let S={
   pov: 'yo'              // yo|dupla|equipo|grupo|imp
 };
 
+// ═══ INIT ═══
 // ═══ INIT ═══
 (function(){
   try{const v=localStorage.getItem('th3');if(v)S=Object.assign(S,JSON.parse(v));}catch(e){}
@@ -1751,6 +1779,8 @@ function toast(msg,type='s'){
   t.className='toast show '+(type==='e'?'te':type==='w'?'tw':'ts');
   tT=setTimeout(()=>t.classList.remove('show'),3500);
 }
+
+if(window.__runQueue) window.__runQueue();
 </script>
 </body>
 </html>
