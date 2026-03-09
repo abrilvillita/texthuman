@@ -327,6 +327,21 @@ textarea.ta::placeholder{color:var(--text3)}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
 @media(max-width:600px){nav{padding:0 14px}#p-app{padding:74px 14px 50px}.plt{font-size:28px}}
+
+/* PREMIUM LOCK */
+.prem-lock{position:relative;pointer-events:none;opacity:.55;user-select:none}
+.prem-lock::after{content:'⚡ Premium';position:absolute;inset:0;display:flex;align-items:center;
+  justify-content:center;background:rgba(10,10,18,.7);border-radius:12px;
+  font-size:13px;font-weight:700;color:var(--accent3);letter-spacing:.5px;
+  border:1px solid rgba(124,92,252,.3);pointer-events:all;cursor:pointer}
+.prem-lock-wrap{position:relative;border-radius:12px;overflow:hidden}
+.prem-lock-wrap .prem-lock-btn{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;background:rgba(10,10,18,.75);
+  border-radius:12px;cursor:pointer;z-index:10;gap:6px;
+  border:1px solid rgba(124,92,252,.25);backdrop-filter:blur(2px)}
+.prem-lock-wrap .prem-lock-btn span:first-child{font-size:22px}
+.prem-lock-wrap .prem-lock-btn span:last-child{font-size:12px;font-weight:700;
+  color:var(--accent3);letter-spacing:.3px}
 </style>
 </head>
 <body>
@@ -410,8 +425,8 @@ textarea.ta::placeholder{color:var(--text3)}
   </div>
 
   <div class="uw">
-    <div class="ui"><div class="ul">Intentos texto</div><div class="uv" id="u-txt">5 / 5</div><div class="ut"><div class="uf fg" id="u-tfill" style="width:100%"></div></div></div>
-    <div class="ui"><div class="ul">Archivos hoy</div><div class="uv" id="u-fil">2 / 2</div><div class="ut"><div class="uf fg" id="u-ffill" style="width:100%"></div></div></div>
+    <div class="ui"><div class="ul">Intentos texto</div><div class="uv" id="u-txt">2 / 2</div><div class="ut"><div class="uf fg" id="u-tfill" style="width:100%"></div></div></div>
+    <div class="ui"><div class="ul">Archivos hoy</div><div class="uv" id="u-fil">1 / 1</div><div class="ut"><div class="uf fg" id="u-ffill" style="width:100%"></div></div></div>
     <div class="ui"><div class="ul">Plan activo</div><div class="uv" id="u-plan">Gratis</div></div>
     <button class="bup" id="upgrade-btn" onclick="doNav('plans')">⚡ Ir Premium</button>
   </div>
@@ -422,7 +437,7 @@ textarea.ta::placeholder{color:var(--text3)}
       <div class="bs">Se restablece en <strong id="btimer">24:00:00</strong></div></div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="bacc" id="accbtn" onclick="openAccelModal()">⚡ Reducir a 1h — $1.99</button>
+      <button class="bacc" id="accbtn" onclick="openAccelModal()">⚡ Reducir a 1h — $1.99 USD</button>
       <button class="bup" onclick="doNav('plans')">🚀 Consigue Premium</button>
     </div>
   </div>
@@ -452,7 +467,13 @@ textarea.ta::placeholder{color:var(--text3)}
     </div>
 
     <!-- ═══ SECCIÓN AVANZADA: 4 OPCIONES ═══ -->
-    <div style="margin-bottom:18px">
+    <div id="adv-section" style="margin-bottom:18px">
+    <div id="adv-lock-wrap" class="prem-lock-wrap" style="display:none">
+      <div class="prem-lock-btn" onclick="closeModal('adv-preview');doNav('plans')">
+        <span>⚡</span>
+        <span>FUNCIONES PREMIUM — Ver planes</span>
+      </div>
+      <div style="opacity:.4;pointer-events:none;padding:12px">
 
       <!-- 1. EXPERIENCIAS -->
       <div class="sl">🎭 Experiencias <span style="color:var(--text3);font-weight:400;font-size:12px">(opcional · la IA decide el tono según el texto)</span></div>
@@ -535,6 +556,8 @@ textarea.ta::placeholder{color:var(--text3)}
 
     </div>
     <!-- FIN SECCIÓN AVANZADA -->
+    </div><!-- /adv-lock-wrap preview -->
+    </div><!-- /adv-section -->
 
     <div class="sl">🎚️ Nivel de formalidad</div>
     <div class="lt">
@@ -554,7 +577,7 @@ textarea.ta::placeholder{color:var(--text3)}
         <textarea class="ta" id="inp" placeholder="Pega aquí el texto que quieres humanizar..." oninput="cntW()"></textarea>
         <div class="ab">
           <button class="bhum" id="btnhum" onclick="doHumanize()">✨ Humanizar texto</button>
-          <span class="nt" id="pnote">Plan gratis: hasta 300 palabras</span>
+          <span class="nt" id="pnote">Plan gratis: hasta 150 palabras</span>
         </div>
       </div>
       <div class="upl" id="uplarea" onclick="document.getElementById('fi').click()"
@@ -600,8 +623,8 @@ textarea.ta::placeholder{color:var(--text3)}
   <div class="prc">
     <div class="prr"><span class="prl">Plan actual</span><span class="prv" id="pr-plan" style="color:var(--accent2)">Gratis</span></div>
     <div class="prr"><span class="prl">Vencimiento Premium</span><span class="prv" id="pr-expiry">—</span></div>
-    <div class="prr"><span class="prl">Intentos de texto restantes</span><span class="prv" id="pr-ta">5 / 5</span></div>
-    <div class="prr"><span class="prl">Archivos restantes hoy</span><span class="prv" id="pr-fa">2 / 2</span></div>
+    <div class="prr"><span class="prl">Intentos de texto restantes</span><span class="prv" id="pr-ta">2 / 2</span></div>
+    <div class="prr"><span class="prl">Archivos restantes hoy</span><span class="prv" id="pr-fa">1 / 1</span></div>
     <div class="prr"><span class="prl">Aceleraciones restantes</span><span class="prv" id="pr-ac">3 / 3</span></div>
   </div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
@@ -621,8 +644,8 @@ textarea.ta::placeholder{color:var(--text3)}
       <div class="plp"><sup>$</sup>0<sub>/mes</sub></div>
       <div class="pld">Para probar la herramienta ocasionalmente.</div>
       <ul class="plf">
-        <li>Hasta 300 palabras por texto</li>
-        <li>5 intentos de texto cada 24h</li>
+        <li>Hasta 150 palabras por texto</li>
+        <li>2 intentos de texto cada 24h</li>
         <li>2 archivos por día</li>
         <li>3 niveles de formalidad</li>
         <li>3 aceleraciones de espera ($1.99 c/u)</li>
@@ -646,7 +669,7 @@ textarea.ta::placeholder{color:var(--text3)}
         <li>Procesamiento prioritario</li>
         <li>Soporte por email</li>
       </ul>
-      <button class="bpl buy" id="btn-bplan" onclick="openPayModal()">🚀 Obtener Premium — $7.99/mes</button>
+      <button class="bpl buy" id="btn-bplan" onclick="openPayModal()">🚀 Obtener Premium — $7.99 USD/mes</button>
     </div>
   </div>
   <div style="margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
@@ -700,7 +723,7 @@ textarea.ta::placeholder{color:var(--text3)}
     <input class="field" type="email" id="forgot-email" placeholder="Tu correo registrado">
     <button class="btn btn-p" style="width:100%;justify-content:center;padding:12px;font-size:14px;font-weight:700;border-radius:10px;margin-top:4px" onclick="sendForgot()">📨 Solicitar recuperación</button>
     <div style="margin-top:14px;text-align:center;font-size:12px;color:var(--text3);line-height:1.7">
-      O escríbenos directamente a<br><a href="mailto:mirandavilla341@gmail.com" style="color:var(--accent3)">mirandavilla341@gmail.com</a>
+      O escríbenos directamente a<br><a href="/cdn-cgi/l/email-protection#402d2932212e242136292c2c2173747100272d21292c6e232f2d" style="color:var(--accent3)"><span class="__cf_email__" data-cfemail="721f1b00131c1613041b1e1e1341464332151f131b1e5c111d1f">[email&#160;protected]</span></a>
     </div>
   </div>
 </div>
@@ -715,21 +738,12 @@ textarea.ta::placeholder{color:var(--text3)}
     <div id="renew-info" style="display:none;background:rgba(34,211,165,.08);border:1px solid rgba(34,211,165,.25);border-radius:9px;padding:10px 13px;font-size:12px;color:var(--green);margin-bottom:14px;line-height:1.6">
       ✅ Tu plan actual vence el <strong id="renew-date">—</strong>. Al renovar, se extenderá 30 días más desde hoy.
     </div>
-    <input class="field" type="email" placeholder="Correo electrónico" id="pay-email">
-    <input class="field" type="text" placeholder="Número de tarjeta" id="pay-card" maxlength="19" oninput="fmtCard(this)">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px">
-      <input class="field" type="text" placeholder="MM/AA" maxlength="5" style="margin:0" id="pay-exp">
-      <input class="field" type="text" placeholder="CVV" maxlength="4" style="margin:0" id="pay-cvv">
+    <button class="btn btn-p" style="width:100%;justify-content:center;padding:14px;font-size:15px;font-weight:700;margin-top:4px;border-radius:10px" onclick="procPay()">🔒 Ir a pagar — $7.99/mes</button>
+    <div class="psec" style="margin-top:14px;text-align:center;line-height:1.7">
+      Serás redirigido al checkout seguro de LemonSqueezy.<br>
+      Tu Premium se activa <strong style="color:var(--green)">automáticamente</strong> al completar el pago.<br>
+      <span style="font-size:11px;color:var(--text3)">🔐 Pago cifrado · No guardamos datos de tarjeta</span>
     </div>
-    <input class="field" type="text" placeholder="Nombre en la tarjeta" id="pay-name">
-    <button class="btn btn-p" style="width:100%;justify-content:center;padding:13px;font-size:15px;font-weight:700;margin-top:4px;border-radius:10px" onclick="procPay()">🔒 Pagar $7.99/mes</button>
-    <div style="margin:14px 0;text-align:center;color:var(--text3);font-size:12px">— o paga con —</div>
-    <button class="bpp" onclick="ppGo()">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788l.038-.198 1.07-6.5.069-.374a.925.925 0 0 1 .922-.788h.58c3.76 0 6.7-1.528 7.556-5.946.36-1.847.174-3.388-.823-4.489z"/></svg>
-      Pagar con PayPal
-    </button>
-    <div class="psec" style="margin-top:12px">El pago abre PayPal. Cuando completes el pago, regresa aquí y haz clic en "Ya pagué".</div>
-    <button id="ya-pague-premium-btn" style="display:none;width:100%;margin-top:10px;padding:10px;background:var(--green);border:none;color:#000;font-weight:700;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px" onclick="confirmPremiumPayment()">✅ Ya pagué — activar Premium</button>
   </div>
 </div>
 
@@ -739,13 +753,13 @@ textarea.ta::placeholder{color:var(--text3)}
     <button class="mx" onclick="closeModal('accel-ov')">✕</button>
     <div class="mt">⚡ Acelerar espera</div>
     <p class="ms">Reduce tu tiempo de espera a 1 hora pagando $1.99 USD.<br><br>Aceleraciones disponibles: <strong id="accel-count" style="color:var(--accent2)">3</strong> / 3</p>
-    <button class="bpp" onclick="ppAccel()" style="margin-bottom:12px">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788l.038-.198 1.07-6.5.069-.374a.925.925 0 0 1 .922-.788h.580c3.76 0 6.7-1.528 7.556-5.946.36-1.847.174-3.388-.823-4.489z"/></svg>
-      Pagar $1.99 con PayPal
-    </button>
+    <button class="btn btn-p" style="width:100%;justify-content:center;padding:13px;font-size:14px;font-weight:700;margin-bottom:10px;border-radius:10px" onclick="procAccelPay()">⚡ Ir a pagar — $1.99</button>
     <button class="bpl buy" onclick="closeModal('accel-ov');doNav('plans')" style="margin-top:0">🚀 Mejor me voy a Premium</button>
-    <div class="psec" style="margin-top:12px">El pago abre PayPal. Cuando completes el pago, regresa aquí y haz clic en "Ya pagué".</div>
-    <button id="ya-pague-btn" style="display:none;width:100%;margin-top:10px;padding:10px;background:var(--green);border:none;color:#000;font-weight:700;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px" onclick="confirmAccel()">✅ Ya pagué — activar</button>
+    <div class="psec" style="margin-top:12px;text-align:center;line-height:1.7">
+      Serás redirigido al checkout seguro.<br>
+      La aceleración se activa <strong style="color:var(--green)">automáticamente</strong> al pagar.<br>
+      <span style="font-size:11px;color:var(--text3)">🔐 Pago cifrado · No guardamos datos de tarjeta</span>
+    </div>
   </div>
 </div>
 
@@ -796,7 +810,25 @@ textarea.ta::placeholder{color:var(--text3)}
 
 <div class="toast" id="toast"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
+// ═══ PREMIUM LOCK — secciones avanzadas ═══
+function updateAdvLock(){
+  const wrap = document.getElementById('adv-lock-wrap');
+  const isPrem = S.plan === 'premium';
+  if(wrap){
+    wrap.style.display = isPrem ? 'none' : 'block';
+  }
+  // También deshabilitar interacción en los toggles si es free
+  ['tog-exp','tog-src','tog-anti','tog-pov'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){
+      el.style.pointerEvents = isPrem ? 'auto' : 'none';
+      el.style.opacity = isPrem ? '1' : '0.5';
+    }
+  });
+}
+
+</script><script>
 // ═══ COUNTRIES ═══
 const CTRY=[
   {code:'mx',name:'México',flag:'🇲🇽',words:{
@@ -911,10 +943,10 @@ const SOURCES = {
 };
 
 const LANGS={
-  es:{hum:'✨ Humanizar texto',lim:'Plan gratis: hasta 300 palabras',sub:'¿Qué texto humanizamos hoy?'},
-  en:{hum:'✨ Humanize text',lim:'Free plan: up to 300 words',sub:'What text shall we humanize today?'},
-  pt:{hum:'✨ Humanizar texto',lim:'Plano grátis: até 300 palavras',sub:'Qual texto vamos humanizar hoje?'},
-  fr:{hum:'✨ Humaniser le texte',lim:'Plan gratuit: jusqu\'à 300 mots',sub:'Quel texte allons-nous humaniser?'},
+  es:{hum:'✨ Humanizar texto',lim:'Plan gratis: hasta 150 palabras',sub:'¿Qué texto humanizamos hoy?'},
+  en:{hum:'✨ Humanize text',lim:'Free plan: up to 150 words',sub:'What text shall we humanize today?'},
+  pt:{hum:'✨ Humanizar texto',lim:'Plano grátis: até 150 palavras',sub:'Qual texto vamos humanizar hoje?'},
+  fr:{hum:'✨ Humaniser le texte',lim:'Plan gratuit: jusqu\'à 150 mots',sub:'Quel texte allons-nous humaniser?'},
 };
 
 const PROXY_URL = 'https://texthuman-api.mirandavilla341.workers.dev';
@@ -1027,7 +1059,7 @@ function applyServerData(r){
   if(!r)return;
   S.plan = r.plan||'free';
   S.premiumUntil = r.premium_until||null;
-  S.txtLeft = r.txt_left??5;
+  S.txtLeft = r.txt_left??2;
   S.filLeft = r.fil_left??2;
   S.accelLeft = r.accel_left??3;
   S.blockedUntil = r.blocked_until||null;
@@ -1052,7 +1084,9 @@ async function api(path, body){
 }
 
 function detectLang(){
-  const l=(navigator.language||'es').toLowerCase();
+  // Solo auto-detectar si el usuario no ha elegido idioma manualmente
+  if(S.langManual) { applyLang(); return; }
+  const l=(navigator.language||navigator.userLanguage||'es').toLowerCase();
   if(l.startsWith('pt'))S.lang='pt';
   else if(l.startsWith('fr'))S.lang='fr';
   else if(l.startsWith('en'))S.lang='en';
@@ -1202,6 +1236,7 @@ function applyUserUI(showT){
   document.getElementById('nav-badge').className='plan-badge '+(S.plan==='premium'?'bpr':'bf');
   document.getElementById('greet').textContent=S.user.name.split(' ')[0];
   refreshUsage();
+  updateAdvLock();
   if(showT)toast('¡Bienvenido, '+S.user.name.split(' ')[0]+'! 🎉','s');
 }
 
@@ -1456,8 +1491,8 @@ RESULTADO: Devuelve SOLO el texto humanizado. Sin explicaciones, sin comentarios
     save(); refreshUsage();
 
     let html=d.result.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-    const truncated=S.plan==='free'&&text.split(/\s+/).length>=300;
-    if(truncated)html+=`<br><br><div style="padding:13px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.2);border-radius:10px;margin-top:8px"><strong style="color:var(--accent3)">⚡ Texto truncado — Plan Gratis</strong><br><span style="font-size:12px;color:var(--text2)">Solo las primeras 300 palabras. Pasa a Premium para sin límites.</span><br><button class="bup" style="margin-top:9px;font-size:12px" onclick="doNav('plans')">Ver Premium</button></div>`;
+    const truncated=S.plan==='free'&&text.split(/\s+/).length>=150;
+    if(truncated)html+=`<br><br><div style="padding:13px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.2);border-radius:10px;margin-top:8px"><strong style="color:var(--accent3)">⚡ Texto truncado — Plan Gratis</strong><br><span style="font-size:12px;color:var(--text2)">Solo las primeras 150 palabras. Pasa a Premium para sin límites.</span><br><button class="bup" style="margin-top:9px;font-size:12px" onclick="doNav('plans')">Ver Premium</button></div>`;
     out.innerHTML='<div style="line-height:1.8">'+html+'</div>';
     document.getElementById('btncpy').style.display='flex';
     if(S.blocked)document.getElementById('bbar').style.display='flex';
@@ -1538,28 +1573,13 @@ function pad(n){return String(n).padStart(2,'0');}
 function openAccelModal(){
   if(S.accelLeft<=0){toast('Sin aceleraciones disponibles. Pasa a Premium.','w');doNav('plans');return;}
   document.getElementById('accel-count').textContent=S.accelLeft;
-  document.getElementById('ya-pague-btn').style.display='none';
   document.getElementById('accel-ov').classList.add('open');
 }
-function ppAccel(){
-  window.open('https://www.paypal.me/mirandavilla341/1.99USD','_blank');
-  document.getElementById('ya-pague-btn').style.display='block';
-  toast('PayPal abierto. Completa el pago y regresa aquí.','s');
-}
-async function confirmAccel(){
-  if(!S.token){toast('Inicia sesión primero','w');return;}
-  const btn=document.getElementById('ya-pague-btn');
-  btn.textContent='Activando...';btn.disabled=true;
-  try{
-    const r=await api('/confirm-payment',{token:S.token,type:'accel'});
-    S.accelLeft=r.accel_left;
-    if(r.blocked_until)S.blockedUntil=r.blocked_until;
-    save();fillProfile();
-    closeModal('accel-ov');
-    toast('⚡ Espera reducida a 1 hora. Aceleraciones restantes: '+S.accelLeft,'s');
-    if(S.accelLeft===0){document.getElementById('accbtn').textContent='Sin aceleraciones → Premium';document.getElementById('accbtn').onclick=()=>doNav('plans');}
-  }catch(e){toast(e.message,'e');}
-  finally{btn.textContent='✅ Ya pagué — activar';btn.disabled=false;}
+function procAccelPay(){
+  // Redirige a LemonSqueezy checkout de aceleración
+  window.open('https://humanizatexto.lemonsqueezy.com/checkout/buy/ACCEL_VARIANT_ID','_blank');
+  closeModal('accel-ov');
+  toast('Redirigiendo al checkout seguro ⚡','s');
 }
 
 // ═══ COPY ═══
@@ -1570,8 +1590,6 @@ function doCopy(){
 
 // ═══ PAYMENT ═══
 function openPayModal(){
-  if(S.user) document.getElementById('pay-email').value=S.user.email||'';
-  // Mostrar info de renovación si ya es premium
   const renewInfo = document.getElementById('renew-info');
   if(S.plan==='premium' && S.premiumUntil){
     document.getElementById('renew-date').textContent = new Date(S.premiumUntil).toLocaleDateString('es-MX',{day:'2-digit',month:'long',year:'numeric'});
@@ -1581,38 +1599,13 @@ function openPayModal(){
     renewInfo.style.display='none';
     document.getElementById('pay-subtitle').textContent='Premium · $7.99 USD / mes · Cancela cuando quieras';
   }
-  document.getElementById('ya-pague-premium-btn').style.display='none';
   document.getElementById('pay-ov').classList.add('open');
 }
-function fmtCard(el){el.value=el.value.replace(/\D/g,'').substring(0,16).replace(/(.{4})/g,'$1 ').trim();}
 function procPay(){
-  const e=document.getElementById('pay-email').value;
-  const c=document.getElementById('pay-card').value;
-  const exp=document.getElementById('pay-exp').value;
-  const nm=document.getElementById('pay-name').value;
-  if(!e||!c||!exp||!nm){toast('Completa todos los datos de pago','w');return;}
+  // Redirige a LemonSqueezy checkout de Premium
   closeModal('pay-ov');
-  ppGo();
-}
-function ppGo(){
-  window.open('https://www.paypal.me/mirandavilla341/7.99USD','_blank');
-  setTimeout(()=>{
-    document.getElementById('ya-pague-premium-btn').style.display='block';
-    document.getElementById('pay-ov').classList.add('open');
-  },1500);
-  toast('Completa el pago en PayPal y regresa aquí','s');
-}
-async function confirmPremiumPayment(){
-  if(!S.token){toast('Inicia sesión primero','w');return;}
-  const btn=document.getElementById('ya-pague-premium-btn');
-  btn.textContent='Activando...';btn.disabled=true;
-  try{
-    const r=await api('/confirm-payment',{token:S.token,type:'premium'});
-    applyServerData(r);
-    closeModal('pay-ov');
-    activatePremiumUI();
-  }catch(e){toast(e.message,'e');}
-  finally{btn.textContent='✅ Ya pagué — activar Premium';btn.disabled=false;}
+  window.open('https://humanizatexto.lemonsqueezy.com/checkout/buy/PREMIUM_VARIANT_ID','_blank');
+  toast('Redirigiendo al checkout seguro 🔒','s');
 }
 function activatePremiumUI(){
   S.plan='premium';save();
@@ -1634,6 +1627,7 @@ function activatePremiumUI(){
 
 // ═══ UI REFRESH ═══
 function refreshUsage(){
+  updateAdvLock();
   if(!S.user)return;
   if(S.plan==='premium'){
     document.getElementById('u-txt').textContent='∞';
@@ -1753,11 +1747,3 @@ function changeLang(code){S.lang=code;save();applyLang();}
 // ═══ TOAST ═══
 let tT;
 function toast(msg,type='s'){
-  const el=document.getElementById('toast');
-  el.innerHTML=({s:'✅',w:'⚠️',e:'❌'}[type]||'ℹ️')+' '+msg;
-  el.className='toast '+type+' show';
-  clearTimeout(tT);tT=setTimeout(()=>el.classList.remove('show'),3800);
-}
-</script>
-</body>
-</html>
