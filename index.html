@@ -1601,11 +1601,22 @@ function openAccelModal(){
   document.getElementById('accel-count').textContent=S.accelLeft;
   document.getElementById('accel-ov').classList.add('open');
 }
-function procAccelPay(){
-  // Redirige a LemonSqueezy checkout de aceleración
-  window.open('https://humanizatexto.lemonsqueezy.com/checkout/buy/ACCEL_VARIANT_ID','_blank');
-  closeModal('accel-ov');
-  toast('Redirigiendo al checkout seguro ⚡','s');
+async function procAccelPay(){
+  if(!S.token){toast('Inicia sesión primero','w');return;}
+  const btn = document.querySelector('#accel-ov .btn-p');
+  if(btn){ btn.textContent='⏳ Generando pago...'; btn.disabled=true; }
+  try{
+    const r = await api('/create-preference',{token:S.token, type:'accel'});
+    if(r.error) throw new Error(r.error);
+    closeModal('accel-ov');
+    window.open(r.init_point,'_blank');
+    toast('Checkout abierto — completa tu pago ⚡','s');
+    startPaymentCheck();
+  }catch(e){
+    toast(e.message||'Error al generar pago','e');
+  }finally{
+    if(btn){ btn.textContent='⚡ Ir a pagar — $1.99'; btn.disabled=false; }
+  }
 }
 
 // ═══ COPY ═══
@@ -1623,15 +1634,27 @@ function openPayModal(){
     document.getElementById('pay-subtitle').textContent='Renovar Premium · $7.99 USD / 30 días más';
   } else {
     renewInfo.style.display='none';
-    document.getElementById('pay-subtitle').textContent='Premium · $7.99 USD / mes · Cancela cuando quieras';
+    document.getElementById('pay-subtitle').textContent='Premium · $7.99 USD / mes · 30 días · Tarjeta, OXXO o transferencia';
   }
   document.getElementById('pay-ov').classList.add('open');
 }
-function procPay(){
-  // Redirige a LemonSqueezy checkout de Premium
-  closeModal('pay-ov');
-  window.open('https://humanizatexto.lemonsqueezy.com/checkout/buy/PREMIUM_VARIANT_ID','_blank');
-  toast('Redirigiendo al checkout seguro 🔒','s');
+async function procPay(){
+  if(!S.token){toast('Inicia sesión primero','w');return;}
+  const btn = document.querySelector('#pay-ov .btn-p');
+  btn.textContent='⏳ Generando pago...'; btn.disabled=true;
+  try{
+    const r = await api('/create-preference',{token:S.token, type:'premium'});
+    if(r.error) throw new Error(r.error);
+    closeModal('pay-ov');
+    window.open(r.init_point,'_blank');
+    toast('Checkout abierto — completa tu pago 🔒','s');
+    // Verificar cada 10s si ya se activó el premium
+    startPaymentCheck();
+  }catch(e){
+    toast(e.message||'Error al generar pago','e');
+  }finally{
+    btn.textContent='🔒 Ir a pagar — $7.99/mes'; btn.disabled=false;
+  }
 }
 function activatePremiumUI(){
   S.plan='premium';save();
@@ -1769,6 +1792,49 @@ function applyLang(){
   const l2=document.getElementById('ls2');if(l2)l2.value=S.lang;
 }
 function changeLang(code){S.lang=code;save();applyLang();}
+
+
+// ═══ VERIFICAR PAGO AUTOMÁTICO ═══
+let payCheckInterval = null;
+function startPaymentCheck(){
+  if(payCheckInterval) clearInterval(payCheckInterval);
+  let attempts = 0;
+  payCheckInterval = setInterval(async()=>{
+    attempts++;
+    if(attempts > 18){ clearInterval(payCheckInterval); return; } // 3 min máx
+    try{
+      const r = await api('/status',{token:S.token});
+      if(r.plan === 'premium' && S.plan !== 'premium'){
+        clearInterval(payCheckInterval);
+        applyServerData(r);
+        activatePremiumUI();
+      }
+      if(r.accel_left < S.accelLeft){
+        clearInterval(payCheckInterval);
+        S.accelLeft = r.accel_left;
+        save(); refreshUsage();
+        toast('⚡ ¡Espera reducida a 1 hora!','s');
+      }
+    }catch(e){}
+  }, 10000);
+}
+
+// Detectar retorno de Mercado Pago
+(function checkPayReturn(){
+  const params = new URLSearchParams(window.location.search);
+  const pay = params.get('pay');
+  if(pay === 'ok'){
+    history.replaceState({},'',window.location.pathname);
+    if(S.token) startPaymentCheck();
+    toast('Pago recibido, activando tu plan... ⚡','s');
+  } else if(pay === 'fail'){
+    history.replaceState({},'',window.location.pathname);
+    toast('El pago no se completó. Intenta de nuevo.','w');
+  } else if(pay === 'pending'){
+    history.replaceState({},'',window.location.pathname);
+    toast('Pago pendiente — se activará cuando se confirme.','w');
+  }
+})();
 
 // ═══ TOAST ═══
 let tT;
