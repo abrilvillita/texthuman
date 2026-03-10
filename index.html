@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TextHuman — Humanizador de Textos con IA para America y España</title>
+<title>TextHuman — Humanizador de Textos con IA para Latinoamérica y España</title>
 <meta name="description" content="Convierte texto generado por IA en redacciones naturales y auténticas. Con jerga real de México, Argentina, Colombia, España y 20+ países. Humanizador de texto gratis.">
 <meta name="keywords" content="humanizador de texto, humanizar texto IA, pasar texto de IA a humano, evitar detector de IA, texto natural, humanizar ensayo, humanizar trabajo escolar, México, Argentina, Colombia, España">
 <meta name="robots" content="index, follow">
@@ -2146,16 +2146,26 @@ function openReport(prefill){
   if(S.user)document.getElementById('rep-email').value=S.user.email||'';
   document.getElementById('report-ov').classList.add('open');
 }
-function sendReport(){
+async function sendReport(){
   const type=document.getElementById('rep-type').value;
   const msg=document.getElementById('rep-msg').value.trim();
   const email=document.getElementById('rep-email').value.trim();
   if(!type){toast('Selecciona el tipo de problema','w');return;}
-  const subject=encodeURIComponent('TextHuman — Reporte: '+type);
-  const body=encodeURIComponent('Tipo: '+type+'\n\nDescripción: '+(msg||'sin descripción')+'\n\nUsuario: '+(S.user?S.user.name+' / '+S.user.email:'No identificado')+'\nPlan: '+(S.plan||'free')+'\nCorreo respuesta: '+(email||'no indicado')+'\nFecha: '+new Date().toLocaleString());
-  window.open('mailto:mirandavilla341@gmail.com?subject='+subject+'&body='+body,'_blank');
-  closeModal('report-ov');
-  toast('¡Reporte enviado! Te respondemos pronto 📬','s');
+  const btn=document.getElementById('rep-send-btn');
+  if(btn){btn.textContent='Enviando...';btn.disabled=true;}
+  try{
+    await api('/report',{
+      type, msg, email,
+      userName: S.user?S.user.name:'Anónimo',
+      plan: S.plan||'free'
+    });
+    closeModal('report-ov');
+    toast('¡Reporte enviado! Te respondemos pronto 📬','s');
+  }catch(e){
+    toast('Error al enviar. Escríbenos a mirandavilla341@gmail.com','w');
+  }finally{
+    if(btn){btn.textContent='Enviar reporte';btn.disabled=false;}
+  }
 }
 
 // ═══ DISCOUNT ═══
