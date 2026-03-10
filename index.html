@@ -1641,18 +1641,19 @@ function cntW(){
 async function doHumanize(){
   if(!S.token){openModal('login');return;}
   if(S.blocked){toast('Límite alcanzado. Espera o acelera el tiempo.','w');return;}
+  // Si viene de archivo, verificar límite frontend antes de llamar
   if(S._pendingFile && S.plan!=='premium'){
-    if(S.fileBlocked){toast('Límite de archivos. Espera 24h o pasa a Premium.','w');return;}
-    if(S.filLeft<=0){setBlocked('file');return;}
-    S.filLeft--;
-    if(S.filLeft<=0){S.fileBlocked=true;S.fileBlockedUntil=new Date(Date.now()+24*3600*1000).toISOString();}
-    save();refreshUsage();
-    S._pendingFile=false;
+    if(S.fileBlocked||S.filLeft<=0){setBlocked('file');showPremiumFlash();return;}
   }
   let text=document.getElementById('inp').value.trim();
   if(!text){toast('Escribe o pega un texto primero','w');return;}
-  // CHECK LÍMITE DE PALABRAS — antes de llamar al servidor
+  // CHECK LÍMITE FRONTEND — antes de llamar al servidor
   if(S.plan!=='premium'){
+    if(S.blocked||S.txtLeft<=0){
+      setBlocked('text');
+      showPremiumFlash();
+      return;
+    }
     const wc=text.split(/\s+/).filter(Boolean).length;
     if(wc>150){
       toast('Plan gratis: máximo 150 palabras. Tu texto tiene '+wc+'. ¡Pasa a Premium! ⚡','w');
@@ -1725,9 +1726,12 @@ Devuelve SOLO el texto reescrito. Sin explicaciones ni comentarios.`;
   document.getElementById('btncpy').style.display='none';
   const _det=document.getElementById('ai-detector-box');if(_det)_det.style.display='none';
   try{
-    const d=await api('/humanize',{token:S.token, text, system:sys});
+    const endpoint = S._pendingFile ? '/humanize-file' : '/humanize';
+    const d=await api(endpoint,{token:S.token, text, system:sys});
+    S._pendingFile=false;
     if(d.isPremium!==undefined) S.plan=d.isPremium?'premium':'free';
     if(d.txtLeft!==undefined) S.txtLeft=d.txtLeft;
+    if(d.filLeft!==undefined){ S.filLeft=d.filLeft; if(d.filLeft<=0){S.fileBlocked=true;S.fileBlockedUntil=new Date(Date.now()+24*3600*1000).toISOString();} }
     if(d.txtLeft===0){
       S.blocked=true;
       S.blockedUntil=new Date(Date.now()+24*3600*1000).toISOString();
@@ -1743,7 +1747,9 @@ Devuelve SOLO el texto reescrito. Sin explicaciones ni comentarios.`;
     if(S.blocked)document.getElementById('bbar').style.display='flex';
   }catch(e){
     const isLimit=e.message==='LIMIT_TEXT';
+    const isFileLimit=e.message==='LIMIT_FILE';
     if(isLimit){setBlocked('text');out.innerHTML='';showPremiumFlash();}
+    else if(isFileLimit){setBlocked('file');out.innerHTML='';showPremiumFlash();}
     else out.innerHTML=`<div style="color:var(--red);padding:16px"><strong>Error al conectar con el servidor</strong><br><small style="color:var(--text3)">${e.message}</small><br><br><button class="bacc" style="margin-top:8px" onclick="openReport('humanizer_error')">📢 Reportar este error</button></div>`;
   }
   document.getElementById('btnhum').disabled=false;
