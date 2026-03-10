@@ -1299,7 +1299,10 @@ function showPage(id){
     window.scrollTo({top:0,behavior:'smooth'});
   }
   const hbtn=document.getElementById('help-btn');
-  if(hbtn) hbtn.style.display=(id==='app')?'flex':'none';
+  if(hbtn){
+    hbtn.style.opacity=(id==='app')?'1':'0';
+    hbtn.style.pointerEvents=(id==='app')?'auto':'none';
+  }
 }
 function doNav(id){
   if((id==='app'||id==='profile')&&!S.token){openModal('login');return;}
@@ -1640,6 +1643,10 @@ function cntW(){
 // ═══ HUMANIZE ═══
 async function doHumanize(){
   if(!S.token){openModal('login');return;}
+  // Verificar que plan sea válido — evitar que localStorage corrupto salte el límite
+  if(S.plan==='premium' && (!S.premiumUntil || new Date(S.premiumUntil)<=new Date())){
+    S.plan='free'; save();
+  }
   if(S.blocked){toast('Límite alcanzado. Espera o acelera el tiempo.','w');return;}
   // Si viene de archivo, verificar límite frontend antes de llamar
   if(S._pendingFile && S.plan!=='premium'){
@@ -1804,7 +1811,12 @@ function procFile(file){
       return;
     }
     if(content && content.trim().length>20){
-      document.getElementById('inp').value=content.slice(0,S.plan==='premium'?15000:600);
+      // Recortar a límite de palabras según plan
+    const maxWords = S.plan==='premium' ? 5000 : 150;
+    const words = content.trim().split(/\s+/);
+    document.getElementById('inp').value = words.length > maxWords
+      ? words.slice(0, maxWords).join(' ') + '\n\n[Texto recortado al límite del plan. Pasa a Premium para sin límites.]'
+      : content;
       cntW();
       S._pendingFile=true;
       toast('✅ Texto extraído. Revisa y presiona Humanizar cuando estés listo.','s');
@@ -2268,7 +2280,7 @@ if(window.__runQueue) window.__runQueue();
 </div>
 
 <!-- BOTÓN ? FLOTANTE -->
-<button id="help-btn" onclick="toggleHelp()" title="¿Cómo funciona?" style="position:fixed;bottom:24px;right:24px;z-index:400;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(124,92,252,.5);animation:bell 3s ease-in-out infinite;display:none;align-items:center;justify-content:center;font-weight:900">?</button>
+<button id="help-btn" onclick="toggleHelp()" title="¿Cómo funciona?" style="position:fixed;bottom:24px;right:24px;z-index:400;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(124,92,252,.5);animation:bell 3s ease-in-out infinite;display:flex;align-items:center;justify-content:center;font-weight:900;opacity:0;pointer-events:none;transition:opacity .3s">?</button>
 
 <!-- MODAL AYUDA -->
 <div id="help-ov" class="ov" onclick="if(event.target===this)this.classList.remove('open')">
