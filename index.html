@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TextHuman — Humanizador de Textos con IA para Latinoamérica y España</title>
+<title>TextHuman — Humanizador de Textos con IA para America y España</title>
 <meta name="description" content="Convierte texto generado por IA en redacciones naturales y auténticas. Con jerga real de México, Argentina, Colombia, España y 20+ países. Humanizador de texto gratis.">
 <meta name="keywords" content="humanizador de texto, humanizar texto IA, pasar texto de IA a humano, evitar detector de IA, texto natural, humanizar ensayo, humanizar trabajo escolar, México, Argentina, Colombia, España">
 <meta name="robots" content="index, follow">
@@ -281,6 +281,7 @@ textarea.ta::placeholder{color:var(--text3)}
 .bsm:hover{border-color:var(--accent);color:var(--text)}
 /* PLANS */
 #p-plans{padding:85px 20px 60px;max-width:860px;margin:0 auto;text-align:center}
+#p-reset{padding:85px 20px 60px;max-width:480px;margin:0 auto}
 .plt{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;letter-spacing:-1px;margin-bottom:9px}
 .pls{color:var(--text2);font-size:15px;margin-bottom:40px}
 .plg{display:grid;grid-template-columns:1fr 1fr;gap:18px;text-align:left}
@@ -663,6 +664,9 @@ textarea.ta::placeholder{color:var(--text3)}
     <button onclick="document.getElementById('disc-ov').classList.add('open')" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s" onmouseover="this.style.color='var(--yellow)'" onmouseout="this.style.color='var(--text3)'">🎟️ Código de descuento</button>
   </div>
 </div>
+
+  <!-- BOTÓN ? FLOTANTE dentro de la app -->
+  <button id="help-btn" onclick="toggleHelp()" title="¿Cómo funciona?" style="position:fixed;bottom:24px;right:24px;z-index:400;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(124,92,252,.5);animation:bell 3s ease-in-out infinite;display:flex;align-items:center;justify-content:center;font-weight:900">?</button>
 
 <!-- PROFILE -->
 <div id="p-profile" class="page">
@@ -1146,7 +1150,7 @@ const API = PROXY_URL;
 let S={
   token:null, user:null, plan:'free',
   premiumUntil:null,
-  txtLeft:5, filLeft:2, accelLeft:3,
+  txtLeft:2, filLeft:1, accelLeft:3,
   blocked:false, blockedUntil:null,
   fileBlocked:false, fileBlockedUntil:null,
   purpose:null, level:'formal', country:null, lang:'es',
@@ -1177,6 +1181,26 @@ let authMode='register';
   }
   setInterval(tick,1000);
   setInterval(checkPremiumExpiry, 60000); // checa vencimiento cada minuto
+
+  // Manejar ?reset=TOKEN y ?pay=ok en la URL
+  const _params = new URLSearchParams(window.location.search);
+  const _resetToken = _params.get('reset');
+  const _payStatus  = _params.get('pay');
+  if(_resetToken){
+    window._resetToken = _resetToken;
+    // Limpiar URL sin recargar
+    window.history.replaceState({}, '', window.location.pathname);
+    // Mostrar página de reset
+    document.querySelectorAll('.page').forEach(p=>{ p.style.display='none'; p.classList.remove('active'); });
+    showPage('reset');
+  } else if(_payStatus === 'ok'){
+    window.history.replaceState({}, '', window.location.pathname);
+    toast('¡Pago exitoso! Tu plan se activará en unos segundos 🎉','s');
+    if(S.token) setTimeout(verifySession, 2000);
+  } else if(_payStatus === 'fail'){
+    window.history.replaceState({}, '', window.location.pathname);
+    toast('El pago no se completó. Intenta de nuevo.','w');
+  }
   document.addEventListener('click',e=>{
     if(!e.target.closest('#dw'))document.getElementById('dm').classList.remove('open');
   });
@@ -1253,7 +1277,7 @@ function applyServerData(r){
   S.plan = r.plan||'free';
   S.premiumUntil = r.premium_until||null;
   S.txtLeft = r.txt_left??2;
-  S.filLeft = r.fil_left??2;
+  S.filLeft = r.fil_left??1;
   S.accelLeft = r.accel_left??3;
   S.blockedUntil = r.blocked_until||null;
   S.fileBlockedUntil = r.file_blocked_until||null;
@@ -1298,11 +1322,7 @@ function showPage(id){
     el.style.display='block';
     window.scrollTo({top:0,behavior:'smooth'});
   }
-  const hbtn=document.getElementById('help-btn');
-  if(hbtn){
-    hbtn.style.opacity=(id==='app')?'1':'0';
-    hbtn.style.pointerEvents=(id==='app')?'auto':'none';
-  }
+
 }
 function doNav(id){
   if((id==='app'||id==='profile')&&!S.token){openModal('login');return;}
@@ -1465,7 +1485,7 @@ function applyUserUI(showT){
 }
 
 function logout(){
-  S={token:null,user:null,plan:'free',premiumUntil:null,txtLeft:5,filLeft:2,accelLeft:3,
+  S={token:null,user:null,plan:'free',premiumUntil:null,txtLeft:2,filLeft:1,accelLeft:3,
     blocked:false,blockedUntil:null,fileBlocked:false,fileBlockedUntil:null,_pendingFile:false,
     purpose:S.purpose,level:S.level,country:S.country,lang:S.lang,
     sources:[],expActive:false,expTone:'auto',antiActive:false,antiLevel:'med',pov:'yo'};
@@ -1663,12 +1683,22 @@ async function doHumanize(){
     }
     const wc=text.split(/\s+/).filter(Boolean).length;
     if(wc>150){
-      toast('Plan gratis: máximo 150 palabras. Tu texto tiene '+wc+'. ¡Pasa a Premium! ⚡','w');
       document.getElementById('out').innerHTML=`<div style="padding:16px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.2);border-radius:10px;text-align:center">
         <div style="font-size:22px;margin-bottom:8px">⚡</div>
         <strong style="color:var(--accent3)">Límite del plan gratis</strong>
-        <p style="color:var(--text2);font-size:13px;margin:8px 0">Tu texto tiene <strong>${wc} palabras</strong>. El plan gratis permite hasta <strong>150 palabras</strong>.</p>
+        <p style="color:var(--text2);font-size:13px;margin:8px 0">Tu texto tiene <strong>${wc} palabras</strong>. El plan gratis permite hasta <strong>150 palabras</strong>.<br>Reduce el texto o pasa a Premium.</p>
         <button class="bup" style="margin-top:4px" onclick="doNav('plans')">Ver Premium — sin límites</button>
+      </div>`;
+      return;
+    }
+  } else {
+    // Premium — límite de 5000 palabras
+    const wc=text.split(/\s+/).filter(Boolean).length;
+    if(wc>1000){
+      document.getElementById('out').innerHTML=`<div style="padding:16px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.2);border-radius:10px;text-align:center">
+        <div style="font-size:22px;margin-bottom:8px">📏</div>
+        <strong style="color:var(--accent3)">Texto muy largo</strong>
+        <p style="color:var(--text2);font-size:13px;margin:8px 0">Tu texto tiene <strong>${wc} palabras</strong>. El máximo es <strong>1,000 palabras</strong> por humanización.<br>Divide el texto en partes y humaniza cada una.</p>
       </div>`;
       return;
     }
@@ -1812,11 +1842,18 @@ function procFile(file){
     }
     if(content && content.trim().length>20){
       // Recortar a límite de palabras según plan
-    const maxWords = S.plan==='premium' ? 5000 : 150;
-    const words = content.trim().split(/\s+/);
-    document.getElementById('inp').value = words.length > maxWords
-      ? words.slice(0, maxWords).join(' ') + '\n\n[Texto recortado al límite del plan. Pasa a Premium para sin límites.]'
+    const maxWords = S.plan==='premium' ? 1000 : 150;
+    const words = content.trim().split(/\s+/).filter(Boolean);
+    const truncated = words.length > maxWords;
+    document.getElementById('inp').value = truncated
+      ? words.slice(0, maxWords).join(' ')
       : content;
+    if(truncated && S.plan!=='premium'){
+      // Mostrar aviso de truncado igual que en texto normal
+      setTimeout(()=>{
+        toast('Tu archivo tiene '+words.length+' palabras. Se recortó a 150. ¡Pasa a Premium para sin límites! ⚡','w');
+      },500);
+    }
       cntW();
       S._pendingFile=true;
       toast('✅ Texto extraído. Revisa y presiona Humanizar cuando estés listo.','s');
@@ -1847,7 +1884,7 @@ function tick(){
   }
   if(S.fileBlocked&&S.fileBlockedUntil){
     if(new Date(S.fileBlockedUntil)-now<=0){
-      S.fileBlocked=false;S.fileBlockedUntil=null;S.filLeft=2;save();refreshUsage();toast('¡Intentos de archivo restablecidos! 🎉','s');
+      S.fileBlocked=false;S.fileBlockedUntil=null;S.filLeft=1;save();refreshUsage();toast('¡Intentos de archivo restablecidos! 🎉','s');
     } else anyBlocked=true;
   }
   if(!anyBlocked){document.getElementById('bbar').style.display='none';return;}
@@ -1927,6 +1964,44 @@ function showAIDetector(){
       document.getElementById('det-overall').textContent=humanPct+'% Humano';
     },1200);
   },300);
+}
+
+function checkRPMatch(){
+  const p1=document.getElementById('rp-pass1').value;
+  const p2=document.getElementById('rp-pass2').value;
+  const btn=document.getElementById('rp-submit');
+  const msg=document.getElementById('rp-match-msg');
+  if(!p1||p1.length<6){
+    btn.disabled=true; msg.style.display='none'; return;
+  }
+  if(p2 && p1!==p2){
+    msg.textContent='Las contraseñas no coinciden'; msg.style.color='var(--red)'; msg.style.display='block';
+    btn.disabled=true; return;
+  }
+  if(p2 && p1===p2){
+    msg.textContent='✓ Contraseñas coinciden'; msg.style.color='var(--green)'; msg.style.display='block';
+    btn.disabled=false; return;
+  }
+  msg.style.display='none'; btn.disabled=true;
+}
+
+async function doResetPasswordPage(){
+  const pass=document.getElementById('rp-pass1').value;
+  const token=window._resetToken;
+  if(!token){toast('Enlace inválido. Solicita uno nuevo.','e');return;}
+  const btn=document.getElementById('rp-submit');
+  btn.textContent='Guardando...'; btn.disabled=true;
+  try{
+    const r=await api('/reset-password',{token,password:pass});
+    if(r.error) throw new Error(r.error);
+    window._resetToken=null;
+    toast('¡Contraseña actualizada! Ya puedes iniciar sesión 🎉','s');
+    showPage('landing');
+    setTimeout(()=>openModal('login'),600);
+  }catch(e){
+    toast('Error: '+e.message,'e');
+    btn.textContent='Guardar nueva contraseña'; btn.disabled=false;
+  }
 }
 
 function doCopy(){
@@ -2009,14 +2084,17 @@ function refreshUsage(){
     }
     return;
   }
-  const tp=Math.max(0,S.txtLeft)/2*100,fp=Math.max(0,S.filLeft)/1*100;
-  document.getElementById('u-txt').textContent=Math.max(0,S.txtLeft)+' / 2';
-  document.getElementById('u-fil').textContent=Math.max(0,S.filLeft)+' / 1';
+  const txtMax=2, filMax=1;
+  const tLeft=Math.max(0,S.txtLeft), fLeft=Math.max(0,S.filLeft);
+  const tp=tLeft/txtMax*100, fp=fLeft/filMax*100;
+  document.getElementById('u-txt').textContent=tLeft+' / '+txtMax;
+  document.getElementById('u-fil').textContent=fLeft+' / '+filMax;
   document.getElementById('u-tfill').style.width=tp+'%';
   document.getElementById('u-ffill').style.width=fp+'%';
   const col=p=>p>60?'fg':p>30?'fy':'fr';
-  document.getElementById('u-tfill').className='uf '+col(tp);
-  document.getElementById('u-ffill').className='uf '+col(fp);
+  // Si está bloqueado forzar barra roja vacía
+  document.getElementById('u-tfill').className='uf '+(S.blocked?'fr':col(tp));
+  document.getElementById('u-ffill').className='uf '+(S.fileBlocked?'fr':col(fp));
   if(S.blocked||S.fileBlocked)document.getElementById('bbar').style.display='flex';
 }
 function fillProfile(){
@@ -2279,8 +2357,7 @@ if(window.__runQueue) window.__runQueue();
   </div>
 </div>
 
-<!-- BOTÓN ? FLOTANTE -->
-<button id="help-btn" onclick="toggleHelp()" title="¿Cómo funciona?" style="position:fixed;bottom:24px;right:24px;z-index:400;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(124,92,252,.5);animation:bell 3s ease-in-out infinite;display:flex;align-items:center;justify-content:center;font-weight:900;opacity:0;pointer-events:none;transition:opacity .3s">?</button>
+
 
 <!-- MODAL AYUDA -->
 <div id="help-ov" class="ov" onclick="if(event.target===this)this.classList.remove('open')">
@@ -2293,10 +2370,35 @@ if(window.__runQueue) window.__runQueue();
       <div style="background:var(--bg2);border-radius:12px;padding:14px"><div style="font-weight:700;margin-bottom:6px">🎭 Experiencias · 📚 Fuentes · 🛡️ AntiIA Pro · 👤 Perspectiva</div><div style="font-size:13px;color:var(--text2);line-height:1.6">Herramientas extra: agrega anécdotas personales, cita fuentes reales, confunde detectores de IA, y elige si el texto habla en "yo", "nosotros" o impersonal.</div></div>
       <div style="background:var(--bg2);border-radius:12px;padding:14px"><div style="font-weight:700;margin-bottom:6px">📎 Subir archivo</div><div style="font-size:13px;color:var(--text2);line-height:1.6">Sube PDF, DOCX, PPTX o TXT y el texto se extrae automáticamente. <strong>El intento se descuenta solo al presionar Humanizar</strong>, nunca al subir.</div></div>
       <div style="background:var(--bg2);border-radius:12px;padding:14px"><div style="font-weight:700;margin-bottom:6px">🤖 Análisis de detección IA</div><div style="font-size:13px;color:var(--text2);line-height:1.6">Aparece bajo el resultado. Barra verde alta = muy humano. Barras rojas bajas = poca detección de IA.</div></div>
-      <div style="background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.2);border-radius:12px;padding:14px"><div style="font-weight:700;margin-bottom:6px;color:var(--accent)">⚡ Gratis vs Premium</div><div style="font-size:13px;color:var(--text2);line-height:1.6"><strong>Gratis:</strong> 2 textos/día · 1 archivo/día · máx 150 palabras.<br><strong>Premium $149/mes:</strong> ilimitado · hasta 5,000 palabras · sin esperas.</div></div>
+      <div style="background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.2);border-radius:12px;padding:14px"><div style="font-weight:700;margin-bottom:6px;color:var(--accent)">⚡ Gratis vs Premium</div><div style="font-size:13px;color:var(--text2);line-height:1.6"><strong>Gratis:</strong> 2 textos/día · 1 archivo/día · máx 150 palabras.<br><strong>Premium $149/mes:</strong> ilimitado · hasta 1,000 palabras · sin esperas.</div></div>
       <div style="background:var(--bg2);border-radius:12px;padding:14px"><div style="font-weight:700;margin-bottom:6px">⏳ Tiempo de espera</div><div style="font-size:13px;color:var(--text2);line-height:1.6">Al agotar intentos, espera 24h o compra una <strong>Aceleración</strong> para saltarte la espera al instante.</div></div>
     </div>
   </div>
 </div>
+
+<!-- RESET PASSWORD PAGE -->
+<div id="p-reset" class="page">
+  <button onclick="doNav(S.token?'app':'landing')" style="background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;margin-bottom:24px;font-family:'DM Sans',sans-serif" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">← Inicio</button>
+  <div style="text-align:center;margin-bottom:32px">
+    <div style="font-size:48px;margin-bottom:12px">🔐</div>
+    <h2 style="font-size:24px;font-weight:800;margin:0 0 8px">Nueva contraseña</h2>
+    <p style="color:var(--text2);font-size:14px;margin:0">Elige una contraseña segura para tu cuenta.</p>
+  </div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:14px">
+    <div>
+      <label style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;display:block">Nueva contraseña</label>
+      <input type="password" id="rp-pass1" class="field" placeholder="Mínimo 6 caracteres" oninput="checkRPMatch()" style="margin:0">
+    </div>
+    <div>
+      <label style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;display:block">Confirmar contraseña</label>
+      <input type="password" id="rp-pass2" class="field" placeholder="Repite la contraseña" oninput="checkRPMatch()" style="margin:0">
+    </div>
+    <div id="rp-match-msg" style="font-size:12px;display:none"></div>
+    <button id="rp-submit" onclick="doResetPasswordPage()" class="btn btn-p" style="width:100%;justify-content:center;padding:14px;font-size:15px;font-weight:700;border-radius:12px;margin-top:4px" disabled>
+      Guardar nueva contraseña
+    </button>
+  </div>
+</div>
+
 </body>
 </html>
