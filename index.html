@@ -874,19 +874,13 @@ textarea.ta::placeholder{color:var(--text3)}
 
 <script>
 
-// ═══ PREMIUM LOCK — secciones avanzadas ═══
+// ═══ HERRAMIENTAS AVANZADAS — disponibles para todos ═══
 function updateAdvLock(){
   const wrap = document.getElementById('adv-lock-wrap');
-  const isPrem = S.plan === 'premium';
-  if(wrap){
-    wrap.style.display = isPrem ? 'none' : 'block';
-  }
+  if(wrap) wrap.style.display = 'block';
   ['tog-exp','tog-src','tog-anti','tog-pov'].forEach(id=>{
     const el = document.getElementById(id);
-    if(el){
-      el.style.pointerEvents = isPrem ? 'auto' : 'none';
-      el.style.opacity = isPrem ? '1' : '0.5';
-    }
+    if(el){ el.style.pointerEvents = 'auto'; el.style.opacity = '1'; }
   });
 }
 
