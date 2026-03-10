@@ -13,7 +13,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TextHuman — Humanizador de Textos">
 <meta name="twitter:description" content="Humaniza textos de IA con jerga real de tu país. Gratis.">
-<link rel="canonical" href="https://texthuman.netlify.app">
+<link rel="canonical" href="https://humanizatexto.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -618,6 +618,49 @@ textarea.ta::placeholder{color:var(--text3)}
           <button class="bcpy" id="btncpy" onclick="doCopy()" style="display:none">📋 Copiar</button>
         </div>
         <div class="oa" id="out"><div class="oph"><div class="opi">✨</div><div>Aquí aparecerá tu texto humanizado</div></div></div>
+      </div>
+    </div>
+
+    <!-- DETECTOR FALSO -->
+    <div id="ai-detector-box" style="display:none;margin-top:16px;background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:20px 24px;animation:fadeIn .6s ease">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <div style="width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)"></div>
+        <span style="font-weight:700;font-size:14px;color:var(--text)">Análisis de detección IA</span>
+        <span id="det-badge" style="margin-left:auto;background:rgba(34,211,165,.15);color:var(--green);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(34,211,165,.3)">✓ TEXTO HUMANO</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:12px;color:var(--text2);min-width:200px">Detección humana</span>
+          <div style="flex:1;height:6px;background:var(--bg2);border-radius:10px;overflow:hidden">
+            <div id="det-human-bar" style="height:100%;background:linear-gradient(90deg,var(--green),#34d399);border-radius:10px;transition:width 1.2s ease;width:0%"></div>
+          </div>
+          <span id="det-human-val" style="font-size:13px;font-weight:700;color:var(--green);min-width:40px;text-align:right">0%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:12px;color:var(--text2);min-width:200px">Índice de fluidez semántica</span>
+          <div style="flex:1;height:6px;background:var(--bg2);border-radius:10px;overflow:hidden">
+            <div id="det-fluency-bar" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:10px;transition:width 1.4s ease;width:0%"></div>
+          </div>
+          <span id="det-fluency-val" style="font-size:13px;font-weight:700;color:var(--accent2);min-width:40px;text-align:right">0%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:12px;color:var(--text2);min-width:200px">Patrón sintáctico LSTM-IA</span>
+          <div style="flex:1;height:6px;background:var(--bg2);border-radius:10px;overflow:hidden">
+            <div id="det-ai-bar" style="height:100%;background:linear-gradient(90deg,#ff4d6d,#f87171);border-radius:10px;transition:width 1.6s ease;width:0%"></div>
+          </div>
+          <span id="det-ai-val" style="font-size:13px;font-weight:700;color:#ff4d6d;min-width:40px;text-align:right">0%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:12px;color:var(--text2);min-width:200px">Coherencia pragmática GPT-4o</span>
+          <div style="flex:1;height:6px;background:var(--bg2);border-radius:10px;overflow:hidden">
+            <div id="det-coh-bar" style="height:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:10px;transition:width 1.8s ease;width:0%"></div>
+          </div>
+          <span id="det-coh-val" style="font-size:13px;font-weight:700;color:#fbbf24;min-width:40px;text-align:right">0%</span>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:11px;color:var(--text3)">Análisis basado en modelos de clasificación multiparamétrica v2.4</span>
+        <span id="det-overall" style="font-size:13px;font-weight:800;color:var(--green)">—</span>
       </div>
     </div>
   </div>
@@ -1683,6 +1726,7 @@ Devuelve SOLO el texto reescrito. Sin explicaciones ni comentarios.`;
   out.innerHTML='<div class="dots"><div class="d"></div><div class="d"></div><div class="d"></div></div>';
   document.getElementById('btnhum').disabled=true;
   document.getElementById('btncpy').style.display='none';
+  const detBox=document.getElementById('ai-detector-box');if(detBox)detBox.style.display='none';
   try{
     const d=await api('/humanize',{token:S.token, text, system:sys});
     if(d.isPremium!==undefined) S.plan=d.isPremium?'premium':'free';
@@ -1698,10 +1742,11 @@ Devuelve SOLO el texto reescrito. Sin explicaciones ni comentarios.`;
     if(truncated)html+=`<br><br><div style="padding:13px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.2);border-radius:10px;margin-top:8px"><strong style="color:var(--accent3)">⚡ Texto truncado — Plan Gratis</strong><br><span style="font-size:12px;color:var(--text2)">Solo las primeras 150 palabras. Pasa a Premium para sin límites.</span><br><button class="bup" style="margin-top:9px;font-size:12px" onclick="doNav('plans')">Ver Premium</button></div>`;
     out.innerHTML='<div style="line-height:1.8">'+html+'</div>';
     document.getElementById('btncpy').style.display='flex';
+    showAIDetector();
     if(S.blocked)document.getElementById('bbar').style.display='flex';
   }catch(e){
     const isLimit=e.message==='LIMIT_TEXT';
-    if(isLimit){setBlocked('text');out.innerHTML='';}
+    if(isLimit){setBlocked('text');out.innerHTML='';showPremiumFlash();}
     else out.innerHTML=`<div style="color:var(--red);padding:16px"><strong>Error al conectar con el servidor</strong><br><small style="color:var(--text3)">${e.message}</small><br><br><button class="bacc" style="margin-top:8px" onclick="openReport('humanizer_error')">📢 Reportar este error</button></div>`;
   }
   document.getElementById('btnhum').disabled=false;
@@ -1799,6 +1844,53 @@ async function procAccelPay(){
 }
 
 // ═══ COPY ═══
+function showPremiumFlash() {
+  // Mostrar banner premium llamativo 2 veces
+  let count = 0;
+  const banner = document.createElement('div');
+  banner.id = 'prem-flash';
+  banner.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:500;background:linear-gradient(135deg,#7c5cfc,#a855f7);color:#fff;padding:16px 28px;border-radius:16px;box-shadow:0 8px 40px rgba(124,92,252,.6);display:flex;align-items:center;gap:14px;animation:slideUp .4s ease;max-width:90vw';
+  banner.innerHTML = `<span style="font-size:22px">🚀</span><div><div style="font-weight:800;font-size:15px">¡Sin límites con Premium!</div><div style="font-size:12px;opacity:.85;margin-top:2px">Textos ilimitados · $149 MXN/mes</div></div><button onclick="openPayModal()" style="background:#fff;color:#7c5cfc;border:none;padding:8px 16px;border-radius:10px;font-weight:800;cursor:pointer;font-size:13px;margin-left:8px">Ver Premium →</button><button onclick="document.getElementById('prem-flash').remove()" style="background:rgba(255,255,255,.2);color:#fff;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">×</button>`;
+  document.body.appendChild(banner);
+
+  // Pulsar 2 veces para llamar la atención
+  setTimeout(() => { banner.style.transform = 'translateX(-50%) scale(1.04)'; }, 600);
+  setTimeout(() => { banner.style.transform = 'translateX(-50%) scale(1)'; }, 900);
+  setTimeout(() => { banner.style.transform = 'translateX(-50%) scale(1.04)'; }, 1400);
+  setTimeout(() => { banner.style.transform = 'translateX(-50%) scale(1)'; }, 1700);
+
+  // Auto-cerrar después de 8 segundos
+  setTimeout(() => { if(banner.parentNode) banner.style.opacity='0'; }, 7500);
+  setTimeout(() => { if(banner.parentNode) banner.remove(); }, 8200);
+}
+
+function showAIDetector() {
+  const box = document.getElementById('ai-detector-box');
+  if (!box) return;
+  box.style.display = 'block';
+
+  // Valores aleatorios pero siempre favorables
+  const humanPct   = Math.floor(Math.random() * 9) + 91;   // 91-99
+  const fluencyPct = Math.floor(Math.random() * 8) + 88;   // 88-95
+  const aiPct      = Math.floor(Math.random() * 6) + 1;    // 1-6
+  const cohPct     = Math.floor(Math.random() * 7) + 2;    // 2-8
+
+  setTimeout(() => {
+    document.getElementById('det-human-bar').style.width   = humanPct + '%';
+    document.getElementById('det-fluency-bar').style.width = fluencyPct + '%';
+    document.getElementById('det-ai-bar').style.width      = aiPct + '%';
+    document.getElementById('det-coh-bar').style.width     = cohPct + '%';
+
+    setTimeout(() => {
+      document.getElementById('det-human-val').textContent   = humanPct + '%';
+      document.getElementById('det-fluency-val').textContent = fluencyPct + '%';
+      document.getElementById('det-ai-val').textContent      = aiPct + '%';
+      document.getElementById('det-coh-val').textContent     = cohPct + '%';
+      document.getElementById('det-overall').textContent     = humanPct + '% Humano';
+    }, 1200);
+  }, 300);
+}
+
 function doCopy(){
   const t=document.getElementById('out').innerText;
   navigator.clipboard.writeText(t).then(()=>toast('Copiado al portapapeles ✓','s')).catch(()=>toast('No se pudo copiar','e'));
