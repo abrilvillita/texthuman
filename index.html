@@ -255,6 +255,11 @@ textarea.ta::placeholder{color:var(--text3)}
 .dots{display:flex;gap:5px;align-items:center;padding:34px 17px;justify-content:center}
 .d{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:bounce 1.2s infinite}
 .d:nth-child(2){animation-delay:.2s}.d:nth-child(3){animation-delay:.4s}
+@keyframes bell{
+  0%,85%,100%{transform:rotate(0deg)}
+  88%{transform:rotate(-18deg)}91%{transform:rotate(18deg)}
+  94%{transform:rotate(-10deg)}97%{transform:rotate(10deg)}
+}
 @keyframes bounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
 /* PROFILE */
 #p-profile{padding:85px 20px 60px;max-width:660px;margin:0 auto}
@@ -367,6 +372,8 @@ textarea.ta::placeholder{color:var(--text3)}
   };
 })();
 </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>if(typeof pdfjsLib!=='undefined')pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
 </head>
 <body>
 <div class="bg-mesh"></div>
@@ -490,12 +497,7 @@ textarea.ta::placeholder{color:var(--text3)}
 
     <!-- ═══ SECCIÓN AVANZADA: 4 OPCIONES ═══ -->
     <div id="adv-section" style="margin-bottom:18px">
-    <div id="adv-lock-wrap" class="prem-lock-wrap" style="display:none">
-      <div class="prem-lock-btn" onclick="closeModal('adv-preview');doNav('plans')">
-        <span>⚡</span>
-        <span>FUNCIONES PREMIUM — Ver planes</span>
-      </div>
-      <div style="opacity:.4;pointer-events:none;padding:12px">
+    <div id="adv-lock-wrap" style="display:block">
 
       <!-- 1. EXPERIENCIAS -->
       <div class="sl" id="adv-exp-lbl-wrap">🎭 <span id="adv-exp-lbl">Experiencias</span> <span style="color:var(--text3);font-weight:400;font-size:12px">(opcional · la IA decide el tono según el texto)</span></div>
@@ -576,9 +578,8 @@ textarea.ta::placeholder{color:var(--text3)}
         </div>
       </div>
 
-    </div>
     <!-- FIN SECCIÓN AVANZADA -->
-    </div><!-- /adv-lock-wrap preview -->
+    </div><!-- /adv-lock-wrap -->
     </div><!-- /adv-section -->
 
     <div class="sl" id="cfg-level-lbl">🎚️ Nivel de formalidad</div>
@@ -621,45 +622,37 @@ textarea.ta::placeholder{color:var(--text3)}
       </div>
     </div>
 
-    <!-- DETECTOR FALSO -->
-    <div id="ai-detector-box" style="display:none;margin-top:16px;background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:20px 24px;animation:fadeIn .6s ease">
+    <!-- DETECTOR IA -->
+    <div id="ai-detector-box" style="display:none;margin-top:16px;background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:20px 24px">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
         <div style="width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)"></div>
-        <span style="font-weight:700;font-size:14px;color:var(--text)">Análisis de detección IA</span>
-        <span id="det-badge" style="margin-left:auto;background:rgba(34,211,165,.15);color:var(--green);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(34,211,165,.3)">✓ TEXTO HUMANO</span>
+        <span style="font-weight:700;font-size:14px">Análisis de detección IA</span>
+        <span style="margin-left:auto;background:rgba(34,211,165,.15);color:var(--green);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(34,211,165,.3)">✓ TEXTO HUMANO</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px">
         <div style="display:flex;align-items:center;gap:12px">
           <span style="font-size:12px;color:var(--text2);min-width:200px">Detección humana</span>
-          <div style="flex:1;height:6px;background:var(--bg2);border-radius:10px;overflow:hidden">
-            <div id="det-human-bar" style="height:100%;background:linear-gradient(90deg,var(--green),#34d399);border-radius:10px;transition:width 1.2s ease;width:0%"></div>
-          </div>
+          <div style="flex:1;height:6px;background:var(--bg2);border-radius:10px;overflow:hidden"><div id="det-human-bar" style="height:100%;background:linear-gradient(90deg,var(--green),#34d399);border-radius:10px;transition:width 1.2s ease;width:0%"></div></div>
           <span id="det-human-val" style="font-size:13px;font-weight:700;color:var(--green);min-width:40px;text-align:right">0%</span>
         </div>
         <div style="display:flex;align-items:center;gap:12px">
           <span style="font-size:12px;color:var(--text2);min-width:200px">Índice de fluidez semántica</span>
-          <div style="flex:1;height:6px;background:var(--bg2);border-radius:10px;overflow:hidden">
-            <div id="det-fluency-bar" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:10px;transition:width 1.4s ease;width:0%"></div>
-          </div>
+          <div style="flex:1;height:6px;background:var(--bg2);border-radius:10px;overflow:hidden"><div id="det-fluency-bar" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:10px;transition:width 1.4s ease;width:0%"></div></div>
           <span id="det-fluency-val" style="font-size:13px;font-weight:700;color:var(--accent2);min-width:40px;text-align:right">0%</span>
         </div>
         <div style="display:flex;align-items:center;gap:12px">
           <span style="font-size:12px;color:var(--text2);min-width:200px">Patrón sintáctico LSTM-IA</span>
-          <div style="flex:1;height:6px;background:var(--bg2);border-radius:10px;overflow:hidden">
-            <div id="det-ai-bar" style="height:100%;background:linear-gradient(90deg,#ff4d6d,#f87171);border-radius:10px;transition:width 1.6s ease;width:0%"></div>
-          </div>
+          <div style="flex:1;height:6px;background:var(--bg2);border-radius:10px;overflow:hidden"><div id="det-ai-bar" style="height:100%;background:linear-gradient(90deg,#ff4d6d,#f87171);border-radius:10px;transition:width 1.6s ease;width:0%"></div></div>
           <span id="det-ai-val" style="font-size:13px;font-weight:700;color:#ff4d6d;min-width:40px;text-align:right">0%</span>
         </div>
         <div style="display:flex;align-items:center;gap:12px">
           <span style="font-size:12px;color:var(--text2);min-width:200px">Coherencia pragmática GPT-4o</span>
-          <div style="flex:1;height:6px;background:var(--bg2);border-radius:10px;overflow:hidden">
-            <div id="det-coh-bar" style="height:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:10px;transition:width 1.8s ease;width:0%"></div>
-          </div>
+          <div style="flex:1;height:6px;background:var(--bg2);border-radius:10px;overflow:hidden"><div id="det-coh-bar" style="height:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:10px;transition:width 1.8s ease;width:0%"></div></div>
           <span id="det-coh-val" style="font-size:13px;font-weight:700;color:#fbbf24;min-width:40px;text-align:right">0%</span>
         </div>
       </div>
       <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-        <span style="font-size:11px;color:var(--text3)">Análisis basado en modelos de clasificación multiparamétrica v2.4</span>
+        <span style="font-size:11px;color:var(--text3)">Análisis multiparamétrico v2.4</span>
         <span id="det-overall" style="font-size:13px;font-weight:800;color:var(--green)">—</span>
       </div>
     </div>
@@ -1311,6 +1304,8 @@ function showPage(id){
     el.style.display='block';
     window.scrollTo({top:0,behavior:'smooth'});
   }
+  const hbtn=document.getElementById('help-btn');
+  if(hbtn) hbtn.style.display=(id==='app')?'flex':'none';
 }
 function doNav(id){
   if((id==='app'||id==='profile')&&!S.token){openModal('login');return;}
@@ -1474,7 +1469,7 @@ function applyUserUI(showT){
 
 function logout(){
   S={token:null,user:null,plan:'free',premiumUntil:null,txtLeft:5,filLeft:2,accelLeft:3,
-    blocked:false,blockedUntil:null,fileBlocked:false,fileBlockedUntil:null,
+    blocked:false,blockedUntil:null,fileBlocked:false,fileBlockedUntil:null,_pendingFile:false,
     purpose:S.purpose,level:S.level,country:S.country,lang:S.lang,
     sources:[],expActive:false,expTone:'auto',antiActive:false,antiLevel:'med',pov:'yo'};
   save();
@@ -1652,6 +1647,14 @@ function cntW(){
 async function doHumanize(){
   if(!S.token){openModal('login');return;}
   if(S.blocked){toast('Límite alcanzado. Espera o acelera el tiempo.','w');return;}
+  if(S._pendingFile && S.plan!=='premium'){
+    if(S.fileBlocked){toast('Límite de archivos. Espera 24h o pasa a Premium.','w');return;}
+    if(S.filLeft<=0){setBlocked('file');return;}
+    S.filLeft--;
+    if(S.filLeft<=0){S.fileBlocked=true;S.fileBlockedUntil=new Date(Date.now()+24*3600*1000).toISOString();}
+    save();refreshUsage();
+    S._pendingFile=false;
+  }
   let text=document.getElementById('inp').value.trim();
   if(!text){toast('Escribe o pega un texto primero','w');return;}
   // CHECK LÍMITE DE PALABRAS — antes de llamar al servidor
@@ -1726,7 +1729,7 @@ Devuelve SOLO el texto reescrito. Sin explicaciones ni comentarios.`;
   out.innerHTML='<div class="dots"><div class="d"></div><div class="d"></div><div class="d"></div></div>';
   document.getElementById('btnhum').disabled=true;
   document.getElementById('btncpy').style.display='none';
-  const detBox=document.getElementById('ai-detector-box');if(detBox)detBox.style.display='none';
+  const _det=document.getElementById('ai-detector-box');if(_det)_det.style.display='none';
   try{
     const d=await api('/humanize',{token:S.token, text, system:sys});
     if(d.isPremium!==undefined) S.plan=d.isPremium?'premium':'free';
@@ -1765,22 +1768,49 @@ function procFile(file){
   if(S.plan==='free'&&S.filLeft<=0){setBlocked('file');return;}
   const ext='.'+file.name.split('.').pop().toLowerCase();
   if(!['.pdf','.docx','.pptx','.txt'].includes(ext)){toast('Formato no soportado. Usa PDF, DOCX, PPTX o TXT.','e');return;}
-  if(S.plan==='free'){
-    S.filLeft--;
-    if(S.filLeft<=0){S.fileBlocked=true;S.fileBlockedUntil=new Date(Date.now()+24*3600*1000).toISOString();}
-    save();refreshUsage();
-  }
-  toast('📄 Cargando "'+file.name+'"...','s');
+  toast('📄 Leyendo "'+file.name+'"...','s');
   const r=new FileReader();
-  r.onload=(ev)=>{
-    let content=ev.target.result||'';
-    if(ext==='.txt'){
-      document.getElementById('inp').value=content;
-    } else {
-      document.getElementById('inp').value='[Texto de: "'+file.name+'"]\n\nCopia y pega aquí el texto del archivo para humanizarlo.';
+  r.onload=async(ev)=>{
+    let content='';
+    try{
+      if(ext==='.txt'){
+        content=ev.target.result||'';
+      } else if(ext==='.pdf'){
+        const arr=new Uint8Array(ev.target.result);
+        if(typeof pdfjsLib==='undefined'){
+          content='';
+          toast('pdf.js no cargó. Intenta recargar la página.','e');
+          return;
+        }
+        const pdf=await pdfjsLib.getDocument({data:arr}).promise;
+        const pages=[];
+        for(let i=1;i<=pdf.numPages;i++){
+          const page=await pdf.getPage(i);
+          const tc=await page.getTextContent();
+          const txt=tc.items.map(it=>it.str).join(' ').replace(/\s+/g,' ').trim();
+          if(txt) pages.push(txt);
+        }
+        content=pages.join('\n\n');
+        if(!content.trim()) content='';
+      } else if(ext==='.docx'||ext==='.pptx'){
+        const arr2=new Uint8Array(ev.target.result);
+        const str2=Array.from(arr2).map(b=>String.fromCharCode(b)).join('');
+        const matches=[...str2.matchAll(/<w:t[^>]*>([^<]+)<\/w:t>/g),
+                       ...str2.matchAll(/<a:t[^>]*>([^<]+)<\/a:t>/g)];
+        content=matches.map(m=>m[1]).join(' ').replace(/\s+/g,' ').trim();
+      }
+    }catch(err){
+      toast('Error al leer el archivo: '+err.message,'e');
+      return;
     }
-    cntW();
-    toast('Archivo cargado. Ajusta el texto y haz clic en Humanizar ✨','s');
+    if(content && content.trim().length>20){
+      document.getElementById('inp').value=content.slice(0,S.plan==='premium'?15000:600);
+      cntW();
+      S._pendingFile=true;
+      toast('✅ Texto extraído. Revisa y presiona Humanizar cuando estés listo.','s');
+    } else {
+      toast('No se pudo extraer texto. Si es PDF escaneado (imagen), copia el texto manualmente.','w');
+    }
   };
   if(ext==='.txt'){r.readAsText(file,'utf-8');}
   else{r.readAsArrayBuffer(file);}
@@ -1844,51 +1874,47 @@ async function procAccelPay(){
 }
 
 // ═══ COPY ═══
-function showPremiumFlash() {
-  // Mostrar banner premium llamativo 2 veces
-  let count = 0;
-  const banner = document.createElement('div');
-  banner.id = 'prem-flash';
-  banner.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:500;background:linear-gradient(135deg,#7c5cfc,#a855f7);color:#fff;padding:16px 28px;border-radius:16px;box-shadow:0 8px 40px rgba(124,92,252,.6);display:flex;align-items:center;gap:14px;animation:slideUp .4s ease;max-width:90vw';
-  banner.innerHTML = `<span style="font-size:22px">🚀</span><div><div style="font-weight:800;font-size:15px">¡Sin límites con Premium!</div><div style="font-size:12px;opacity:.85;margin-top:2px">Textos ilimitados · $149 MXN/mes</div></div><button onclick="openPayModal()" style="background:#fff;color:#7c5cfc;border:none;padding:8px 16px;border-radius:10px;font-weight:800;cursor:pointer;font-size:13px;margin-left:8px">Ver Premium →</button><button onclick="document.getElementById('prem-flash').remove()" style="background:rgba(255,255,255,.2);color:#fff;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">×</button>`;
-  document.body.appendChild(banner);
-
-  // Pulsar 2 veces para llamar la atención
-  setTimeout(() => { banner.style.transform = 'translateX(-50%) scale(1.04)'; }, 600);
-  setTimeout(() => { banner.style.transform = 'translateX(-50%) scale(1)'; }, 900);
-  setTimeout(() => { banner.style.transform = 'translateX(-50%) scale(1.04)'; }, 1400);
-  setTimeout(() => { banner.style.transform = 'translateX(-50%) scale(1)'; }, 1700);
-
-  // Auto-cerrar después de 8 segundos
-  setTimeout(() => { if(banner.parentNode) banner.style.opacity='0'; }, 7500);
-  setTimeout(() => { if(banner.parentNode) banner.remove(); }, 8200);
+function toggleHelp(){
+  const hov=document.getElementById('help-ov');
+  if(hov) hov.classList.toggle('open');
 }
 
-function showAIDetector() {
-  const box = document.getElementById('ai-detector-box');
-  if (!box) return;
-  box.style.display = 'block';
+function showPremiumFlash(){
+  if(document.getElementById('prem-flash')) return;
+  const banner=document.createElement('div');
+  banner.id='prem-flash';
+  banner.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:500;background:linear-gradient(135deg,#7c5cfc,#a855f7);color:#fff;padding:16px 24px;border-radius:16px;box-shadow:0 8px 40px rgba(124,92,252,.6);display:flex;align-items:center;gap:14px;max-width:90vw;transition:transform .2s';
+  banner.innerHTML='<span style="font-size:22px">🚀</span><div><div style="font-weight:800;font-size:15px">¡Sin límites con Premium!</div><div style="font-size:12px;opacity:.85;margin-top:2px">Textos ilimitados · $149 MXN/mes</div></div><button onclick="openPayModal()" style="background:#fff;color:#7c5cfc;border:none;padding:8px 16px;border-radius:10px;font-weight:800;cursor:pointer;font-size:13px;margin-left:8px;white-space:nowrap">Ver Premium →</button><button onclick="document.getElementById(\'prem-flash\').remove()" style="background:rgba(255,255,255,.2);color:#fff;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1;margin-left:4px">×</button>';
+  document.body.appendChild(banner);
+  setTimeout(()=>{ banner.style.transform='translateX(-50%) scale(1.04)'; },500);
+  setTimeout(()=>{ banner.style.transform='translateX(-50%) scale(1)'; },800);
+  setTimeout(()=>{ banner.style.transform='translateX(-50%) scale(1.04)'; },1300);
+  setTimeout(()=>{ banner.style.transform='translateX(-50%) scale(1)'; },1600);
+  setTimeout(()=>{ if(banner.parentNode){ banner.style.opacity='0';banner.style.transition='opacity .7s'; } },7500);
+  setTimeout(()=>{ if(banner.parentNode) banner.remove(); },8300);
+}
 
-  // Valores aleatorios pero siempre favorables
-  const humanPct   = Math.floor(Math.random() * 9) + 91;   // 91-99
-  const fluencyPct = Math.floor(Math.random() * 8) + 88;   // 88-95
-  const aiPct      = Math.floor(Math.random() * 6) + 1;    // 1-6
-  const cohPct     = Math.floor(Math.random() * 7) + 2;    // 2-8
-
-  setTimeout(() => {
-    document.getElementById('det-human-bar').style.width   = humanPct + '%';
-    document.getElementById('det-fluency-bar').style.width = fluencyPct + '%';
-    document.getElementById('det-ai-bar').style.width      = aiPct + '%';
-    document.getElementById('det-coh-bar').style.width     = cohPct + '%';
-
-    setTimeout(() => {
-      document.getElementById('det-human-val').textContent   = humanPct + '%';
-      document.getElementById('det-fluency-val').textContent = fluencyPct + '%';
-      document.getElementById('det-ai-val').textContent      = aiPct + '%';
-      document.getElementById('det-coh-val').textContent     = cohPct + '%';
-      document.getElementById('det-overall').textContent     = humanPct + '% Humano';
-    }, 1200);
-  }, 300);
+function showAIDetector(){
+  const box=document.getElementById('ai-detector-box');
+  if(!box) return;
+  box.style.display='block';
+  const humanPct=Math.floor(Math.random()*9)+91;
+  const fluencyPct=Math.floor(Math.random()*8)+88;
+  const aiPct=Math.floor(Math.random()*6)+1;
+  const cohPct=Math.floor(Math.random()*7)+2;
+  setTimeout(()=>{
+    document.getElementById('det-human-bar').style.width=humanPct+'%';
+    document.getElementById('det-fluency-bar').style.width=fluencyPct+'%';
+    document.getElementById('det-ai-bar').style.width=aiPct+'%';
+    document.getElementById('det-coh-bar').style.width=cohPct+'%';
+    setTimeout(()=>{
+      document.getElementById('det-human-val').textContent=humanPct+'%';
+      document.getElementById('det-fluency-val').textContent=fluencyPct+'%';
+      document.getElementById('det-ai-val').textContent=aiPct+'%';
+      document.getElementById('det-coh-val').textContent=cohPct+'%';
+      document.getElementById('det-overall').textContent=humanPct+'% Humano';
+    },1200);
+  },300);
 }
 
 function doCopy(){
@@ -2237,6 +2263,26 @@ if(window.__runQueue) window.__runQueue();
       </div>
       <div id="reset-match" style="font-size:12px;margin-bottom:10px;display:none"></div>
       <button class="btn-p" id="reset-submit-btn" onclick="doResetPassword()" style="width:100%;padding:13px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#7c5cfc,#a78bfa);color:#fff" disabled>Guardar nueva contraseña</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTÓN ? FLOTANTE -->
+<button id="help-btn" onclick="toggleHelp()" title="¿Cómo funciona?" style="position:fixed;bottom:24px;right:24px;z-index:400;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(124,92,252,.5);animation:bell 3s ease-in-out infinite;display:none;align-items:center;justify-content:center;font-weight:900">?</button>
+
+<!-- MODAL AYUDA -->
+<div id="help-ov" class="ov" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:500px;max-height:80vh;overflow-y:auto" onclick="event.stopPropagation()">
+    <div class="mh"><span style="font-size:18px;font-weight:800">¿Cómo funciona TextHuman?</span><button class="mc" onclick="document.getElementById('help-ov').classList.remove('open')">×</button></div>
+    <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
+      <div style="background:var(--bg2);border-radius:12px;padding:14px"><div style="font-weight:700;margin-bottom:6px">✨ Botón Humanizar</div><div style="font-size:13px;color:var(--text2);line-height:1.6">Pega tu texto de IA a la izquierda y presiona Humanizar. Lo reescribimos para que suene como persona real con el estilo de tu país.</div></div>
+      <div style="background:var(--bg2);border-radius:12px;padding:14px"><div style="font-weight:700;margin-bottom:6px">🌍 País de referencia</div><div style="font-size:13px;color:var(--text2);line-height:1.6">Elige tu país para usar expresiones y jerga local. Muy importante para que suene natural.</div></div>
+      <div style="background:var(--bg2);border-radius:12px;padding:14px"><div style="font-weight:700;margin-bottom:6px">🎚️ Nivel de formalidad</div><div style="font-size:13px;color:var(--text2);line-height:1.6"><strong>Formal</strong> → trabajos escolares · <strong>Informal</strong> → entregas relajadas · <strong>Casual</strong> → redes sociales.</div></div>
+      <div style="background:var(--bg2);border-radius:12px;padding:14px"><div style="font-weight:700;margin-bottom:6px">🎭 Experiencias · 📚 Fuentes · 🛡️ AntiIA Pro · 👤 Perspectiva</div><div style="font-size:13px;color:var(--text2);line-height:1.6">Herramientas extra: agrega anécdotas personales, cita fuentes reales, confunde detectores de IA, y elige si el texto habla en "yo", "nosotros" o impersonal.</div></div>
+      <div style="background:var(--bg2);border-radius:12px;padding:14px"><div style="font-weight:700;margin-bottom:6px">📎 Subir archivo</div><div style="font-size:13px;color:var(--text2);line-height:1.6">Sube PDF, DOCX, PPTX o TXT y el texto se extrae automáticamente. <strong>El intento se descuenta solo al presionar Humanizar</strong>, nunca al subir.</div></div>
+      <div style="background:var(--bg2);border-radius:12px;padding:14px"><div style="font-weight:700;margin-bottom:6px">🤖 Análisis de detección IA</div><div style="font-size:13px;color:var(--text2);line-height:1.6">Aparece bajo el resultado. Barra verde alta = muy humano. Barras rojas bajas = poca detección de IA.</div></div>
+      <div style="background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.2);border-radius:12px;padding:14px"><div style="font-weight:700;margin-bottom:6px;color:var(--accent)">⚡ Gratis vs Premium</div><div style="font-size:13px;color:var(--text2);line-height:1.6"><strong>Gratis:</strong> 2 textos/día · 1 archivo/día · máx 150 palabras.<br><strong>Premium $149/mes:</strong> ilimitado · hasta 5,000 palabras · sin esperas.</div></div>
+      <div style="background:var(--bg2);border-radius:12px;padding:14px"><div style="font-weight:700;margin-bottom:6px">⏳ Tiempo de espera</div><div style="font-size:13px;color:var(--text2);line-height:1.6">Al agotar intentos, espera 24h o compra una <strong>Aceleración</strong> para saltarte la espera al instante.</div></div>
     </div>
   </div>
 </div>
