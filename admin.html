@@ -27,19 +27,19 @@ nav h1{font-size:16px;font-weight:800;background:linear-gradient(135deg,#7c5cfc,
 .nav-btn{padding:8px 16px;background:#2a2a3a;border:none;border-radius:8px;color:#ccc;font-size:13px;cursor:pointer;font-family:inherit;transition:.2s}
 .nav-btn:hover{background:#3a3a4a;color:#fff}
 .nav-btn.act{background:#7c5cfc;color:#fff}
-.content{padding:24px;max-width:1200px;margin:0 auto}
+.content{padding:24px;max-width:1300px;margin:0 auto}
 .tab{display:none}.tab.act{display:block}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:28px}
 .stat{background:#1a1a24;border:1px solid #2a2a3a;border-radius:12px;padding:20px;text-align:center}
-.stat .num{font-size:30px;font-weight:800;background:linear-gradient(135deg,#7c5cfc,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.stat .lbl{font-size:12px;color:#888;margin-top:4px}
+.stat .num{font-size:28px;font-weight:800;background:linear-gradient(135deg,#7c5cfc,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat .lbl{font-size:11px;color:#888;margin-top:4px}
 .card{background:#1a1a24;border:1px solid #2a2a3a;border-radius:12px;overflow:hidden;margin-bottom:20px}
 .card-head{padding:14px 18px;border-bottom:1px solid #2a2a3a;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .card-head h2{font-size:14px;font-weight:700;flex:1}
 .card-body{padding:16px 18px}
 table{width:100%;border-collapse:collapse}
 th{padding:10px 14px;text-align:left;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #1e1e2e}
-td{padding:10px 14px;font-size:13px;border-bottom:1px solid #1a1a24;vertical-align:middle}
+td{padding:9px 12px;font-size:12px;border-bottom:1px solid #1a1a24;vertical-align:middle}
 tr:last-child td{border:none}
 tr:hover td{background:#1e1e2e}
 .badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
@@ -58,7 +58,14 @@ label{font-size:12px;color:#888;display:block;margin-bottom:4px}
 .empty{text-align:center;padding:32px;color:#555;font-size:13px}
 .refresh-btn{background:#2a2a3a;border:none;color:#888;padding:7px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-family:inherit}
 .refresh-btn:hover{color:#fff}
-.actions-row{display:flex;gap:6px;align-items:center}
+.actions-row{display:flex;gap:4px;align-items:center}
+.hum-split{font-size:11px;color:#888;margin-top:2px}
+.hum-txt{color:#a78bfa}.hum-fil{color:#22d3a5}
+/* Tooltip */
+[title]{cursor:help}
+.info-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600}
+.mp-fee{background:#f59e0b22;color:#f59e0b;border:1px solid #f59e0b33}
+.net-rev{background:#22c55e22;color:#22c55e;border:1px solid #22c55e33}
 </style>
 </head>
 <body>
@@ -99,16 +106,25 @@ label{font-size:12px;color:#888;display:block;margin-bottom:4px}
         <div class="stat"><div class="num" id="s-today">—</div><div class="lbl">Activos hoy</div></div>
         <div class="stat"><div class="num" id="s-week">—</div><div class="lbl">Activos esta semana</div></div>
         <div class="stat"><div class="num" id="s-hum">—</div><div class="lbl">Humanizaciones totales</div></div>
-        <div class="stat"><div class="num" id="s-cost" style="color:#ff4d6d">—</div><div class="lbl">Costo API estimado</div></div>
-        <div class="stat"><div class="num" id="s-net" style="color:#22d3a5">—</div><div class="lbl">Ganancia neta</div></div>
+        <!-- FIX 4: Separar texto/archivo -->
+        <div class="stat"><div class="num" id="s-txt-hum" style="font-size:20px">—</div><div class="lbl">Hum. de <span class="hum-txt">Texto</span></div></div>
+        <div class="stat"><div class="num" id="s-fil-hum" style="font-size:20px">—</div><div class="lbl">Hum. de <span class="hum-fil">Archivos</span></div></div>
+        <div class="stat"><div class="num" id="s-cost" style="-webkit-text-fill-color:#ff4d6d">—</div><div class="lbl">Costo API est.</div></div>
+        <div class="stat">
+          <!-- FIX 3: Mostrar ingresos brutos, comisión MP y neto por separado -->
+          <div class="num" id="s-rev">—</div>
+          <div class="lbl">Ingresos brutos (MXN)</div>
+          <div style="margin-top:6px"><span class="info-pill mp-fee" id="s-mp-fee" title="Comisión de Mercado Pago descontada">MP: —</span></div>
+          <div style="margin-top:4px"><span class="info-pill net-rev" id="s-net-rev" title="Después de comisión MP">Neto: —</span></div>
+        </div>
+        <div class="stat"><div class="num" id="s-net" style="-webkit-text-fill-color:#22d3a5">—</div><div class="lbl">Ganancia neta (MXN)</div></div>
         <div class="stat"><div class="num" id="s-new">—</div><div class="lbl">Nuevos hoy</div></div>
-        <div class="stat"><div class="num" id="s-rev">—</div><div class="lbl">Ingresos (MXN)</div></div>
       </div>
       <div class="card">
-        <div class="card-head"><h2>💳 Pagos recientes</h2></div>
+        <div class="card-head"><h2>💳 Pagos recientes (deduplicados)</h2></div>
         <table>
-          <thead><tr><th>Email</th><th>Tipo</th><th>Monto</th><th>Estado</th><th>Fecha</th></tr></thead>
-          <tbody id="pay-tbody"><tr><td colspan="5" class="empty">Cargando...</td></tr></tbody>
+          <thead><tr><th>Email</th><th>Tipo</th><th>Bruto</th><th>Com. MP</th><th>Neto</th><th>Estado</th><th>Fecha</th></tr></thead>
+          <tbody id="pay-tbody"><tr><td colspan="7" class="empty">Cargando...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -117,14 +133,24 @@ label{font-size:12px;color:#888;display:block;margin-bottom:4px}
     <div class="tab" id="tab-users">
       <div class="card">
         <div class="card-head">
-          <h2>👥 Usuarios registrados</h2>
+          <h2>👥 Usuarios registrados <span id="user-count" style="color:#888;font-size:12px"></span></h2>
           <input class="search-bar" type="text" placeholder="Buscar por email o nombre..." id="user-search" oninput="filterUsers()">
           <button class="refresh-btn" onclick="loadUsers()">↻</button>
         </div>
+        <div style="overflow-x:auto">
         <table>
-          <thead><tr><th>Nombre</th><th>Email</th><th>Plan</th><th>Vence</th><th>Humanizaciones</th><th>Accel.</th><th>Estado</th><th>Último acceso</th><th>Acciones</th></tr></thead>
-          <tbody id="users-tbody"><tr><td colspan="7" class="empty">Cargando...</td></tr></tbody>
+          <thead><tr>
+            <th>Nombre</th><th>Email</th><th>Plan</th><th>Vence</th>
+            <th>Hum. Total</th>
+            <!-- FIX 4: columnas separadas texto/archivo -->
+            <th title="Humanizaciones de texto acumuladas">📝 Texto</th>
+            <th title="Humanizaciones de archivo acumuladas">📄 Archivo</th>
+            <th title="Límite diario restante">Límite diario</th>
+            <th>Accel.</th><th>Estado</th><th>Último acceso</th><th>Acciones</th>
+          </tr></thead>
+          <tbody id="users-tbody"><tr><td colspan="12" class="empty">Cargando...</td></tr></tbody>
         </table>
+        </div>
       </div>
 
       <!-- Activar Premium manual -->
@@ -151,10 +177,13 @@ label{font-size:12px;color:#888;display:block;margin-bottom:4px}
     <!-- TAB: PAGOS -->
     <div class="tab" id="tab-payments">
       <div class="card">
-        <div class="card-head"><h2>💳 Historial de pagos</h2><button class="refresh-btn" onclick="loadPayments()">↻</button></div>
+        <div class="card-head">
+          <h2>💳 Historial de pagos <span style="color:#888;font-size:11px">(deduplicados por ID de MP)</span></h2>
+          <button class="refresh-btn" onclick="loadPayments()">↻</button>
+        </div>
         <table>
-          <thead><tr><th>Email</th><th>Tipo</th><th>Monto</th><th>Fuente</th><th>Estado</th><th>Fecha</th></tr></thead>
-          <tbody id="payments-tbody"><tr><td colspan="6" class="empty">Cargando...</td></tr></tbody>
+          <thead><tr><th>Email</th><th>Tipo</th><th>Bruto</th><th>Com. MP est.</th><th>Neto est.</th><th>Fuente</th><th>Estado</th><th>Fecha</th></tr></thead>
+          <tbody id="payments-tbody"><tr><td colspan="8" class="empty">Cargando...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -210,11 +239,24 @@ label{font-size:12px;color:#888;display:block;margin-bottom:4px}
 
       <div class="form-card">
         <h2>📊 Info del panel</h2>
-        <p style="font-size:13px;color:#888;line-height:1.8">
+        <p style="font-size:13px;color:#888;line-height:2">
           Worker URL: <code style="color:#a78bfa">https://texthuman-api.mirandavilla341.workers.dev</code><br>
           Pagos: <code style="color:#22c55e">Mercado Pago ✓</code><br>
+          Comisión MP (tarjeta): <code style="color:#f59e0b">3.49% + $4 MXN por transacción</code><br>
           Base de datos: <code style="color:#22c55e">Supabase ✓</code><br>
-          Versión Worker: <code style="color:#f59e0b">v3</code>
+          Correos: <code style="color:#22c55e">Resend ✓</code><br>
+          Versión Worker: <code style="color:#f59e0b">v5</code>
+        </p>
+      </div>
+
+      <div class="form-card" style="border-color:#f59e0b33">
+        <h2 style="color:#f59e0b">⚠️ Migración de base de datos necesaria</h2>
+        <p style="font-size:13px;color:#888;line-height:1.8">
+          Para que funcionen todas las correcciones, agrega estas columnas en Supabase → Table Editor → users:<br><br>
+          <code style="color:#a78bfa">txt_humanizations</code> — integer, default 0<br>
+          <code style="color:#22d3a5">fil_humanizations</code> — integer, default 0<br><br>
+          Y en la tabla <code style="color:#a78bfa">payments</code> asegúrate que exista la columna:<br>
+          <code style="color:#22c55e">mp_payment_id</code> — text (para evitar duplicados)
         </p>
       </div>
     </div>
@@ -227,6 +269,14 @@ const WORKER_URL = 'https://texthuman-api.mirandavilla341.workers.dev';
 let ADMIN_SECRET = 'uU756DGyqM$';
 let allUsers = [];
 let currentTab = 'stats';
+
+// Comisión MP (misma que en el worker)
+const MP_FEE_RATE = 0.0349;
+const MP_FEE_FIXED = 4;
+
+function calcMPFee(amount) {
+  return amount * MP_FEE_RATE + MP_FEE_FIXED;
+}
 
 // ═══ LOGIN ═══
 async function doLogin(){
@@ -307,22 +357,42 @@ async function loadStats(){
     document.getElementById('s-today').textContent = r.today??'—';
     document.getElementById('s-week').textContent = r.thisWeek??'—';
     document.getElementById('s-hum').textContent = (r.totalHum??'—').toLocaleString();
+
+    // FIX 4: mostrar humanizaciones separadas
+    const txtEl = document.getElementById('s-txt-hum');
+    const filEl = document.getElementById('s-fil-hum');
+    if(txtEl) txtEl.textContent = (r.totalTxtHum||0).toLocaleString();
+    if(filEl) filEl.textContent = (r.totalFilHum||0).toLocaleString();
+
     if(r.costMXN !== undefined){
       const costEl=document.getElementById('s-cost'); if(costEl) costEl.textContent='$'+(r.costMXN||0).toFixed(0)+' MXN';
       const netEl=document.getElementById('s-net');   if(netEl)  netEl.textContent ='$'+(r.netMXN||0).toFixed(0)+' MXN';
     }
     document.getElementById('s-new').textContent = r.newToday??'—';
-    document.getElementById('s-rev').textContent = r.revenue ? '$'+r.revenue.toLocaleString() : '—';
+
+    // FIX 3: Mostrar ingresos + comisión + neto
+    if(r.revenue !== undefined){
+      document.getElementById('s-rev').textContent = '$'+(r.revenue||0).toLocaleString()+' MXN';
+    }
+    const mpFeeEl = document.getElementById('s-mp-fee');
+    const netRevEl = document.getElementById('s-net-rev');
+    if(mpFeeEl && r.mpFees !== undefined) mpFeeEl.textContent = 'MP: -$'+(r.mpFees||0).toFixed(0)+' MXN';
+    if(netRevEl && r.netRevenue !== undefined) netRevEl.textContent = 'Neto: $'+(r.netRevenue||0).toFixed(0)+' MXN';
 
     const pays = r.recentPayments||[];
-    document.getElementById('pay-tbody').innerHTML = pays.length ? pays.map(p=>`
-      <tr>
+    document.getElementById('pay-tbody').innerHTML = pays.length ? pays.map(p=>{
+      const fee = calcMPFee(p.amount||0);
+      const net = (p.amount||0) - fee;
+      return `<tr>
         <td>${p.email||'—'}</td>
         <td><span class="badge ${p.type==='premium'?'bp':'by'}">${p.type==='premium'?'Premium':'Aceleración'}</span></td>
-        <td>$${p.amount||'—'} ${p.currency||'MXN'}</td>
+        <td>$${p.amount||'—'}</td>
+        <td style="color:#f59e0b;font-size:11px">-$${fee.toFixed(1)}</td>
+        <td style="color:#22c55e;font-weight:700">$${net.toFixed(1)}</td>
         <td><span class="badge ${p.status==='verified'?'bg':'by'}">${p.status||'—'}</span></td>
         <td>${fmtDate(p.created_at)}</td>
-      </tr>`).join('') : '<tr><td colspan="5" class="empty">Sin pagos registrados</td></tr>';
+      </tr>`;
+    }).join('') : '<tr><td colspan="7" class="empty">Sin pagos registrados</td></tr>';
   }catch(e){
     console.error('Error stats:', e);
   }
@@ -330,14 +400,15 @@ async function loadStats(){
 
 // ═══ USERS ═══
 async function loadUsers(){
-  document.getElementById('users-tbody').innerHTML = '<tr><td colspan="7" class="empty">Cargando...</td></tr>';
+  document.getElementById('users-tbody').innerHTML = '<tr><td colspan="12" class="empty">Cargando...</td></tr>';
   try{
     const r = await callAdmin('list_users');
     if(r.error) throw new Error(r.error);
     allUsers = r.users||[];
+    document.getElementById('user-count').textContent = `(${allUsers.length} usuarios)`;
     renderUsers(allUsers);
   }catch(e){
-    document.getElementById('users-tbody').innerHTML = `<tr><td colspan="7" class="empty" style="color:#ef4444">Error: ${e.message}</td></tr>`;
+    document.getElementById('users-tbody').innerHTML = `<tr><td colspan="12" class="empty" style="color:#ef4444">Error: ${e.message}</td></tr>`;
   }
 }
 
@@ -347,35 +418,57 @@ function renderUsers(users){
     const isPrem   = u.plan==='premium' && u.premium_until && new Date(u.premium_until)>now;
     const daysLeft = isPrem ? Math.ceil((new Date(u.premium_until)-now)/(1000*3600*24)) : null;
     const isBlocked = u.blocked_until && new Date(u.blocked_until) > now;
+    const isFileBlocked = u.file_blocked_until && new Date(u.file_blocked_until) > now;
     const accelLeft = u.accel_left !== undefined ? u.accel_left : '—';
     const accelBought = (u.accel_purchases||[]).length;
     const accelTip = accelBought > 0 ? `Compró ${accelBought} aceleración(es)` : 'Sin compras de aceleración';
+
     const estadoBadge = isBlocked
       ? `<span class="badge" style="background:rgba(255,77,109,.15);color:#ff4d6d;border:1px solid rgba(255,77,109,.3)">🚫 Bloqueado</span>`
       : `<span class="badge" style="background:rgba(34,211,165,.1);color:#22d3a5;border:1px solid rgba(34,211,165,.2)">✓ Activo</span>`;
+
+    // FIX 4: límite diario restante visual
+    const dailyLimit = isPrem
+      ? `<span style="color:#a78bfa;font-size:11px">∞ Premium</span>`
+      : `<span style="font-size:11px">
+          <span class="hum-txt" title="Texto restante hoy">📝${u.txt_left??0}</span>
+          <span style="color:#444"> / </span>
+          <span class="hum-fil" title="Archivos restantes hoy">📄${u.fil_left??0}</span>
+          ${isBlocked || isFileBlocked ? ' <span style="color:#f59e0b">⏱</span>' : ''}
+        </span>`;
+
     return `<tr>
       <td>${u.name||'—'}</td>
-      <td style="font-size:12px;color:#888">${u.email}</td>
+      <td style="font-size:11px;color:#888">${u.email}</td>
       <td><span class="badge ${isPrem?'bp':'bf'}">${isPrem?'⚡ Premium':'Gratis'}</span></td>
-      <td style="font-size:12px">${isPrem?daysLeft+'d restantes':'—'}</td>
-      <td style="text-align:center">${u.total_humanizations||0}</td>
-      <td style="text-align:center" title="${accelTip}">${accelLeft} <span style="color:#888;font-size:11px">(${accelBought}💳)</span></td>
+      <td style="font-size:11px">${isPrem?daysLeft+'d':'—'}</td>
+      <td style="text-align:center;font-weight:700">${u.total_humanizations||0}</td>
+      <td style="text-align:center">
+        <span class="hum-txt" title="${u.txt_humanizations||0} humanizaciones de texto totales">${(u.txt_humanizations||0).toLocaleString()}</span>
+      </td>
+      <td style="text-align:center">
+        <span class="hum-fil" title="${u.fil_humanizations||0} humanizaciones de archivo totales">${(u.fil_humanizations||0).toLocaleString()}</span>
+      </td>
+      <td>${dailyLimit}</td>
+      <td style="text-align:center" title="${accelTip}">${accelLeft} <span style="color:#888;font-size:10px">(${accelBought}💳)</span></td>
       <td>${estadoBadge}</td>
-      <td style="font-size:12px;color:#888">${fmtDate(u.last_login)}</td>
+      <td style="font-size:11px;color:#888">${fmtDate(u.last_login)}</td>
       <td>
         <div class="actions-row">
-          <button class="btn-sm btn-g" onclick="quickActivate('${u.email}',30)">⚡+30d</button>
-          ${isBlocked ? `<button class="btn-sm" style="background:#22d3a5;color:#000" onclick="unblockUser('${u.email}')">🔓</button>` : ''}
-          <button class="btn-sm btn-r" onclick="quickRevoke('${u.email}')">🚫</button>
+          <button class="btn-sm btn-g" onclick="quickActivate('${u.email}',30)" title="Dar 30 días premium">⚡+30d</button>
+          ${isBlocked || isFileBlocked ? `<button class="btn-sm" style="background:#22d3a5;color:#000" onclick="unblockUser('${u.email}')" title="Desbloquear">🔓</button>` : ''}
+          <button class="btn-sm btn-r" onclick="quickRevoke('${u.email}')" title="Revocar premium">🚫</button>
         </div>
       </td>
     </tr>`;
-  }).join('') : '<tr><td colspan="9" class="empty">Sin usuarios</td></tr>';
+  }).join('') : '<tr><td colspan="12" class="empty">Sin usuarios</td></tr>';
 }
 
 function filterUsers(){
   const q = document.getElementById('user-search').value.toLowerCase();
-  renderUsers(q ? allUsers.filter(u=>(u.email||'').includes(q)||(u.name||'').toLowerCase().includes(q)) : allUsers);
+  const filtered = q ? allUsers.filter(u=>(u.email||'').includes(q)||(u.name||'').toLowerCase().includes(q)) : allUsers;
+  document.getElementById('user-count').textContent = `(${filtered.length} de ${allUsers.length} usuarios)`;
+  renderUsers(filtered);
 }
 
 async function unblockUser(email){
@@ -419,24 +512,29 @@ async function activatePremium(){
   }catch(e){ showMsg('act-msg','❌ '+e.message,'err'); }
 }
 
-// ═══ PAYMENTS ═══
+// ═══ PAYMENTS — FIX 2: deduplicados, FIX 3: con comisión ═══
 async function loadPayments(){
-  document.getElementById('payments-tbody').innerHTML = '<tr><td colspan="6" class="empty">Cargando...</td></tr>';
+  document.getElementById('payments-tbody').innerHTML = '<tr><td colspan="8" class="empty">Cargando...</td></tr>';
   try{
     const r = await callAdmin('stats');
     if(r.error) throw new Error(r.error);
     const pays = r.recentPayments||[];
-    document.getElementById('payments-tbody').innerHTML = pays.length ? pays.map(p=>`
-      <tr>
-        <td style="font-size:12px">${p.email||'—'}</td>
+    document.getElementById('payments-tbody').innerHTML = pays.length ? pays.map(p=>{
+      const fee = calcMPFee(p.amount||0);
+      const net = (p.amount||0) - fee;
+      return `<tr>
+        <td style="font-size:11px">${p.email||'—'}</td>
         <td><span class="badge ${p.type==='premium'?'bp':'by'}">${p.type==='premium'?'🔥 Premium':'⚡ Aceleración'}</span></td>
-        <td><strong>$${p.amount||'—'}</strong> <span style="color:#888;font-size:11px">${p.currency||'MXN'}</span></td>
-        <td style="font-size:12px;color:#888">${p.source||'manual'}</td>
+        <td><strong>$${p.amount||'—'}</strong></td>
+        <td style="color:#f59e0b;font-size:11px">-$${fee.toFixed(1)}</td>
+        <td style="color:#22c55e;font-weight:700">$${net.toFixed(1)}</td>
+        <td style="font-size:11px;color:#888">${p.source||'manual'}</td>
         <td><span class="badge ${p.status==='verified'?'bg':'by'}">${p.status||'—'}</span></td>
-        <td style="font-size:12px;color:#888">${fmtDate(p.created_at)}</td>
-      </tr>`).join('') : '<tr><td colspan="6" class="empty">Sin pagos registrados</td></tr>';
+        <td style="font-size:11px;color:#888">${fmtDate(p.created_at)}</td>
+      </tr>`;
+    }).join('') : '<tr><td colspan="8" class="empty">Sin pagos registrados</td></tr>';
   }catch(e){
-    document.getElementById('payments-tbody').innerHTML = `<tr><td colspan="6" class="empty" style="color:#ef4444">Error: ${e.message}</td></tr>`;
+    document.getElementById('payments-tbody').innerHTML = `<tr><td colspan="8" class="empty" style="color:#ef4444">Error: ${e.message}</td></tr>`;
   }
 }
 
