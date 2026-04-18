@@ -636,7 +636,7 @@ textarea.ta::placeholder{color:var(--text3)}
   </div>
 </div>
 
-<button id="help-btn" onclick="toggleHelp()" title="¿Cómo funciona?" style="position:fixed;bottom:24px;right:24px;z-index:400;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(124,92,252,.5);animation:bell 3s ease-in-out infinite;display:flex;align-items:center;justify-content:center;font-weight:900">?</button>
+<button id="help-btn" onclick="toggleHelp()" title="¿Cómo funciona?" style="position:fixed;bottom:80px;right:24px;z-index:400;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(124,92,252,.5);animation:bell 3s ease-in-out infinite;display:flex;align-items:center;justify-content:center;font-weight:900">?</button>
 
 <!-- PROFILE -->
 <div id="p-profile" class="page">
@@ -1427,8 +1427,32 @@ function openPayModal(){
 async function procPay(){
   if(!S.token){toast('Inicia sesión primero','w');return;}
   const btn=document.querySelector('#pay-ov .btn-p');if(!btn)return;const origTxt=btn.textContent;btn.textContent='⏳ Generando pago...';btn.disabled=true;
-  try{const r=await api('/create-preference',{token:S.token,type:'premium'});if(r.error)throw new Error(r.error);if(!r.init_point)throw new Error('No se pudo generar el link de pago');closeModal('pay-ov');window.open(r.init_point,'_blank');toast('Checkout abierto 🔒','s');startPaymentCheck();}
-  catch(e){toast(e.message||'Error al generar pago','e');}
+  try{
+    const r=await api('/create-preference',{token:S.token,type:'premium'});
+    if(r.error)throw new Error(r.error);
+    if(!r.init_point)throw new Error('No se pudo generar el link de pago');
+    closeModal('pay-ov');
+    window.open(r.init_point,'_blank');
+    toast('Checkout abierto 🔒','s');
+    setTimeout(()=>{
+      const outEl=document.getElementById('out');
+      if(outEl&&document.getElementById('p-app').classList.contains('active')){
+        outEl.innerHTML=`<div style="padding:20px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);border-radius:12px;text-align:center">
+          <div style="font-size:36px;margin-bottom:10px">🏪</div>
+          <strong style="color:var(--yellow);font-size:15px">¡Ya casi tienes Premium!</strong>
+          <p style="color:var(--text2);font-size:13px;margin:10px 0;line-height:1.7">
+            Si elegiste pagar en <strong>OXXO, PayCash o transferencia</strong>, tu Premium se activará
+            <strong style="color:var(--green)">automáticamente</strong> en cuanto se confirme tu pago.<br><br>
+            Esto puede tardar desde unos minutos hasta 24 horas.
+          </p>
+          <div style="background:var(--bg2);border-radius:8px;padding:12px;font-size:12px;color:var(--text3)">
+            💡 No necesitas hacer nada más. Cuando se confirme, tu cuenta se actualizará sola.
+          </div>
+        </div>`;
+      }
+    },800);
+    startPaymentCheck();
+  }catch(e){toast(e.message||'Error al generar pago','e');}
   finally{btn.textContent=origTxt;btn.disabled=false;}
 }
 function activatePremiumUI(){
