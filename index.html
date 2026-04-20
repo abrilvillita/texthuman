@@ -1049,7 +1049,7 @@ const I18N={
 const PROXY_URL='https://texthuman-api.mirandavilla341.workers.dev';
 const API=PROXY_URL;
 
-let S={token:null,user:null,plan:'free',premiumUntil:null,txtLeft:2,filLeft:1,accelLeft:3,blocked:false,blockedUntil:null,fileBlocked:false,fileBlockedUntil:null,purpose:null,level:'formal',country:null,lang:'es',sources:[],expActive:false,expTone:'auto',antiActive:false,antiLevel:'med',pov:'yo'};
+let S={token:null,user:null,plan:'free',premiumUntil:null,txtLeft:2,filLeft:1,accelLeft:3,blocked:false,blockedUntil:null,fileBlocked:false,fileBlockedUntil:null,purpose:null,level:'formal',country:null,lang:'es',sources:[],expActive:false,expTone:'auto',antiActive:false,antiLevel:'med',pov:'yo',permanentlyBlocked:false,premiumDailyLeft:null};
 
 let authMode='register';
 (function(){
@@ -1094,6 +1094,8 @@ async function verifySession(){
 function applyServerData(r){
   if(!r)return;
   S.plan=r.plan||'free';S.premiumUntil=r.premium_until||null;S.txtLeft=r.txt_left??2;S.filLeft=r.fil_left??1;S.accelLeft=r.accel_left??3;S.blockedUntil=r.blocked_until||null;S.fileBlockedUntil=r.file_blocked_until||null;S.blocked=!!(S.blockedUntil&&new Date(S.blockedUntil)>new Date());S.fileBlocked=!!(S.fileBlockedUntil&&new Date(S.fileBlockedUntil)>new Date());
+  S.permanentlyBlocked=r.permanently_blocked||false;
+  S.premiumDailyLeft=r.premium_daily_left??null;
   if(r.name)S.user={name:r.name,email:r.email};
   save();applyUserUI(false);refreshUsage();
 }
@@ -1197,7 +1199,7 @@ function applyUserUI(showT){
 }
 
 function logout(){
-  S={token:null,user:null,plan:'free',premiumUntil:null,txtLeft:2,filLeft:1,accelLeft:3,blocked:false,blockedUntil:null,fileBlocked:false,fileBlockedUntil:null,_pendingFile:false,purpose:S.purpose,level:S.level,country:S.country,lang:S.lang,sources:[],expActive:false,expTone:'auto',antiActive:false,antiLevel:'med',pov:'yo'};
+  S={token:null,user:null,plan:'free',premiumUntil:null,txtLeft:2,filLeft:1,accelLeft:3,blocked:false,blockedUntil:null,fileBlocked:false,fileBlockedUntil:null,_pendingFile:false,purpose:S.purpose,level:S.level,country:S.country,lang:S.lang,sources:[],expActive:false,expTone:'auto',antiActive:false,antiLevel:'med',pov:'yo',permanentlyBlocked:false,premiumDailyLeft:null};
   save();document.getElementById('nav-guest').style.display='flex';document.getElementById('nav-user').style.display='none';showPage('landing');toast('Sesión cerrada','s');
 }
 function toggleDrop(){document.getElementById('dm').classList.toggle('open');}
@@ -1258,6 +1260,19 @@ function cntW(){const t=document.getElementById('inp').value.trim();document.get
 // ═══ HUMANIZE ═══
 async function doHumanize(){
   if(!S.token){openModal('login');return;}
+  // Bloqueo permanente — mostrar mensaje especial
+  if(S.permanentlyBlocked){
+    document.getElementById('out').innerHTML=`<div style="padding:24px;background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.3);border-radius:12px;text-align:center">
+      <div style="font-size:36px;margin-bottom:12px">🔒</div>
+      <strong style="color:var(--red);font-size:16px">Cuenta bloqueada</strong>
+      <p style="color:var(--text2);font-size:13px;margin:10px 0;line-height:1.7">
+        Tu cuenta gratuita ha llegado al límite de tiempo de prueba.<br>
+        Para seguir usando TextHuman, activa <strong>Premium</strong>.
+      </p>
+      <button class="bup" style="margin-top:4px" onclick="openPayModal()">⚡ Activar Premium — $149 MXN →</button>
+    </div>`;
+    return;
+  }
   if(S.plan==='premium'&&(!S.premiumUntil||new Date(S.premiumUntil)<=new Date())){S.plan='free';save();}
   if(S.blocked){toast('Límite alcanzado. Espera o acelera el tiempo.','w');return;}
   if(S._pendingFile&&S.plan!=='premium'){if(S.fileBlocked||S.filLeft<=0){setBlocked('file');showPremiumFlash();return;}}
@@ -1299,9 +1314,36 @@ async function doHumanize(){
     showAIDetector();
     if(S.blocked)document.getElementById('bbar').style.display='flex';
   }catch(e){
-    const isLimit=e.message==='LIMIT_TEXT';const isFileLimit=e.message==='LIMIT_FILE';
+    const isLimit=e.message==='LIMIT_TEXT';
+    const isFileLimit=e.message==='LIMIT_FILE';
+    const isPremiumDaily=e.message==='LIMIT_PREMIUM_DAILY';
+    const isPermanent=e.message==='PERMANENTLY_BLOCKED';
     if(isLimit){setBlocked('text');out.innerHTML='';showPremiumFlash();}
     else if(isFileLimit){setBlocked('file');out.innerHTML='';showPremiumFlash();}
+    else if(isPremiumDaily){
+      out.innerHTML=`<div style="padding:20px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.2);border-radius:12px;text-align:center">
+        <div style="font-size:32px;margin-bottom:10px">⚡</div>
+        <strong style="color:var(--accent3);font-size:15px">Límite diario Premium alcanzado</strong>
+        <p style="color:var(--text2);font-size:13px;margin:10px 0;line-height:1.7">
+          Has usado tus 20 mejoras de texto del día. El límite se reinicia a medianoche (hora México).
+        </p>
+        <div style="background:var(--bg2);border-radius:8px;padding:10px;font-size:12px;color:var(--text3)">
+          ⏰ Vuelve mañana para seguir mejorando textos sin límites.
+        </div>
+      </div>`;
+    }
+    else if(isPermanent){
+      S.permanentlyBlocked=true;save();
+      out.innerHTML=`<div style="padding:24px;background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.3);border-radius:12px;text-align:center">
+        <div style="font-size:36px;margin-bottom:12px">🔒</div>
+        <strong style="color:var(--red);font-size:16px">Cuenta bloqueada</strong>
+        <p style="color:var(--text2);font-size:13px;margin:10px 0;line-height:1.7">
+          Tu cuenta gratuita ha llegado al límite de tiempo de prueba.<br>
+          Para seguir usando TextHuman, activa <strong>Premium</strong>.
+        </p>
+        <button class="bup" style="margin-top:4px" onclick="openPayModal()">⚡ Activar Premium — $149 MXN →</button>
+      </div>`;
+    }
     else out.innerHTML=`<div style="color:var(--red);padding:16px"><strong>Error al conectar con el servidor</strong><br><small style="color:var(--text3)">${e.message}</small><br><br><button class="bacc" style="margin-top:8px" onclick="openReport('humanizador_no_funciona')">📢 Reportar este error</button></div>`;
   }
   document.getElementById('btnhum').disabled=false;
@@ -1468,10 +1510,17 @@ function activatePremiumUI(){
 function refreshUsage(){
   if(!S.user)return;
   if(S.plan==='premium'){
-    document.getElementById('u-txt').textContent='∞';document.getElementById('u-fil').textContent='∞';document.getElementById('u-plan').textContent='Premium ⚡';
-    document.getElementById('u-tfill').style.width='100%';document.getElementById('u-ffill').style.width='100%';
-    document.getElementById('u-tfill').className='uf fg';document.getElementById('u-ffill').className='uf fg';
-    if(S.premiumUntil){const days=Math.ceil((new Date(S.premiumUntil)-new Date())/(1000*3600*24));if(days>0)document.getElementById('pnote').textContent='Premium activo · vence en '+days+' día'+(days!==1?'s':'');else document.getElementById('pnote').textContent='Premium activo ✨';}
+    const dailyLeft=S.premiumDailyLeft??20;
+    const dailyUsed=20-dailyLeft;
+    const dailyPct=Math.max(0,(dailyLeft/20)*100);
+    document.getElementById('u-txt').textContent=dailyLeft+' / 20';
+    document.getElementById('u-fil').textContent='∞';
+    document.getElementById('u-plan').textContent='Premium ⚡';
+    document.getElementById('u-tfill').style.width=dailyPct+'%';
+    document.getElementById('u-ffill').style.width='100%';
+    document.getElementById('u-tfill').className='uf '+(dailyPct>60?'fg':dailyPct>30?'fy':'fr');
+    document.getElementById('u-ffill').className='uf fg';
+    if(S.premiumUntil){const days=Math.ceil((new Date(S.premiumUntil)-new Date())/(1000*3600*24));if(days>0)document.getElementById('pnote').textContent='Premium · '+dailyLeft+' mejoras hoy · vence en '+days+' día'+(days!==1?'s':'');else document.getElementById('pnote').textContent='Premium activo ✨';}
     return;
   }
   const txtMax=2,filMax=1;const tLeft=Math.max(0,S.txtLeft),fLeft=Math.max(0,S.filLeft);const tp=tLeft/txtMax*100,fp=fLeft/filMax*100;
@@ -1480,6 +1529,13 @@ function refreshUsage(){
   const col=p=>p>60?'fg':p>30?'fy':'fr';
   document.getElementById('u-tfill').className='uf '+(S.blocked?'fr':col(tp));document.getElementById('u-ffill').className='uf '+(S.fileBlocked?'fr':col(fp));
   if(S.blocked||S.fileBlocked)document.getElementById('bbar').style.display='flex';
+  // Bloqueo permanente — mostrar aviso especial
+  if(S.permanentlyBlocked){
+    document.getElementById('bbar').style.display='flex';
+    document.getElementById('btitle').textContent='Cuenta bloqueada permanentemente';
+    document.getElementById('btimer').textContent='Paga Premium para continuar';
+    const accBtn=document.getElementById('accbtn');if(accBtn)accBtn.style.display='none';
+  }
 }
 function fillProfile(){
   if(!S.user)return;
