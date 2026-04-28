@@ -11,10 +11,37 @@
 <meta property="og:title" content="TextHuman — Mejora la Naturalidad de tus Textos">
 <meta property="og:description" content="Convierte texto de IA en redacciones naturales. Con el toque de tu país.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://humanizatexto.com">
+<meta property="og:image" content="https://humanizatexto.com/logo.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:locale" content="es_MX">
+<meta property="og:site_name" content="TextHuman">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TextHuman — Redacción Natural">
 <meta name="twitter:description" content="Mejora la naturalidad de textos con IA. Con estilo real de tu país. Gratis.">
+<meta name="twitter:image" content="https://humanizatexto.com/logo.png">
 <link rel="canonical" href="https://humanizatexto.com">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "TextHuman",
+  "url": "https://humanizatexto.com",
+  "description": "Herramienta de escritura con IA que ayuda a estudiantes latinoamericanos a mejorar sus textos académicos con estilo natural y humano.",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web",
+  "offers": [
+    {"@type":"Offer","price":"0","priceCurrency":"MXN","description":"Plan gratuito"},
+    {"@type":"Offer","price":"149","priceCurrency":"MXN","description":"Plan Premium 30 días"}
+  ],
+  "inLanguage": "es",
+  "audience": {"@type":"EducationalAudience","educationalRole":"student"},
+  "contactPoint": {"@type":"ContactPoint","email":"texthumanapp@gmail.com","contactType":"customer support"}
+}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -727,10 +754,10 @@ textarea.ta::placeholder{color:var(--text3)}
       <section><h2>3. Cómo usamos tu información</h2><p>Usamos tu información para: gestionar tu cuenta, procesar pagos, enviarte comunicaciones relacionadas con el servicio y mejorar la experiencia del usuario.</p></section>
       <section><h2>4. Cookies y tecnologías similares</h2><p>Usamos almacenamiento local (localStorage) para mantener tu sesión activa. No utilizamos cookies de seguimiento publicitario propias. Los anuncios de Google (AdSense) pueden utilizar cookies según sus propias políticas.</p></section>
       <section><h2>5. Compartir información con terceros</h2><p>No vendemos tu información personal. Compartimos datos solo con: <strong>Supabase</strong> (base de datos), <strong>Anthropic</strong> (procesamiento de texto), <strong>Mercado Pago</strong> (pagos) y <strong>Resend</strong> (correos transaccionales).</p></section>
-      <section><h2>6. Tus derechos</h2><p>Tienes derecho a acceder, corregir o eliminar tu información personal. Para ejercer estos derechos contáctanos en <a href="mailto:mirandavilla341@gmail.com" style="color:var(--accent2)">mirandavilla341@gmail.com</a>.</p></section>
+      <section><h2>6. Tus derechos</h2><p>Tienes derecho a acceder, corregir o eliminar tu información personal. Para ejercer estos derechos contáctanos en <a href="mailto:texthumanapp@gmail.com" style="color:var(--accent2)">texthumanapp@gmail.com</a>.</p></section>
       <section><h2>7. Seguridad</h2><p>Implementamos medidas técnicas para proteger tu información, incluyendo cifrado de contraseñas y comunicaciones HTTPS. Sin embargo, ningún sistema es 100% seguro.</p></section>
       <section><h2>8. Cambios a esta política</h2><p>Podemos actualizar esta política ocasionalmente. Te notificaremos por correo sobre cambios significativos.</p></section>
-      <section><h2>9. Contacto</h2><p>Para preguntas sobre esta política: <a href="mailto:mirandavilla341@gmail.com" style="color:var(--accent2)">mirandavilla341@gmail.com</a></p></section>
+      <section><h2>9. Contacto</h2><p>Para preguntas sobre esta política: <a href="mailto:texthumanapp@gmail.com" style="color:var(--accent2)">texthumanapp@gmail.com</a></p></section>
     </div>
   </div>
 </div>
@@ -765,7 +792,7 @@ textarea.ta::placeholder{color:var(--text3)}
     <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:left;display:flex;flex-direction:column;gap:18px">
       <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg2);border-radius:10px">
         <span style="font-size:22px">📧</span>
-        <div><div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px">Correo electrónico</div><a href="mailto:mirandavilla341@gmail.com" style="color:var(--accent2);font-size:15px;font-weight:600;text-decoration:none">mirandavilla341@gmail.com</a></div>
+        <div><div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px">Correo electrónico</div><a href="mailto:texthumanapp@gmail.com" style="color:var(--accent2);font-size:15px;font-weight:600;text-decoration:none">texthumanapp@gmail.com</a></div>
       </div>
       <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg2);border-radius:10px">
         <span style="font-size:22px">⏱️</span>
@@ -1160,7 +1187,7 @@ async function sendForgot(){
   const btn=document.getElementById('forgot-btn');const origTxt=btn.textContent;
   btn.textContent='Enviando...';btn.disabled=true;
   try{const r=await api('/forgot-password',{email});if(r.error)throw new Error(r.error);closeModal('forgot-ov');toast('Si el correo existe, recibirás un enlace en minutos 📬','s');}
-  catch(e){const subject=encodeURIComponent('TextHuman — Recuperación de contraseña');const body=encodeURIComponent('Hola, olvidé mi contraseña.\nMi correo: '+email);window.open('mailto:mirandavilla341@gmail.com?subject='+subject+'&body='+body,'_blank');closeModal('forgot-ov');toast('Te contactaremos pronto para ayudarte 📬','s');}
+  catch(e){const subject=encodeURIComponent('TextHuman — Recuperación de contraseña');const body=encodeURIComponent('Hola, olvidé mi contraseña.\nMi correo: '+email);window.open('mailto:texthumanapp@gmail.com?subject='+subject+'&body='+body,'_blank');closeModal('forgot-ov');toast('Te contactaremos pronto para ayudarte 📬','s');}
   finally{btn.textContent=origTxt;btn.disabled=false;}
 }
 
@@ -1581,7 +1608,7 @@ async function sendReport(){
   }catch(e){
     const subject=encodeURIComponent('[TextHuman] '+(type||'Reporte'));
     const body=encodeURIComponent('Problema: '+(msg||'Sin descripción')+'\nPlan: '+(S.plan||'gratis'));
-    window.open('mailto:mirandavilla341@gmail.com?subject='+subject+'&body='+body,'_blank');
+    window.open('mailto:texthumanapp@gmail.com?subject='+subject+'&body='+body,'_blank');
     toast('Se abrió tu correo. Envíalo y te respondemos pronto 📬','w');
   }finally{
     if(btn){btn.textContent='📨 Enviar reporte';btn.disabled=false;}
