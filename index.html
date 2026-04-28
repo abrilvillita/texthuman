@@ -381,7 +381,10 @@ textarea.ta::placeholder{color:var(--text3)}
 
 <!-- NAV -->
 <nav>
-  <div class="logo" id="logo">TextHuman<span style="font-family:'DM Sans',sans-serif;font-weight:400;background:none;-webkit-text-fill-color:var(--text3)">.ai</span></div>
+  <div style="display:flex;align-items:center;gap:20px">
+    <div class="logo" id="logo" onclick="doNav('landing')" style="cursor:pointer">TextHuman<span style="font-family:'DM Sans',sans-serif;font-weight:400;background:none;-webkit-text-fill-color:var(--text3)">.ai</span></div>
+    <a href="/blog.html" style="font-size:13px;color:var(--text3);text-decoration:none;font-weight:500">✍️ Blog</a>
+  </div>
   <div class="nav-r" id="nav-guest">
     <select class="lang-sel" onchange="changeLang(this.value)" id="ls1">
       <option value="es">🌐 Español</option>
@@ -397,13 +400,15 @@ textarea.ta::placeholder{color:var(--text3)}
       <option value="en">🌐 English</option>
       <option value="pt">🌐 Português</option>
     </select>
+    <button class="btn btn-g" onclick="doNav('landing')" style="font-size:12px;padding:7px 14px">🏠 Inicio</button>
     <span class="plan-badge bf" id="nav-badge">GRATIS</span>
     <div class="dw" id="dw">
       <div class="av" id="nav-av" onclick="toggleDrop()">U</div>
       <div class="dm" id="dm">
         <div class="di" onclick="closeDropAndNav('profile')">👤 Mi perfil</div>
         <div class="di" onclick="closeDropAndNav('plans')">⚡ Planes</div>
-        <div class="di" onclick="closeDropAndNav('app')">🏠 Inicio</div>
+        <div class="di" onclick="closeDropAndNav('app')">✨ Humanizador</div>
+        <div class="di" onclick="window.open('/blog.html','_blank')">✍️ Blog</div>
         <div class="di" onclick="document.getElementById('dm').classList.remove('open');openReport('')">📢 Reportar problema</div>
         <div class="di" onclick="document.getElementById('dm').classList.remove('open');doNav('contact')">✉️ Contacto</div>
         <div class="dd"></div>
@@ -961,6 +966,7 @@ textarea.ta::placeholder{color:var(--text3)}
 <footer class="site-footer">
   <div style="font-size:12px;color:var(--text3)">© 2025 TextHuman · <a href="https://humanizatexto.com" style="color:var(--text3)">humanizatexto.com</a></div>
   <div style="display:flex;gap:20px;flex-wrap:wrap">
+    <a href="/blog.html" class="footer-link">Blog</a>
     <span class="footer-link" onclick="doNav('privacy')">Privacidad</span>
     <span class="footer-link" onclick="doNav('terms')">Términos</span>
     <span class="footer-link" onclick="doNav('contact')">Contacto</span>
